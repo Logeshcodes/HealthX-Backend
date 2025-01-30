@@ -1,0 +1,23 @@
+
+// To configure the TypeScript compiler here : Each property in the file customizes how TypeScript compiles the code
+
+
+
+{
+  "compilerOptions": {
+    "target": "ES6",                              // it offers modern JavaScript features
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+  "rootDir": "./src",
+  "baseUrl": "./src",
+  "paths": {
+    "@/*": ["*"]
+  },
+  },
+  "include": ["src/**/*"],
+  "exclude": ["./dist", "./node_modules"]         // exculde from compilation
+}
