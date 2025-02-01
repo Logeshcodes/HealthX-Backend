@@ -4,11 +4,11 @@ import bcrypt from "bcrypt";
 import DoctorService from "../services/DoctorService";
 import { OtpGenerate } from "../utils/otpGenerator";
 import { otpService } from "../services/otpService";
-import SendEmail from "../utils/sentEmail";
+// import SendEmail from "../utils/sentEmail";
 import JwtService from "../utils/jwt";
 import { access_token_options  , refresh_token_options} from "../utils/tokenOptions";
 
-import { SendForgotPasswordEmail } from "../utils/sendForgotPasswordEmail";
+// import { SendForgotPasswordEmail } from "../utils/sendForgotPasswordEmail";
 
 import produce from "../config/kafka/producer";
 
@@ -17,17 +17,17 @@ export default class DoctorController {
     private doctorService: DoctorService;
     private otpService: otpService;
     private otpGenerate: OtpGenerate;
-    private sendEmail: SendEmail;
+    // private sendEmail: SendEmail;
     private JWT: JwtService;
-    private SentForgotEmail:SendForgotPasswordEmail
+    // private SentForgotEmail:SendForgotPasswordEmail
 
 
     constructor() {
         this.doctorService = new DoctorService();
         this.otpService = new otpService();
         this.otpGenerate = new OtpGenerate();
-        this.sendEmail = new SendEmail();
-        this.SentForgotEmail=new SendForgotPasswordEmail()
+        // this.sendEmail = new SendEmail();
+        // this.SentForgotEmail=new SendForgotPasswordEmail()
         this.JWT = new JwtService();
       }
 
@@ -58,7 +58,8 @@ export default class DoctorController {
             const otp = await this.otpGenerate.createOtpDigit();
             await this.otpService.createOtp(email, otp);
       
-            await this.sendEmail.SendEmailVerification(email, otp);
+            // await this.sendEmail.SendEmailVerification(email, otp);
+            produce('send-otp-email',{email,otp})
       
             const JWT = new JwtService();
             const tokenPayload = {
@@ -194,7 +195,7 @@ export default class DoctorController {
               .cookie("refreshToken", refreshToken,{ httpOnly: true })
               .send({
                 success: true,
-                message: "User Logged Successfully",
+                message: "Doctor Logged Successfully",
                 user: doctor,
               })
           );
@@ -226,15 +227,15 @@ export default class DoctorController {
       
       public async resendOtp(req: Request, res: Response): Promise<any> {
         try {
-          let { email ,username} = req.body;
+          let { email} = req.body;
           console.log(email, "emaillllll");
     
           const otp = await this.otpGenerate.createOtpDigit();
           await Promise.all([
             this.otpService.createOtp(email, otp),
-            await this.sendEmail.SendEmailVerification(email, otp)
+            // await this.sendEmail.SendEmailVerification(email, otp)
     
-            // produce('send-otp-email',{name:username,email,otp})
+            produce('send-otp-email',{email,otp})
           ]);
           res.status(200).json({
             success: true,
@@ -255,7 +256,9 @@ export default class DoctorController {
             const otp = await this.otpGenerate.createOtpDigit();
             await this.otpService.createOtp(email, otp);
     
-            await this.SentForgotEmail.SendEmailVerification(email, otp);
+            // await this.SentForgotEmail.SendEmailVerification(email, otp);
+            produce('send-forgotPassword-email',{email,otp})
+
             res.send({
               success: true,
               message: "Redirecting To OTP Page",
@@ -311,7 +314,8 @@ export default class DoctorController {
           const otp = await this.otpGenerate.createOtpDigit();
           await this.otpService.createOtp(email, otp);
     
-          await this.SentForgotEmail.SendEmailVerification(email, otp);
+          // await this.SentForgotEmail.SendEmailVerification(email, otp);
+          produce('send-forgotPassword-email',{email,otp})
     
           res.status(200).json({
             success: true,

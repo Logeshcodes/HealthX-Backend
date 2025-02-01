@@ -15,6 +15,12 @@ export default class AdminService{
         return response
     }
 
+    public async updateDepartment(departmentName:string , updateData : string ){
+
+        const response=await this.adminRepository.updateDepartment(departmentName , updateData)
+        return response
+    }
+
     public async findDepartmentByName(departmentName : string){
         const response=await this.adminRepository.findDepartmentByName(departmentName)
         return response

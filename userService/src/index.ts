@@ -28,7 +28,7 @@ app.use(cors(corsOptions))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+app.use(morgan('dev'))
 
 app.use('/patient' , userRoutes)
 app.use('/doctor' , doctorRoutes)

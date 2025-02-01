@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import DoctorController from "../controllers/DoctorController";
-import upload from "../helpers/multer";
+import { IsDoctor} from "../middlewares/RoleBasedAuth";
 
 let router=Router()
 
@@ -9,7 +9,7 @@ let router=Router()
 
 let doctorController = new DoctorController()
 
-router.post('/register',upload.single('MedicalLicense'),doctorController.doctorSignUp.bind(doctorController))
+router.post('/register',doctorController.doctorSignUp.bind(doctorController))
 router.post('/verify_otp', doctorController.createUser.bind(doctorController))
 router.post('/createUser',doctorController.createUser.bind(doctorController))
 router.post('/login',doctorController.login.bind(doctorController))
@@ -22,7 +22,7 @@ router.post('/resetPassword',doctorController.resetPassword.bind(doctorControlle
 router.post('/verifyResetOtp',doctorController.verifyResetOtp.bind(doctorController))  //
 router.post('/forgotResendOtp',doctorController.forgotResendOtp.bind(doctorController))  //
 
-router.get('/doctors',doctorController.getDoctors.bind(doctorController))
+router.get('/doctors' ,doctorController.getDoctors.bind(doctorController))
 
 // router.post('/googleLogin',doctorController.doGoogleLogin.bind(doctorController))
 // verifyResetOtp

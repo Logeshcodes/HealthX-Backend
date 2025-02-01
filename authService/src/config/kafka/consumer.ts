@@ -24,6 +24,7 @@ async function consume() {
         "update-profile-doctor",
         "block-doctor",
         "add-department",
+        "update-department",
       ],
       fromBeginning: true,
     });
@@ -72,6 +73,10 @@ async function consume() {
               break;
             case "add-department":
               await adminController.addDepartment(messageValue);
+              console.log("Processing add-department event:", messageValue);
+              break;
+            case "update-department":
+              await adminController.updateDepartment(messageValue);
               console.log("Processing add-department event:", messageValue);
               break;
 

@@ -19,12 +19,6 @@ export class AdminBaseRepository<T extends Document> {
 
        try {
 
-        // const existingDept = await DepartmentModel.findOne({ departmentName: deptData.departmentName });
-
-        // if (existingDept) {
-        //     throw new Error('Department already exists');
-        // }
-
         const dept = await DepartmentModel.create(deptData)
         console.log("dept data : " , dept)
         await dept.save()
@@ -35,6 +29,24 @@ export class AdminBaseRepository<T extends Document> {
             throw error
        }
     }
+
+
+
+
+    async updateDepartment(departmentName: string, updateData: any): Promise<DepartmentInterface | null> {
+      try {
+        const response = await DepartmentModel.findOneAndUpdate(
+          { departmentName },           
+          { $set: updateData },           
+          { new: true }                   
+        );
+        return response;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    }
+    
 
     async findDepartmentByName(departmentName: string): Promise<DepartmentInterface | null> {
         return await DepartmentModel.findOne({

@@ -12,11 +12,14 @@ router.get('/department', adminController.getAllDepartments.bind(adminController
 router.get('/users', adminController.getAllUsers.bind(adminController));
 router.get('/blockUser/:email', adminController.blockUser.bind(adminController));
 
+
+
+
+
 // Fetch department by ID
-router.get('/getDepartmentById/:id', adminController.getDepartmentById.bind(adminController));
+router.get('/editDepartment/:departmentName', adminController.getDepartmentByName.bind(adminController));
+router.put('/editDepartment/:departmentName', adminController.updateDepartment.bind(adminController));
 
-
-router.put('/updateDepartment/:id', adminController.updateDepartment.bind(adminController));
 
 
 

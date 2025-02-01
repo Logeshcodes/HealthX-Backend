@@ -159,48 +159,68 @@ export default class AdminController {
   }
   
   
-  
-// Update Department by ID
-async updateDepartment(req : any, res : any) {
-  try {
-    const { id } = req.params;  
-    const { departmentName } = req.body;  
+  // Get Department by Name
+  async getDepartmentByName(req: Request, res: Response): Promise<any> {
 
-    // Call service to update the department
-    const deptData = await this.adminService.updateDepartment(id, { departmentName });
+    try {
+
+      console.log("oooooo" ,req.params )
+      
+
+      const { departmentName } = req.params;
+      console.log("dept name ???????:" , decodeURIComponent(departmentName))
+      const deptData = await this.adminService.getDepartmentByName( decodeURIComponent(departmentName));
+
+      if (!deptData) {
+        return res.status(404).json({ success: false, message: 'Department not found' });
+      }
+
+      res.json({ success: true, data: deptData });
+    } catch (error) {
+      console.error('Error fetching department by name:', error);
+      res.status(500).json({ success: false, message: 'Server Error.' });
+    }
+  }
+
+// Update Department by Name
+async updateDepartment(req: Request, res: Response): Promise<any> {
+  try {
+    console.log("iiiii", req.params);
+
+    
+    const { departmentName } = req.params;  
+  
+    const updateData = req.body;
+
+    console.log(departmentName, "dept");
+    console.log(updateData, "deptup");
+
+    const deptData = await this.adminService.updateDepartment(departmentName, updateData);
+    const existingDept = await this.adminService.findDepartmentByName(departmentName);
 
     if (!deptData) {
+
       return res.status(404).json({ success: false, message: 'Department not found' });
+
+    }else if(existingDept) {
+
+      return res.json({
+        success: false,
+        message: "Department already exists",
+        user: existingDept,
+      });
+
+    }else{
+
+      await produce("update-department",{departmentName , updateData});
+
+      res.json({ success: true, message: 'Department updated successfully', data: deptData });
     }
 
     
-    res.json({ success: true, message: 'Department updated successfully', data: deptData });
   } catch (error) {
     console.error('Error updating department:', error);
-    res.status(500).json({ success: false, message: 'Server Error' });
-  }
-}
-
-
-
-
-// Get Department by ID
-async getDepartmentById(req : any, res: any) {
-  try {
-    const { id } = req.params;  
-
-    
-    const deptData = await this.adminService.getDepartmentById(id);
-
-    if (!deptData) {
-      return res.status(404).json({ success: false, message: 'Department not found' });
-    }
-
-    
-    res.json({ success: true, data: deptData });
-  } catch (error) {
-    console.error('Error fetching department by ID:', error);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, message: 'Server Error.' });
   }
 }
 

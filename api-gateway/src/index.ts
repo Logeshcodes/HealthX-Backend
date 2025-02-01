@@ -16,7 +16,7 @@ console.log("Environment Variables:", { PORT, FRONTEND_URL, AUTH_URL });
 
 const corsOptions = {
     origin: FRONTEND_URL,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"],
     credentials: true,
 };
 

@@ -74,24 +74,26 @@ export class AdminBaseRepository<T extends Document> {
         }
       }
 
-      public async getDepartmentById(id: string): Promise<any> {
+      public async getDepartmentByName( departmentName: string): Promise<any> {
         try {
-         
-          const response = await DepartmentModel.findById(id);  
-          return response;  
+         console.log("finding dept", departmentName)
+        const response = await DepartmentModel.find({departmentName});  
+        console.log("first ,,", response) 
+          return response; 
+          
         } catch (error) {
-          console.log(error);
+          console.error('Error fetching department by name:', error);
           throw error; 
         }
       }
       
 
      
-      public async updateDepartment(id: string, data: any): Promise<any> {
+      public async updateDepartment( departmentName: string, data: any): Promise<any> {
         try {
          
-          const response = await DepartmentModel.findByIdAndUpdate(
-            id,            
+          const response = await DepartmentModel.findOneAndUpdate(
+            {departmentName},            
             { $set: data }, 
             { new: true }   
           );

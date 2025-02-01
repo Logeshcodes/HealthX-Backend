@@ -44,9 +44,10 @@ export default class AdminRepository{
         }
     }
 
-    public async getDepartmentById(id:string): Promise<any> {
+    public async getDepartmentByName( departmentName:string): Promise<any> {
         try {
-            const response = await this.adminBaseRepository.getDepartmentById(id);
+            console.log("in repo", departmentName)
+            const response = await this.adminBaseRepository.getDepartmentByName(departmentName);
             return response;
         } catch (error) {
             throw error;
@@ -54,9 +55,9 @@ export default class AdminRepository{
     }
 
 
-    public async updateDepartment(id:string,data:any): Promise<any> {
+    public async updateDepartment( departmentName:string,data:any): Promise<any> {
         try {
-            const response = await this.adminBaseRepository.updateDepartment(id,data);
+            const response = await this.adminBaseRepository.updateDepartment(departmentName,data);
             return response;
         } catch (error) {
             throw error;

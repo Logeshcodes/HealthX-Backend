@@ -18,6 +18,11 @@ export default class AdminRepository{
         return response ;
     }
 
+    async updateDepartment(departmentName:string , updateData : string) {
+        const response =  await this.adminRepository.updateDepartment(departmentName , updateData)
+        return response ;
+    }
+
     async findDepartmentByName(departmentName : string) {
         const response =  await this.adminRepository.findDepartmentByName(departmentName)
         return response ;

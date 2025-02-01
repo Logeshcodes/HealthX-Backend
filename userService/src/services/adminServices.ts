@@ -46,10 +46,11 @@ export default class AdminService{
      
 
 
-        async getDepartmentById(id: string): Promise<object | null> {
+        async getDepartmentByName(departmentName: string): Promise<object | null> {
           try {
+            console.log("in service" , departmentName)
 
-            const department = await this.adminRepository.getDepartmentById(id);  
+            const department = await this.adminRepository.getDepartmentByName(departmentName);  
             if (!department) {
               throw new Error('Department not found');
             }
@@ -62,10 +63,10 @@ export default class AdminService{
 
 
          
-        async updateDepartment(id: string, data: any): Promise<object | null> {
+        async updateDepartment(departmentName: string, data: any): Promise<object | null> {
           try {
             
-            const updatedDepartment = await this.adminRepository.updateDepartment(id, data);  // Update department by ID
+            const updatedDepartment = await this.adminRepository.updateDepartment( departmentName, data);  
             if (!updatedDepartment) {
               throw new Error('Department not found');
             }

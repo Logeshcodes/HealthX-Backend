@@ -74,6 +74,15 @@ export class AdminController{
           console.log(error);
         }
       }
+
+      public async updateDepartment(payload: any): Promise<any> {
+        try {
+          const {departmentName , updateData} = payload
+          let response = await this.adminService.updateDepartment(departmentName , updateData );
+        } catch (error) {
+          console.log(error);
+        }
+      }
       
     
 }

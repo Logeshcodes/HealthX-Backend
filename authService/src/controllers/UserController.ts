@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 import { OtpGenerate } from "../utils/otpGenerator";
 import JwtService from "../utils/jwt";
-import SendEmail from "../utils/sentEmail";
+// import SendEmail from "../utils/sentEmail";
 
 import UserServices from "../services/UserService";
 import { otpService } from "../services/otpService";
@@ -11,7 +11,7 @@ import { otpService } from "../services/otpService";
 import { UserInterface } from "../models/userModel";
 
 // import { access_token_options , refresh_token_options } from "@/utils/tokenOptions";
-import { SendForgotPasswordEmail } from "../utils/sendForgotPasswordEmail";
+// import { SendForgotPasswordEmail } from "../utils/sendForgotPasswordEmail";
 
 import produce from "../config/kafka/producer";
 
@@ -21,17 +21,17 @@ export class UserController {
   private userService: UserServices;
   private otpService: otpService;
   private otpGenerator: OtpGenerate;
-  private sendEmail: SendEmail;
+  // private sendEmail: SendEmail;
   private JWT: JwtService;
-  private SentForgotEmail:SendForgotPasswordEmail
+  // private SentForgotEmail:SendForgotPasswordEmail
 
 
   constructor() {
     this.userService = new UserServices();
     this.otpService = new otpService();
     this.otpGenerator = new OtpGenerate();
-    this.sendEmail = new SendEmail();
-    this.SentForgotEmail=new SendForgotPasswordEmail()
+    // this.sendEmail = new SendEmail();
+    // this.SentForgotEmail=new SendForgotPasswordEmail()
     this.JWT = new JwtService();
   }
 
@@ -64,7 +64,8 @@ export class UserController {
         await Promise.all(
           [
              this.otpService.createOtp(email, otp),
-             this.sendEmail.SendEmailVerification(email , otp)
+            //  this.sendEmail.SendEmailVerification(email , otp)
+            produce('send-otp-email',{email,otp})
           ]
         )
     
@@ -102,7 +103,8 @@ export class UserController {
         [
            this.otpService.createOtp(email, otp),
 
-           this.sendEmail.SendEmailVerification(email, otp)
+          //  this.sendEmail.SendEmailVerification(email, otp)
+          produce('send-otp-email',{email,otp})
         ]
       )
 
@@ -253,7 +255,9 @@ export class UserController {
         const otp = await this.otpGenerator.createOtpDigit();
         await this.otpService.createOtp(email, otp);
 
-        await this.SentForgotEmail.SendEmailVerification(email, otp);
+        // await this.SentForgotEmail.SendEmailVerification(email, otp);
+        produce('send-forgotPassword-email',{email,otp})
+
         res.send({
           success: true,
           message: "Redirecting To OTP Page",
@@ -313,7 +317,8 @@ export class UserController {
       const otp = await this.otpGenerator.createOtpDigit();
       await this.otpService.createOtp(email, otp);
 
-      await this.SentForgotEmail.SendEmailVerification(email, otp);
+      // await this.SentForgotEmail.SendEmailVerification(email, otp);
+      produce('send-forgotPassword-email',{email,otp})
 
       res.status(200).json({
         success: true,
