@@ -208,7 +208,7 @@ export class UserController {
       const accesstoken = await this.JWT.accessToken({ email, role });
       const refreshToken = await this.JWT.refreshToken({ email, role });
 
-      // Return the token in the response
+      // Return the token 
       return (
         res
           .status(200)
