@@ -1,4 +1,4 @@
-import JwtService from "@/utils/jwt";
+import JwtService from "../utils/jwt";
 import { Request, Response, NextFunction } from "express";
 
 import { StatusCode } from "../utils/enum";

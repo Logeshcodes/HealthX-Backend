@@ -20,9 +20,11 @@ async function consume() {
         "update-password-user",
         "update-profile-user",
         "block-user",
+
         "update-password-doctor",
         "update-profile-doctor",
         "block-doctor",
+        
         "add-department",
         "update-department",
       ],

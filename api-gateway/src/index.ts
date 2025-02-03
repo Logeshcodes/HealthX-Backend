@@ -2,17 +2,19 @@ import express, { Application , Request ,Response , NextFunction } from 'express
 import cors from 'cors'                                                
 import { config } from 'dotenv'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-
 import proxy = require('express-http-proxy')
+import morgan from "morgan" ;
 
 
 config();
 
+const {PORT ,  FRONTEND_URL , AUTH_URL , USER_URL ,NOTIFICATION_URL } = process.env
+
 const app : Application = express()
 
-const {PORT ,  FRONTEND_URL , AUTH_URL , USER_URL } = process.env
+console.log("Environment Variables:", { PORT, FRONTEND_URL, AUTH_URL , USER_URL ,NOTIFICATION_URL });
 
-console.log("Environment Variables:", { PORT, FRONTEND_URL, AUTH_URL });
+// cors
 
 const corsOptions = {
     origin: FRONTEND_URL,
@@ -23,6 +25,7 @@ const corsOptions = {
 // Middleware
 
 app.use(cors(corsOptions));
+app.use(morgan('dev'));
 
 // services 
 const services = [
@@ -34,10 +37,10 @@ const services = [
         path: USER_URL, 
         context: "/user", 
     },
-    // {
-    //     path: NOTIFICATION_URL, // Target service URL
-    //     context: "/notification", // Route on your gateway
-    // },
+    {
+        path: NOTIFICATION_URL, 
+        context: "/notification", 
+    },
     // {
     //     path: VERIFICATION_URL, // Target service URL
     //     context: "/verification", // Route on your gateway
@@ -62,8 +65,9 @@ services.forEach(({ context, path }) => {
 
 
 
-app.use('/auth',proxy('http://localhost:5001' ));
-app.use('/user',proxy('http://localhost:5002' ));
+// app.use('/auth',proxy('http://localhost:5001' ));
+// app.use('/user',proxy('http://localhost:5002' ));
+// app.use('/notification',proxy('http://localhost:5003' ));
 
 // Error 
 

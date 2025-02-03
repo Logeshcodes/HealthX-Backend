@@ -3,17 +3,19 @@ import bcrypt from "bcrypt";
 
 import { OtpGenerate } from "../utils/otpGenerator";
 import JwtService from "../utils/jwt";
-// import SendEmail from "../utils/sentEmail";
-
 import UserServices from "../services/UserService";
 import { otpService } from "../services/otpService";
 
 import { UserInterface } from "../models/userModel";
 
-// import { access_token_options , refresh_token_options } from "@/utils/tokenOptions";
+import { access_token_options , refresh_token_options } from "../utils/tokenOptions";
 // import { SendForgotPasswordEmail } from "../utils/sendForgotPasswordEmail";
+// import SendEmail from "../utils/sentEmail";
 
 import produce from "../config/kafka/producer";
+
+import { StatusCode } from "../utils/enum";
+import { ResponseError } from "../utils/constants";
 
 
 export class UserController {
@@ -21,8 +23,8 @@ export class UserController {
   private userService: UserServices;
   private otpService: otpService;
   private otpGenerator: OtpGenerate;
-  // private sendEmail: SendEmail;
   private JWT: JwtService;
+  // private sendEmail: SendEmail;
   // private SentForgotEmail:SendForgotPasswordEmail
 
 
@@ -30,25 +32,21 @@ export class UserController {
     this.userService = new UserServices();
     this.otpService = new otpService();
     this.otpGenerator = new OtpGenerate();
+    this.JWT = new JwtService();
     // this.sendEmail = new SendEmail();
     // this.SentForgotEmail=new SendForgotPasswordEmail()
-    this.JWT = new JwtService();
   }
 
 
   public async userSignUp(req: Request, res: Response): Promise<any> {
     try {
+
       let { email, password } = req.body;
       console.log(email, password);
 
-      
       const hashedPassword = await bcrypt.hash(password, 10);
-    //   password=hashedPassword
-     
 
-      const ExistingUser = await this.userService.findByEmail(
-        email
-      );
+      const ExistingUser = await this.userService.findByEmail(email);
 
       console.log(ExistingUser, "Existing User");
 
@@ -76,7 +74,7 @@ export class UserController {
         });
 
       
-        return res.status(201).json({
+        return res.status(StatusCode.CREATED).json({
           success: true,
           message: "Signup successful, OTP sent to email",
           token,
@@ -85,9 +83,9 @@ export class UserController {
       }
     } catch (error: any) {
       console.error(error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal Server Error",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
         error: error.message,
       });
     }
@@ -108,7 +106,7 @@ export class UserController {
         ]
       )
 
-      res.status(200).json({
+      res.status(StatusCode.OK).json({
         success: true,
         message: "Otp Sent to Email Succesfully!",
       });
@@ -216,7 +214,7 @@ export class UserController {
           .cookie("refreshToken", refreshToken,{ httpOnly: true })
           .send({
             success: true,
-            message: "User Logged Successfully",
+            message: "User Login Successfully",
             user: User,
           })
       );
@@ -236,7 +234,7 @@ export class UserController {
       console.log("User logged out");
       res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
-
+      console.log('...')
       res.status(200).send({ success: true, message: "logout success" });
     } catch (error: any) {
       throw error;

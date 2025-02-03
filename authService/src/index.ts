@@ -1,13 +1,15 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';
-import connectDB from "./config/db"
 import cors from 'cors'
+
+import connectDB from "./config/db"
 import morgan from 'morgan'
-import logger from './helpers/logger';
 import userRoutes from './routers/userRouters';
 import doctorRoutes from './routers/doctorRouters' ;
 import adminRoutes from './routers/adminRouters' ;
+import { ErrorMiddleware } from './middlewares/ErrorMiddleware';
+
 
 import consume from "./config/kafka/consumer";
 
@@ -26,20 +28,9 @@ const corsOptions = {
 
 const morganFormat = ':method :url :status :response-time ms';
 
-app.use(morgan(morganFormat,{
-    stream:{
-        write:(message)=>{
-            
-            const logObject ={
-                method:message.split(' ')[0],
-                url:message.split(' ')[1],
-                status:message.split(' ')[2],
-                responseTime:message.split(' ')[3]
-            };
-            logger.info(JSON.stringify(logObject))
-        }
-    }
-}))
+// logger
+
+app.use(morgan('dev'));
 
 // Middleware
 
@@ -47,18 +38,16 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 app.use(cookieParser()) ;
+app.use(ErrorMiddleware) ;
 
+
+// routes
 
 app.use('/user', userRoutes)
 app.use('/doctor', doctorRoutes)
 app.use('/admin', adminRoutes)
 
 consume()
-
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error('An error occurred:', err.message);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
-  });
 
 
 const authStart = async () => {

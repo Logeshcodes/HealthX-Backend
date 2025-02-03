@@ -10,7 +10,6 @@ import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
 
 import morgan from 'morgan'
-import logger from './helpers/logger';
 
 config()
 
@@ -39,22 +38,7 @@ consume()
 
 const morganFormat = ':method :url :status :response-time ms';
 
-app.use(morgan(morganFormat,{
-    stream:{
-        write:(message : any)=>{
-            
-            const logObject ={
-                method:message.split(' ')[0],
-                url:message.split(' ')[1],
-                status:message.split(' ')[2],
-                responseTime:message.split(' ')[3]
-            };
-            logger.info(JSON.stringify(logObject))
-        }
-    }
-}))
-
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 
 
 const userStart = async () => {
