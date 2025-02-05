@@ -159,6 +159,7 @@ export default class AdminController {
   }
   
   
+  
   // Get Department by Name
   async getDepartmentByName(req: Request, res: Response): Promise<any> {
 
@@ -193,29 +194,24 @@ async updateDepartment(req: Request, res: Response): Promise<any> {
     const updateData = req.body;
 
     console.log(departmentName, "dept");
-    console.log(updateData, "deptup");
+    console.log(updateData.deptData.departmentName, "deptup");
 
-    const deptData = await this.adminService.updateDepartment(departmentName, updateData);
-    const existingDept = await this.adminService.findDepartmentByName(departmentName);
-
-    if (!deptData) {
-
-      return res.status(404).json({ success: false, message: 'Department not found' });
-
-    }else if(existingDept) {
-
+    const existingDept = await this.adminService.findDepartmentByName(updateData.deptData.departmentName);
+    if(existingDept) {
       return res.json({
         success: false,
         message: "Department already exists",
         user: existingDept,
       });
+    }
+    const deptData = await this.adminService.updateDepartment(departmentName, updateData.deptData);
+    console.log('existingDept',existingDept)
 
-    }else{
 
       await produce("update-department",{departmentName , updateData});
 
       res.json({ success: true, message: 'Department updated successfully', data: deptData });
-    }
+    
 
     
   } catch (error) {

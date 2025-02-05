@@ -1,31 +1,76 @@
-import jwt from "jsonwebtoken"
-import { config } from "dotenv"
-config()
+import jwt from "jsonwebtoken";
+import { config } from "dotenv";
 
-export default async function verifyToken(payload:string):Promise<any>{
-    try {
-        const secret=process.env.JWT_SECRET 
+config();
+
+export default class JwtService {
+
+    async createToken(payload: Object): Promise<string> {
+
+        const secret = process.env.JWT_SECRET ||'mySecertPassword' ;
+
         if (!secret) {
-            throw new Error("JWT_SECRET is not defined in the environment variables.");
+            throw new Error("JWT_SECRET is not defined in the environment variables");
         }
-        const result=await jwt.verify(payload,secret)
-        return result
         
-    } catch (error) {
-        console.log(error)
-        
-    }
-}
+        // Sign the token with the validated secret
+        const verifyToken = await jwt.sign(payload, secret, {
+            expiresIn: "1hr",
+        });
 
-export async function accessToken(payload: Object): Promise<string> {
-    const secret = process.env.JWT_SECRET;
-
-    if (!secret) {
-        throw new Error("JWT_SECRET is not defined in the environment variables");
+        return verifyToken;
     }
-console.log(payload,"payyload")
-    // Sign the token with the validated secret
-    return jwt.sign(payload, secret, {
-        expiresIn: "1hr",
-    });
+
+
+    async accessToken(payload: Object): Promise<string> {
+
+        const secret = process.env.JWT_SECRET || 'mySecertPassword';
+
+        if (!secret) {
+            throw new Error("JWT_SECRET is not defined in the environment variables");
+        }
+
+        // Sign the token with the validated secret
+        const verifyToken = await jwt.sign(payload, secret, {
+            expiresIn: "1hr",
+        });
+
+        console.log("secert :" , secret )
+        console.log("verifyToken :" , verifyToken )
+
+        return verifyToken;
+    }
+
+    async refreshToken(payload: Object): Promise<string> {
+        const secret = process.env.JWT_SECRET  || 'mySecertPassword';
+
+        if (!secret) {
+            throw new Error("JWT_SECRET is not defined in the environment variables");
+        }
+
+        // Sign the token with the validated secret
+        const verifyToken =await jwt.sign(payload, secret, {
+            expiresIn: "3hr",
+        });
+
+        return verifyToken;
+    }
+
+    async verifyToken(token:string):Promise<any>{
+
+        try {
+            console.log("verify ")
+            const secret = process.env.JWT_SECRET || "mySecertPassword" ;
+            console.log(secret,"secret")
+            
+            console.log("Token being verified:", token);
+            const data= await jwt.verify(token,secret)
+            console.log(data,"verify data")
+            return data
+        } catch (error) {
+            throw error
+            
+        }
+    }
+
 }

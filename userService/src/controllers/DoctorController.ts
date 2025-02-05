@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import verifyToken from "../utils/jwt";
 import produce from "../config/kafka/producer";
 import mongoose from "mongoose";
+import JwtService from "../utils/jwt";
 
 export class DoctorController {
   private doctorService: DoctorServices;
@@ -25,7 +26,7 @@ export class DoctorController {
       const { email } = req.params;
       // console.log(email,"get Doctor Data")
       let response = await this.doctorService.getDoctorData(email);
-      // console.log(response)
+      console.log(response)
       res.json(response);
     } catch (error) {
       console.log(error);
@@ -81,7 +82,9 @@ export class DoctorController {
   public async updatePassword(req: Request, res: Response): Promise<any> {
     try {
       const { currentPassword, newPassword } = req.body;
-      const tokenData = await verifyToken(req.cookies["accessToken"]);
+      const jwtService = new JwtService();
+      const tokenData = await jwtService.verifyToken(req.cookies["accessToken"]);
+
       if (!tokenData) {
         throw new Error("Token expiered!");
       }

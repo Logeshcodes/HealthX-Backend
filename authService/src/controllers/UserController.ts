@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { OtpGenerate } from "../utils/otpGenerator";
 import JwtService from "../utils/jwt";
 import UserServices from "../services/UserService";
-import { otpService } from "../services/otpService";
+import otpService  from "../services/otpService";
 
 import { UserInterface } from "../models/userModel";
 
@@ -16,25 +16,26 @@ import produce from "../config/kafka/producer";
 
 import { StatusCode } from "../utils/enum";
 import { ResponseError } from "../utils/constants";
+import IUserControllers from "./interface/IUserControllers";
+import IUserServices from "../services/interfaces/IUserServices";
+import IOtpServices from "../services/interfaces/IOtpService";
 
+export class UserController implements IUserControllers{
 
-export class UserController {
+  private userService: IUserServices;
+  private otpService: IOtpServices;
 
-  private userService: UserServices;
-  private otpService: otpService;
   private otpGenerator: OtpGenerate;
   private JWT: JwtService;
-  // private sendEmail: SendEmail;
-  // private SentForgotEmail:SendForgotPasswordEmail
+ 
 
 
-  constructor() {
-    this.userService = new UserServices();
-    this.otpService = new otpService();
+  constructor(userService : IUserServices , otpService : IOtpServices) {
+    this.userService = userService
+    this.otpService = otpService ;
     this.otpGenerator = new OtpGenerate();
     this.JWT = new JwtService();
-    // this.sendEmail = new SendEmail();
-    // this.SentForgotEmail=new SendForgotPasswordEmail()
+
   }
 
 
@@ -234,12 +235,13 @@ export class UserController {
       console.log("User logged out");
       res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
-      console.log('...')
       res.status(200).send({ success: true, message: "logout success" });
-    } catch (error: any) {
-      throw error;
+    } catch (error) {
+      console.error("Error during logout:", error);
+      res.status(500).send({ success: false, message: "Logout failed. Please try again." });
     }
   }
+  
 
 
 
@@ -368,67 +370,8 @@ export class UserController {
 
 
 
-  async doGoogleLogin(req:Request,res:Response) {
-    try {
-        console.log("Google login in controller", req.body);
 
-        const { name, email, password } = req.body;
-        const existingUser=await this.userService.findByEmail(email)
-        if(!existingUser){
-
-        
-
-        const user: any = await this.userService.googleLogin(name, email, password);
-        console.log(user, "User after creation in controller Google");
-
-        if (user) {
-        //   await produce('add-user',user)
-            console.log(user.token, "User token");
-            const role=user.role
-            const accesstoken = await this.JWT.accessToken({ email, role });
-      const refreshToken = await this.JWT.refreshToken({ email, role });
-      console.log(accesstoken,"-----",refreshToken)
-      
-
-            res.status(200)
-            .cookie("accessToken", accesstoken,{ httpOnly: true })
-            .cookie("refreshToken", refreshToken,{ httpOnly: true })
-            .json({
-              success:true,
-              message:"Logging in with GOOOOGLE",
-              user:user
-              
-            });
-        }
-      }else{
-        const role=existingUser.role
-            const accesstoken = await this.JWT.accessToken({ email, role });
-      const refreshToken = await this.JWT.refreshToken({ email, role });
-      console.log(accesstoken,"-----",refreshToken)
-      
-
-            res.status(200)
-            .cookie("accessToken", accesstoken,{ httpOnly: true })
-            .cookie("refreshToken", refreshToken,{ httpOnly: true })
-            .json({
-              success:true,
-              message:"Logging in with GOOOOGLE",
-              user:existingUser
-              
-            });
-
-      }
-       
-    } catch (error: any) {
-        throw error;
-    }
-}
-
-
-
-
-
-  //consumed kafka codes==============
+  // consumed kafka codes
 
 
   async updatePassword(data: { email: string; password: string }) {
@@ -444,7 +387,7 @@ export class UserController {
     }
   }
 
-  async updateProfile(data: any) {
+  async updateProfile(data:{ email: string; username: string ,profilePicUrl:string }) {
     try {
       const { email ,username, profilePicUrl} = data;
       console.log(data, "consumeeee");
@@ -458,6 +401,7 @@ export class UserController {
     try {
       const {email,isBlocked}=data
       const response=await this.userService.updateProfile(email,{isBlocked})
+      console.log(response)
     } catch (error) {
       console.log(error)
     }

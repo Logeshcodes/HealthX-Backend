@@ -1,16 +1,17 @@
 
 import DoctorModel , {DoctorInterface} from "../models/doctorModel"
 
-import DoctorBaseRespository from "./baseRepositories/doctorBaseRespository";
+
+import IDoctorBaseRepository from "./baseRepositories/interfaces/IDoctorBaseRepository";
+import IDoctorRepository from "./interfaces/IDoctorRepository";
 
 
-export default class DoctorRespository{
+export default class DoctorRepository implements IDoctorRepository{
 
 
-    private baseRepository:DoctorBaseRespository<DoctorInterface>
-
-    constructor(){
-        this.baseRepository=new DoctorBaseRespository(DoctorModel)
+    private baseRepository:IDoctorBaseRepository
+    constructor(baseRepository:IDoctorBaseRepository){
+        this.baseRepository=baseRepository
 
     }
 
@@ -19,10 +20,7 @@ export default class DoctorRespository{
         const response = await this.baseRepository.findByEmail(email)
         return response
     }
-    async getDoctors(){
-        const response = await this.baseRepository.getDoctors()
-        return response
-    }
+   
 
     async createUser(userData:any) {
         const response= await this.baseRepository.createDoctor(userData)
@@ -33,22 +31,5 @@ export default class DoctorRespository{
         const response= await this.baseRepository.resetPassword(email,password)
         return response
     }
-    public async googleLogin(name: string, email: string, password: string): Promise<object | void> {
-        try {
-            const response = await this.baseRepository.googleLogin(name, email, password);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-
-    public async updateProfile(email:string,data:any): Promise<any> {
-        try {
-            const response = await this.baseRepository.updateProfile(email,data);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
+   
 }

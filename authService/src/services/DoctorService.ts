@@ -1,13 +1,15 @@
 import DoctorModel from "../models/doctorModel";
 
 import DoctorRespository from "../repositories/doctorRespository";
+import IDoctorRepository from "@/repositories/interfaces/IDoctorRepository";
+import IDoctorServices from "./interfaces/IDoctorService";
 
-export default class DoctorService{
+export default class DoctorService implements IDoctorServices{
 
-    private doctorRepository:DoctorRespository
+    private doctorRepository:IDoctorRepository
 
-    constructor(){
-        this.doctorRepository=new DoctorRespository()
+    constructor(instructorRepository:IDoctorRepository){
+        this.doctorRepository=instructorRepository
 
     }
 
@@ -16,10 +18,7 @@ export default class DoctorService{
         const response=await this.doctorRepository.findByEmail(email)
         return response
     }
-    public async getDoctors(){
-        const response=await this.doctorRepository.getDoctors()
-        return response
-    }
+  
 
 
     public async createUser(userData:any){
@@ -30,25 +29,9 @@ export default class DoctorService{
         const response=await this.doctorRepository.resetPassword(email,password)
         return response
     }
-    
-    public async googleLogin(name: string, email: string, password: string): Promise<object | void> {
-        try {
-            const response = await this.doctorRepository.googleLogin(name, email, password);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
 
 
 
 
-    public async updateProfile(email:string,data:any): Promise<object | void> {
-        try {
-            const response = await this.doctorRepository.updateProfile(email,data);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
+
 }

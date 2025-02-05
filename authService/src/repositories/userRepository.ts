@@ -1,15 +1,14 @@
 import { NextFunction } from "express"
 
-import UserBaseRepository from "./baseRepositories/userBaseRepository"
 
-import UserModel , {UserInterface} from "../models/userModel"
+import IUserRepository from "./interfaces/IUserRepository"
 
-export class UserRepository{
+export class UserRepository implements IUserRepository{
 
-    private baseRepository :UserBaseRepository<UserInterface>
+    private baseRepository : IUserRepository
 
-    constructor(){
-        this.baseRepository=new UserBaseRepository(UserModel)
+    constructor(baseRepository : IUserRepository){
+        this.baseRepository= baseRepository
 
     }
 
@@ -26,15 +25,6 @@ export class UserRepository{
     async resetPassword(email:string,password:string) {
         const response= await this.baseRepository.resetPassword(email,password)
         return response
-    }
-
-    public async googleLogin(name: string, email: string, password: string): Promise<object | void> {
-        try {
-            const response = await this.baseRepository.googleLogin(name, email, password);
-            return response;
-        } catch (error) {
-            throw error;
-        }
     }
 
 

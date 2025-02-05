@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document} from "mongoose";
 
-export interface OtpInterafce extends Document {
+export interface OtpInterface extends Document {
     
     email: string,
     otp: string,
@@ -31,6 +31,6 @@ const otpSchema = new Schema({
 
 })
 
-const otpModel = mongoose.model<OtpInterafce>('Otp' , otpSchema)
+const otpModel = mongoose.model<OtpInterface>('Otp' , otpSchema)
 
 export default otpModel ;

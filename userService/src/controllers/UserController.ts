@@ -6,6 +6,7 @@ import UserServices from "../services/userServices";
 import { uploadToS3Bucket } from "../utils/s3Bucket";
 import bcrypt from "bcrypt";
 import verifyToken from "../utils/jwt";
+import JwtService from "../utils/jwt";
 import produce from "../config/kafka/producer";
 
 
@@ -81,7 +82,9 @@ export default class UserController {
   public async updatePassword(req: Request, res: Response): Promise<any> {
     try {
       const { currentPassword, newPassword } = req.body;
-      const tokenData = await verifyToken(req.cookies["accessToken"]);
+      const jwtService = new JwtService();
+      const tokenData = await jwtService.verifyToken(req.cookies["accessToken"]);
+
       if (!tokenData) {
         throw new Error("Token expiered!");
       }
@@ -139,7 +142,7 @@ export default class UserController {
   
   public async findAllDoctors(req:Request,res:Response){
     try {
-    
+    console.log('lissssssssst')
       const users=await this.userService.findAllDoctors()
       console.log(users,"findAllDoctors allll")
        res.status(200).json({

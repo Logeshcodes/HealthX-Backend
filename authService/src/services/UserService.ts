@@ -1,14 +1,16 @@
+import IUserRepository from "@/repositories/interfaces/IUserRepository";
 import { UserInterface } from "../models/userModel";
 
 import { UserRepository } from "../repositories/userRepository";
 
+import IUserServices from "./interfaces/IUserServices";
 
-class UserServices{
+class UserServices implements IUserServices{
 
-    private userRepository : UserRepository ;
+    private userRepository : IUserRepository ;
 
-    constructor(){
-        this.userRepository = new UserRepository()
+    constructor(userRepository : IUserServices){
+        this.userRepository = userRepository
     }
 
     public async findByEmail(email:string){
@@ -26,24 +28,18 @@ class UserServices{
         return response
     }
 
-    public async googleLogin(name: string, email: string, password: string): Promise<object | void> {
-        try {
-            const response = await this.userRepository.googleLogin(name, email, password);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
+   
 
 
-    public async updateProfile(email:string,data:any): Promise<object | void> {
+      public async updateProfile(email: string, data: any): Promise<UserInterface | null> {
         try {
-            const response = await this.userRepository.updateProfile(email,data);
-            return response;
+          const response = await this.userRepository.updateProfile(email, data);
+          return response || null;
         } catch (error) {
-            throw error;
+          throw error;
         }
-    }
+      }
+      
 
 }
 

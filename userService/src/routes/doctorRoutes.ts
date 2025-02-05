@@ -1,6 +1,8 @@
 import { DoctorController } from "../controllers/DoctorController";
 import { Router } from "express";
 import upload from "../helpers/multer";
+import authenticateToken from "../middleware/AuthenticatedRoutes";
+import { IsDoctor } from "../middleware/RoleBasedAuth";
 const router=Router()
 let doctorController=new DoctorController()
 

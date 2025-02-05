@@ -47,7 +47,7 @@ export class AdminController{
           const refreshtoken = await this.JWT.accessToken({ email, role:"admin" });
           return res
           .cookie("accessToken", accesstoken,{ httpOnly: true })
-          .cookie("refreshtoken", refreshtoken,{ httpOnly: true })
+          .cookie("refreshToken", refreshtoken,{ httpOnly: true })
           .send({
               success:true,
               message:"Welcome Admin",
@@ -59,18 +59,20 @@ export class AdminController{
       }
   }
 
-    async logout(req: Request, res: Response) {
-      try {
-        console.log("admin logged out");
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken");
-  
-        res.status(200).send({ success: true, message: "logout success" });
-      } catch (error: any) {
-        throw error;
-      }
-    }
+  async logout(req: Request, res: Response) {
+    try {
+      console.log("admin logged out");
+      res.clearCookie("accessToken", { path: "/", httpOnly: true, secure: true });
+      res.clearCookie("refreshToken", { path: "/", httpOnly: true, secure: true });
 
+      res.status(200).send({ success: true, message: "Admin Logout successfully" });
+
+    } catch (error) {
+      console.error("Error during admin logout:", error);
+      res.status(500).send({ success: false, message: "Logout failed. Please try again." });
+    }
+  }
+  
 
  
 

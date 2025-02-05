@@ -1,28 +1,17 @@
 
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
-import { Document , Model } from "mongoose"
+
 import bcrypt from "bcrypt";
 
+import IDoctorBaseRepository from "./interfaces/IDoctorBaseRepository";
 
-
-export default class DoctorBaseRespository <T extends Document> {
-
-    private model:Model<T>
-
-    constructor(model:Model<T>){
-        this.model=model
-
-    }
+export default class DoctorBaseRepository implements IDoctorBaseRepository{
 
 
     async findByEmail(email:string):Promise<DoctorInterface|null >{
-        return await this.model.findOne({email:email})
+        return await DoctorModel.findOne({email:email})
     }
-    async getDoctors():Promise<any >{
-        return await this.model.find()
-    }
-
-
+   
     async createDoctor(userData:any):Promise<DoctorInterface |null>{
         try {
             console.log("userdata?? : " , userData)
@@ -56,12 +45,8 @@ export default class DoctorBaseRespository <T extends Document> {
     }
 
 
-    async googleLogin(
-        name: string,
-        email: string,
-        password: string,
-        
-    ): Promise<DoctorInterface | void> {
+    async googleLogin( name: string, email: string,password: string): Promise<DoctorInterface | void> {
+
         try {
             const user = await this.findByEmail(email);
     
@@ -105,18 +90,7 @@ export default class DoctorBaseRespository <T extends Document> {
     async updateProfile(email:string,data: any) {
         try {
           
-          const response = await DoctorModel.findOneAndUpdate(
-            { email },
-            {
-              $set: 
-                data
-                
-              ,
-            },
-            {
-              new: true,
-            }
-          );
+          const response = await DoctorModel.findOneAndUpdate({ email } , {$set: data} , {new: true });
           return response
         } catch (error) {
           console.log(error);

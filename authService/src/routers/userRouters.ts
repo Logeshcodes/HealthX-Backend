@@ -1,13 +1,9 @@
 import { Router } from "express";
 
-
-import { UserController } from "../controllers/UserController"
+import { userController } from "../config/dependencyInjector";
 
 let router=Router()
 
-
-
-let userController=new UserController()
 
 router.post('/signup',userController.userSignUp.bind(userController))
 router.post('/verify_otp', userController.createUser.bind(userController))

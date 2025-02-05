@@ -1,9 +1,10 @@
-import { otpRespository } from "../repositories/otpRespository"
+import IOtpRepository from "@/repositories/interfaces/IOtpRepository"
+import IOtpServices from "./interfaces/IOtpService"
 
-export class otpService{
-    private otpRespository:otpRespository
-    constructor(){
-        this.otpRespository=new otpRespository()
+export default class OtpService implements IOtpServices{
+    private otpRespository:IOtpRepository
+    constructor(otpRespository:IOtpRepository){
+        this.otpRespository=otpRespository
 
     }
     public async createOtp(email:string,otp:string){

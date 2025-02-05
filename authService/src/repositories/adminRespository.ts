@@ -1,4 +1,4 @@
-import { AdminBaseRepository } from "./baseRepositories/adminBaseRespository";
+import { AdminBaseRepository } from "./baseRepositories/adminBaseRepository";
 
 import DepartmentModel , {DepartmentInterface} from "../models/departmentModel";
 

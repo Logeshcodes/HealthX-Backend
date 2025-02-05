@@ -4,14 +4,11 @@ import bcrypt from "bcrypt";
 
 import UserModel , { UserInterface } from "../../models/userModel"
 
-export default class UserBaseRepository <T extends Document>{
+import IUserBaseRepository from "./interfaces/IUserBaseRepository";
 
-    private model : Model <T> 
+export default class UserBaseRepository  implements IUserBaseRepository{
 
-    constructor(model:Model<T>){
-        this.model=model
-
-    }
+    
 
     async findByEmail(email:string) : Promise< UserInterface|null >{
 

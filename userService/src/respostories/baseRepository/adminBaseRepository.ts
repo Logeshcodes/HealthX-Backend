@@ -91,12 +91,14 @@ export class AdminBaseRepository<T extends Document> {
      
       public async updateDepartment( departmentName: string, data: any): Promise<any> {
         try {
-         
+         console.log("data",data)
           const response = await DepartmentModel.findOneAndUpdate(
             {departmentName},            
             { $set: data }, 
             { new: true }   
           );
+
+          console.log(response, "response....")
           return response;  
         } catch (error) {
           console.log(error);

@@ -1,20 +1,21 @@
-import { OtpInterafce } from "../models/otpModel"
-import OtpBaseRespository from "./baseRepositories/otpBaseRespository"
+import { OtpInterface } from "../models/otpModel"
+import OtpBaseRespository from "./baseRepositories/otpBaseRepository"
 import otpModel from "../models/otpModel"
 
-export class otpRespository{
+import IOtpBaseRepository from "./baseRepositories/interfaces/IOtpBaseRepository"
 
-    private baseOtpRepository:OtpBaseRespository<OtpInterafce>
+export class OtpRespository implements IOtpBaseRepository {
 
-    constructor(){
 
-        this.baseOtpRepository=new OtpBaseRespository(otpModel)
+    private baseOtpRepository:IOtpBaseRepository
+    constructor(baseOtpRepository:IOtpBaseRepository){
+        this.baseOtpRepository=baseOtpRepository
 
     }
-
+    
 
     public async createOtp(email:string,otp:string){
-        const response = await this.baseOtpRepository.saveOtp(email,otp)
+        const response = await this.baseOtpRepository.createOtp(email,otp)
         console.log("responseOTP : " , response)
         return response
     }

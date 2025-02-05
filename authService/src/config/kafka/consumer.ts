@@ -1,13 +1,11 @@
 import kafka from "./kafkaConfig";
 
 
-import { UserController } from "../../controllers/UserController";
-import DoctorController from "../../controllers/DoctorController";
+import { userController , doctorController  } from "../dependencyInjector";
 import { AdminController } from "../../controllers/AdminController";
 
 async function consume() {
-  const userController = new UserController();
-  const doctorController=new DoctorController()
+  
   const adminController=new AdminController()
   const consumer = kafka.consumer({ groupId: "auth-service" });
 
@@ -60,19 +58,7 @@ async function consume() {
               break;
 
               //doctor
-            case "update-password-doctor":
-              await doctorController.updatePassword(messageValue);
-              console.log("Processed add-user event:", messageValue);
-              break;
-
-            case "update-profile-doctor":
-              await doctorController.updateProfile(messageValue);
-              console.log("Processing add-doctor event:", messageValue);
-              break;
-            case "block-doctor":
-              await doctorController.blockDoctor(messageValue);
-              console.log("Processing add-doctor event:", messageValue);
-              break;
+  
             case "add-department":
               await adminController.addDepartment(messageValue);
               console.log("Processing add-department event:", messageValue);

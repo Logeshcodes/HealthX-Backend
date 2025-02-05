@@ -1,34 +1,29 @@
-import { otpGenerateInterface } from "../../Interface/otpGenerateInterface"
 
+import { OtpInterface } from "../../models/otpModel";
 import otpModel from "../../models/otpModel"
 
-import { Document, Model } from "mongoose";
 
-export  default class OtpBaseRespository <T extends Document>{
+import IOtpBaseRepository from "./interfaces/IOtpBaseRepository";
 
-    private model: Model<T>;
+export  default class OtpBaseRespository implements IOtpBaseRepository{
 
-    constructor(model: Model<T>) {
-        this.model = model;
-      }
+   
 
-
-      async saveOtp(email: string, otp: string): Promise<T> {
+      async createOtp(email: string, otp: string): Promise<OtpInterface | null> {
         try {
-          const output = await this.model.findOneAndUpdate(
-            { email },
-            { email, otp },
-            { upsert: true, new: true }
+          const output = await otpModel.findOneAndUpdate(
+            { email },{email,otp},
+            {
+              upsert: true,
+              new: true,
+            }
           );
-          console.log("SaveOtp.....")
           setTimeout(async () => {
             if (output?._id) {
-              await this.model.findByIdAndDelete(output._id);
+              await otpModel.findByIdAndDelete(output._id);
             }
           }, 1200000);
-          console.log("SaveOtp.....output : ", output)
-          return output; // No error now
-         
+          return output;
         } catch (error) {
           throw error;
         }

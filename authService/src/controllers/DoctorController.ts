@@ -3,31 +3,29 @@ import bcrypt from "bcrypt";
 
 import DoctorService from "../services/DoctorService";
 import { OtpGenerate } from "../utils/otpGenerator";
-import { otpService } from "../services/otpService";
-// import SendEmail from "../utils/sentEmail";
-import JwtService from "../utils/jwt";
-import { access_token_options  , refresh_token_options} from "../utils/tokenOptions";
+import  otpService  from "../services/otpService";
 
-// import { SendForgotPasswordEmail } from "../utils/sendForgotPasswordEmail";
+import JwtService from "../utils/jwt";
+
+import IDoctorControllers from "./interface/IDoctorController";
+import IDoctorServices from "@/services/interfaces/IDoctorService";
+import IOtpServices from "@/services/interfaces/IOtpService";
+
 
 import produce from "../config/kafka/producer";
 
-export default class DoctorController {
+export default class DoctorController implements IDoctorControllers {
 
-    private doctorService: DoctorService;
-    private otpService: otpService;
+    private doctorService: IDoctorServices;
+    private otpService: IOtpServices;
+
     private otpGenerate: OtpGenerate;
-    // private sendEmail: SendEmail;
     private JWT: JwtService;
-    // private SentForgotEmail:SendForgotPasswordEmail
-
-
-    constructor() {
-        this.doctorService = new DoctorService();
-        this.otpService = new otpService();
+  
+    constructor( doctorService : IDoctorServices , otpService : IOtpServices) {
+        this.doctorService = doctorService ;
+        this.otpService = otpService ;
         this.otpGenerate = new OtpGenerate();
-        // this.sendEmail = new SendEmail();
-        // this.SentForgotEmail=new SendForgotPasswordEmail()
         this.JWT = new JwtService();
       }
 
@@ -211,17 +209,18 @@ export default class DoctorController {
 
 
 
-      async logout(req: Request, res: Response) {
-        try {
-          console.log("user logged out");
-          res.clearCookie("accessToken");
-          res.clearCookie("refreshToken");
-    
-          res.status(200).send({ success: true, message: "logout success" });
-        } catch (error: any) {
-          throw error;
-        }
-      }
+      
+  async logout(req: Request, res: Response) {
+    try {
+      console.log("Doctor logged out");
+      res.clearCookie("accessToken");
+      res.clearCookie("refreshToken");
+      res.status(200).send({ success: true, message: "Logged out successfully" });
+    } catch (error) {
+      console.error("Error during logout:", error);
+      res.status(500).send({ success: false, message: "Logout failed. Please try again." });
+    }
+  }
 
 
       
@@ -366,44 +365,5 @@ export default class DoctorController {
 
 
 
-        async updatePassword(data: { email: string; password: string }) {
-          try {
-            console.log(data.email, data.password, "consumeeeeee");
-            const passwordReset = await this.doctorService.resetPassword(
-              data.email,
-              data.password
-            );
-            return passwordReset;
-          } catch (error) {
-            console.log(error);
-          }
-        }
-        
-        async updateProfile(data: any) {
-          try {
-            const { email ,username, profilePicUrl} = data;
-            console.log(data, "consumeeee");
-            const response=await this.doctorService.updateProfile(email,{username, profilePicUrl})
-          } catch (error) {
-            console.log(error);
-          }
-        }
-        
-        async blockDoctor(data:any){
-          try {
-            const {email,isBlocked}=data
-            const response=await this.doctorService.updateProfile(email,{isBlocked})
-          } catch (error) {
-            console.log(error)
-          }
-        }
-
-      async getDoctors (req: Request, res: Response): Promise<any> {
-        try {
-            const doctors = await this.doctorService.getDoctors();
-            res.status(201).json(doctors)
-        } catch (error) {
-          
-        }
-      }
+      
 }
