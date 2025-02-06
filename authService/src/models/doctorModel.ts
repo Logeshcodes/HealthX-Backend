@@ -19,6 +19,7 @@ export interface DoctorInterface extends Document{
     status? : string ,
     rejectedReason? : string ,
     consultationType : string ,
+    consultationFee : string ,
     createdAt?: Date ,
     updateAt? : Date 
 }
@@ -43,6 +44,7 @@ const doctorSchema : Schema<DoctorInterface> = new Schema({
     status : { type : String , required : false },
     rejectedReason : { type : String , required : false },
     consultationType : { type : String , required : true },
+    consultationFee : { type : String , required : false },
 },{
     timestamps : true 
 })

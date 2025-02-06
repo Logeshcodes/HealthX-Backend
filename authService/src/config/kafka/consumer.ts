@@ -58,6 +58,13 @@ async function consume() {
               break;
 
               //doctor
+
+              case "update-password-doctor":
+                await doctorController.updatePassword(messageValue);
+                console.log("Processed add-password doctor event:", messageValue);
+                break;
+
+                //admin
   
             case "add-department":
               await adminController.addDepartment(messageValue);

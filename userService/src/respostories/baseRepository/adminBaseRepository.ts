@@ -59,6 +59,16 @@ export class AdminBaseRepository<T extends Document> {
         }
       }
 
+      async getAllDoctors(): Promise<DoctorInterface[] | null> {
+        try {
+          const doctors = await DoctorModel.find();
+          console.log("All doctors: ", doctors);
+          return doctors;
+        } catch (error) {
+          throw error;
+        }
+      }
+
 
       public async updateProfile(email: string, data: any): Promise<any> {
         try {

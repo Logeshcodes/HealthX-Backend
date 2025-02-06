@@ -18,7 +18,7 @@ export default class UserBaseRepository  implements IUserBaseRepository{
 
     async createUser(userData:any):Promise< UserInterface |null>{
         try {
-            console.log("userData?? : " ,userData)
+            console.log("userData??... : " ,userData)
             const user=await UserModel.create(userData)
             console.log("userData?? : " ,user)
             await user.save()
@@ -50,12 +50,7 @@ export default class UserBaseRepository  implements IUserBaseRepository{
     }
 
 
-    async googleLogin(
-        name: string,
-        email: string,
-        password: string,
-        
-    ): Promise< UserInterface | void> {
+    async googleLogin(  name: string,email: string,password: string ): Promise<UserInterface | null> {
         try {
             const user = await this.findByEmail(email);
     
@@ -67,7 +62,7 @@ export default class UserBaseRepository  implements IUserBaseRepository{
                 const newUser = await this.createUser({
                     name,
                     email,
-                    password: hashedPassword,
+                    hashedPassword: password,
                 });
     
                 if (!newUser) {

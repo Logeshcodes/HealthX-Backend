@@ -2,6 +2,7 @@ import { NextFunction } from "express"
 
 
 import IUserRepository from "./interfaces/IUserRepository"
+import { UserInterface } from "@/models/userModel"
 
 export class UserRepository implements IUserRepository{
 
@@ -27,6 +28,15 @@ export class UserRepository implements IUserRepository{
         return response
     }
 
+
+    public async googleLogin(name: string, email: string, password: string): Promise<UserInterface | null> {
+        try {
+            const response = await this.baseRepository.googleLogin(name, email, password);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
 
 
     public async updateProfile(email:string,data:any): Promise<any> {

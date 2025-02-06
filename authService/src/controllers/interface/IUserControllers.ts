@@ -13,6 +13,8 @@ export default interface IUserControllers {
     forgotResendOtp(req: Request, res: Response):Promise<void>;
     resetPassword(req: Request, res: Response):Promise<void>;
 
+    doGoogleLogin(req: Request, res: Response):Promise<void>;
+
     // below not implements - Google & Kafka Consume
 
     updatePassword(data:{ email: string; password: string }): Promise<UserInterface | null | undefined>;

@@ -16,6 +16,8 @@ export class DoctorServices{
             
         }
     }
+
+    
     public async getDoctorData(email:string){
         try {
             const response=await this.doctorRepository.getDoctorData(email)

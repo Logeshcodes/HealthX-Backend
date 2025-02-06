@@ -23,6 +23,16 @@ class UserServices implements IUserServices{
         return response
     }
 
+
+    public async googleLogin(name: string, email: string, password: string): Promise<UserInterface | null> {
+      try {
+          const response = await this.userRepository.googleLogin(name, email, password);
+          return response;
+      } catch (error) {
+          throw error;
+      }
+  }
+
     public async resetPassword(email:string,password:string){
         const response=await this.userRepository.resetPassword(email,password)
         return response

@@ -117,6 +117,35 @@ export default class AdminController {
       });
     }
   }
+
+  // admin - doctor data 
+
+  async getAllDoctors(req: Request, res: Response): Promise<any> {
+    try {
+      // Fetch all doctors from the service
+      const doctors = await this.adminService.getAllDoctors();
+  
+      if (doctors && doctors.length > 0) {
+        return res.status(200).json({
+          success: true,
+          message: "Users retrieved successfully",
+          doctors,
+        });
+      } else {
+        return res.status(404).json({
+          success: false,
+          message: "No doctors found",
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  }
   
   
   async blockUser(req: any, res: any) {

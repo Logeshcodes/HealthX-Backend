@@ -1,4 +1,4 @@
-import DoctorModel from "../models/doctorModel";
+import DoctorModel, { DoctorInterface } from "../models/doctorModel";
 
 import DoctorRespository from "../repositories/doctorRespository";
 import IDoctorRepository from "@/repositories/interfaces/IDoctorRepository";
@@ -19,6 +19,12 @@ export default class DoctorService implements IDoctorServices{
         return response
     }
   
+    // show dept -signup
+
+    async getAllDepartments() {
+        const response = await this.doctorRepository.getAllDepartments();
+        return response;
+      }
 
 
     public async createUser(userData:any){
@@ -31,7 +37,16 @@ export default class DoctorService implements IDoctorServices{
     }
 
 
+    public async googleLogin(name: string, email: string, password: string): Promise<DoctorInterface | null> {
+        try {
+            const response = await this.doctorRepository.googleLogin(name, email, password);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
 
+  
 
 
 }

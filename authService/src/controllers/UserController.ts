@@ -230,6 +230,76 @@ export class UserController implements IUserControllers{
   }
 
 
+  async doGoogleLogin(req: Request, res: Response) {
+    try {
+      console.log("Google login in controller", req.body);
+
+      const { name, email, password } = req.body;
+      const hashedPassword = password
+      const existingStudent = await this.userService.findByEmail(email);
+      if (!existingStudent) {
+        const user: any = await this.userService.googleLogin(
+          name,
+          email,
+          hashedPassword 
+        );
+        console.log(user, "User after creation in controller Google");
+
+        if (user) {
+          await produce("add-student", user);
+          console.log(user.token, "User token");
+          const role = user.role;
+          const accesstoken = await this.JWT.accessToken({ email, role });
+          const refreshToken = await this.JWT.refreshToken({ email, role });
+          console.log(accesstoken, "-----", refreshToken);
+
+          res
+            .status(200)
+            .cookie("accessToken", accesstoken, { httpOnly: true })
+            .cookie("refreshToken", refreshToken, { httpOnly: true })
+            .json({
+              success: true,
+              message: "Logging in with GOOGLE Account",
+              user: user,
+            });
+        }
+      } else {
+        if(!existingStudent.isBlocked){
+
+        
+        const role = existingStudent.role;
+        const id = existingStudent._id;
+        const accesstoken = await this.JWT.accessToken({ id, email, role });
+        const refreshToken = await this.JWT.refreshToken({ id, email, role });
+        console.log(accesstoken, "-----", refreshToken);
+
+        res
+          .status(200)
+          .cookie("accessToken", accesstoken, { httpOnly: true })
+          .cookie("refreshToken", refreshToken, { httpOnly: true })
+          .json({
+            success: true,
+            message: "Logging in with GOOGLE Account",
+            user: existingStudent,
+          });
+        }else{
+          res
+          .status(200)
+          
+          .json({
+            success: false,
+            message: "User Blocked",
+            user: existingStudent,
+          });
+        }
+      }
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+
+
   async logout(req: Request, res: Response) {
     try {
       console.log("User logged out");

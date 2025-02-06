@@ -35,31 +35,17 @@ export class DoctorController {
 
   public async updateProfile(req: Request, res: Response): Promise<any> {
     try {
-      const { _id, username, mobile ,expertise,skills} = req.body;
+      const { _id , name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData } = req.body;
       console.log(req.body, "update Doctor Data");
       console.log(req.file, "update Doctor Data");
 
       let profilePicUrl = "No Picture";
       let response;
       
-      if (req.file) {
-        console.log("with profile pic")
-        profilePicUrl = await uploadToS3Bucket(req.file, "Doctors");
-        
-        response = await this.doctorService.updateProfile(_id, {
-          username,
-          mobile,
-          profilePicUrl,
-        });
-      } else {
+     
         console.log("without profile pic")
-        response = await this.doctorService.updateProfile(_id, {
-          username,
-          mobile,
-          expertise,
-          skills
-        });
-      }
+        response = await this.doctorService.updateProfile(_id,  { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData });
+      
 
       if (response) {
         await produce("update-profile-doctor",response)
@@ -81,7 +67,9 @@ export class DoctorController {
 
   public async updatePassword(req: Request, res: Response): Promise<any> {
     try {
+      console.log(req.body, "...")
       const { currentPassword, newPassword } = req.body;
+      console.log("password..." , currentPassword, newPassword )
       const jwtService = new JwtService();
       const tokenData = await jwtService.verifyToken(req.cookies["accessToken"]);
 

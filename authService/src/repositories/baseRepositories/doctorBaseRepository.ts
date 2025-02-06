@@ -1,5 +1,6 @@
 
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
+import DepartmentModel , { DepartmentInterface } from "../../models/departmentModel";
 
 import bcrypt from "bcrypt";
 
@@ -11,6 +12,18 @@ export default class DoctorBaseRepository implements IDoctorBaseRepository{
     async findByEmail(email:string):Promise<DoctorInterface|null >{
         return await DoctorModel.findOne({email:email})
     }
+
+    // show dept - signup
+
+    async getAllDepartments(): Promise<DepartmentInterface[] > {
+        try {
+          const departments = await DepartmentModel.find();
+          console.log("All departments: ", departments);
+          return departments;
+        } catch (error) {
+          throw error;
+        }
+      }
    
     async createDoctor(userData:any):Promise<DoctorInterface |null>{
         try {
@@ -28,6 +41,7 @@ export default class DoctorBaseRepository implements IDoctorBaseRepository{
     }
 
 
+    // update - password - doctor - consume from userService
 
     async resetPassword(email:string,password:string):Promise<DoctorInterface|null >{
         try {
@@ -45,7 +59,7 @@ export default class DoctorBaseRepository implements IDoctorBaseRepository{
     }
 
 
-    async googleLogin( name: string, email: string,password: string): Promise<DoctorInterface | void> {
+    async googleLogin( name: string, email: string,password: string): Promise<DoctorInterface | null>{
 
         try {
             const user = await this.findByEmail(email);

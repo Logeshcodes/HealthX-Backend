@@ -34,6 +34,11 @@ export default class AdminRepository{
         return response;
       }
       
+    async getAllDoctors() {
+        const response = await this.adminBaseRepository.getAllDoctors();
+        return response;
+      }
+      
 
     public async updateProfile(email:string,data:any): Promise<any> {
         try {

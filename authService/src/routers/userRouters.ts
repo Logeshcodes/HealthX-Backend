@@ -9,6 +9,7 @@ router.post('/signup',userController.userSignUp.bind(userController))
 router.post('/verify_otp', userController.createUser.bind(userController))
 router.post('/resendOtp',userController.resendOtp.bind(userController))
 
+router.post('/googleLogin',userController.doGoogleLogin.bind(userController))
 
 router.post('/login',userController.login.bind(userController))
 router.post('/logout',userController.logout.bind(userController))

@@ -6,11 +6,14 @@ import { IsDoctor} from "../middlewares/RoleBasedAuth";
 let router=Router()
 
 
+router.get('/register',doctorController.getAllDepartments.bind(doctorController))
 router.post('/register',doctorController.doctorSignUp.bind(doctorController))
 router.post('/verify_otp', doctorController.createUser.bind(doctorController))
 router.post('/createUser',doctorController.createUser.bind(doctorController))
 router.post('/login',doctorController.login.bind(doctorController))
 router.post('/logout',doctorController.logout.bind(doctorController))
+
+router.post('/googleLogin',doctorController.doGoogleLogin.bind(doctorController))
 
 router.post('/resendOtp',doctorController.resendOtp.bind(doctorController))
 

@@ -12,5 +12,11 @@ export default interface IDoctorControllers {
     verifyResetOtp(req: Request, res: Response): Promise<void>;
     forgotResendOtp(req: Request, res: Response): Promise<void>;
     resetPassword(req: Request, res: Response): Promise<void>;
+    getAllDepartments(req: Request, res: Response): Promise<void>;
+
+    
+    updatePassword(data: { email: string; password: string }): Promise<void>;
+
+    doGoogleLogin(req: Request, res: Response): Promise<void>;
    
 }

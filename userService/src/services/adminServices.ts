@@ -32,6 +32,11 @@ export default class AdminService{
         const response = await this.adminRepository.getAllUsers();
         return response;
       }
+
+    async getAllDoctors() {
+        const response = await this.adminRepository.getAllDoctors();
+        return response;
+      }
       
       async updateProfile(email : string, data: any): Promise<object | any> {
         try {

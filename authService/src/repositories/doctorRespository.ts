@@ -20,6 +20,13 @@ export default class DoctorRepository implements IDoctorRepository{
         const response = await this.baseRepository.findByEmail(email)
         return response
     }
+
+    // dept - signup
+
+    async getAllDepartments() {
+        const response = await this.baseRepository.getAllDepartments();
+        return response;
+      }
    
 
     async createUser(userData:any) {
@@ -30,6 +37,16 @@ export default class DoctorRepository implements IDoctorRepository{
     async resetPassword(email:string,password:string) {
         const response= await this.baseRepository.resetPassword(email,password)
         return response
+    }
+
+
+    public async googleLogin(name: string, email: string, password: string): Promise<DoctorInterface | null> {
+        try {
+            const response = await this.baseRepository.googleLogin(name, email, password);
+            return response;
+        } catch (error) {
+            throw error;
+        }
     }
    
 }

@@ -13,6 +13,7 @@ import IOtpServices from "@/services/interfaces/IOtpService";
 
 
 import produce from "../config/kafka/producer";
+import { DoctorInterface } from "@/models/doctorModel";
 
 export default class DoctorController implements IDoctorControllers {
 
@@ -29,6 +30,34 @@ export default class DoctorController implements IDoctorControllers {
         this.JWT = new JwtService();
       }
 
+
+
+      async getAllDepartments(req: Request, res: Response): Promise<any> {
+        try {
+          // Fetch all departments from the service
+          const departments = await this.doctorService.getAllDepartments();
+      
+          if (departments && departments.length > 0) {
+            return res.status(200).json({
+              success: true,
+              message: "Departments retrieved successfully",
+              departments,
+            });
+          } else {
+            return res.status(404).json({
+              success: false,
+              message: "No departments found",
+            });
+          }
+        } catch (error: any) {
+          console.error(error);
+          return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+          });
+        }
+      }
 
 
       public async doctorSignUp(req: Request, res: Response): Promise<any> {
@@ -209,6 +238,62 @@ export default class DoctorController implements IDoctorControllers {
 
 
 
+
+      async doGoogleLogin(req:Request,res:Response) {
+        try {
+            console.log("Google login in controller", req.body);
+            
+            const { name, email, password } = req.body;
+          const ExistingDoctor=await this.doctorService.findByEmail(email)
+          if (!ExistingDoctor) {
+            
+            console.log("Doctor does not exist. Redirecting to registration page.");
+            res.status(302).json({
+              success: false,
+              message: "Create your account before Login",
+              redirectUrl: "/doctor/register"
+            });
+            
+            }
+          else{
+            if(!ExistingDoctor.isBlocked){
+    
+            
+              const role = ExistingDoctor.role;
+              const id = ExistingDoctor._id;
+              const accesstoken = await this.JWT.accessToken({ id, email, role });
+              const refreshToken = await this.JWT.refreshToken({ id, email, role });
+              console.log(accesstoken, "-----", refreshToken);
+      
+              res
+                .status(200)
+                .cookie("accessToken", accesstoken, { httpOnly: true })
+                .cookie("refreshToken", refreshToken, { httpOnly: true })
+                .json({
+                  success: true,
+                  message: "Logging in with GOOGLE Account",
+                  user: ExistingDoctor,
+                });
+              }else{
+                res
+                .status(200)
+                
+                .json({
+                  success: false,
+                  message: "User Blocked",
+                  user: ExistingDoctor,
+                });
+              }
+    
+          }
+          
+           
+        } catch (error: any) {
+            throw error;
+        }
+    }
+
+
       
   async logout(req: Request, res: Response) {
     try {
@@ -363,6 +448,22 @@ export default class DoctorController implements IDoctorControllers {
         }
 
 
+
+
+        async updatePassword(data: { email: string; password: string }): Promise< void > {
+          try {
+            console.log(data.email, data.password, "consumeeeeee");
+            const passwordReset = await this.doctorService.resetPassword(
+              data.email,
+              data.password
+            );
+           
+          } catch (error) {
+            console.log(error);
+            throw error
+          }
+        }
+        
 
 
       
