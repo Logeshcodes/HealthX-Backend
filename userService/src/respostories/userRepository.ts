@@ -21,15 +21,17 @@ export class UserRepository{
     async getUserData(email:string){
         try {
             const response=await this.userBaseRepository.getUserData(email)
+            console.log(response , ".")
             return response
             
         } catch (error) {
             
         }
     }
-    async updateProfile(id:any,data:object){
+    async updateProfile(email: string,data:object){
         try {
-            const response=await this.userBaseRepository.updateProfile(id,data)
+            const response=await this.userBaseRepository.updateProfile( email ,data)
+            console.log("update-repo",response)
             return response
             
         } catch (error) {

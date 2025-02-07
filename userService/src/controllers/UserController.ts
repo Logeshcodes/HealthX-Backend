@@ -28,7 +28,7 @@ export default class UserController {
       const { email } = req.params;
       console.log(email,"get user Data poda")
       let response = await this.userService.getUserData(email);
-       console.log(response)
+       console.log(response , "Res")
       res.json(response);
     } catch (error) {
       console.log(error);
@@ -37,27 +37,34 @@ export default class UserController {
 
   public async updateProfile(req: Request, res: Response): Promise<any> {
     try {
-      const { _id, username, mobile } = req.body;
+      const { username, email, MobileNumber, age ,gender , height , weight , bloodGroup  } = req.body;
       console.log(req.body, "update User Data");
       console.log(req.file, "update User Data");
 
-      let profilePicUrl = "No Picture";
+      let profilePicture = "No picture";
       let response;
+
+      
       
       if (req.file) {
         console.log("with profile pic")
-        profilePicUrl = await uploadToS3Bucket(req.file, "users");
+        profilePicture = await uploadToS3Bucket(req.file, "users");
         
-        response = await this.userService.updateProfile(_id, {
+        response = await this.userService.updateProfile( email , {
           username,
-          mobile,
-          profilePicUrl,
+          MobileNumber,
+          profilePicture,
         });
       } else {
         console.log("without profile pic")
-        response = await this.userService.updateProfile(_id, {
+        response = await this.userService.updateProfile( email , {
           username,
-          mobile,
+          MobileNumber,
+          age,
+          gender ,
+          height , 
+          weight ,
+          bloodGroup 
         });
       }
 
@@ -167,7 +174,7 @@ export default class UserController {
       const id=userData._id
       const isBlocked=!userData?.isBlocked
 
-      const userStatus=await this.userService.updateProfile(id,{isBlocked})
+      const userStatus=await this.userService.updateProfile( email,{isBlocked})
       await produce("block-user",{email,isBlocked})
 
       if(userStatus?.isBlocked){

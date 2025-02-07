@@ -9,16 +9,21 @@ import { IsUser } from "../middleware/RoleBasedAuth";
 const router=Router()
 let userController=new UserController()
 
-router.patch('/updateProfile',upload.single('profile'),userController.updateProfile.bind(userController))
-router.patch('/updatePassword',userController.updatePassword.bind(userController))
 
 
-router.get('/getUsers',userController.getUsers.bind(userController))
+
+// router.get('/getUsers',userController.getUsers.bind(userController))
 
 
-router.get('/doctor_list' , authenticateToken , IsUser, userController.findAllDoctors.bind(userController))
+router.get('/doctor_list' , userController.findAllDoctors.bind(userController))
 
+// profile
+router.get('/:email',userController.getUser.bind(userController))
+// change - password
+router.put('/profile/change-password',userController.updatePassword.bind(userController))
 
+// edit- profile
+router.put('/profile/updateProfile',upload.single('profile'),userController.updateProfile.bind(userController))
 
 
 const userRoutes=router

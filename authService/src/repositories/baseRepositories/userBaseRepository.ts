@@ -50,7 +50,7 @@ export default class UserBaseRepository  implements IUserBaseRepository{
     }
 
 
-    async googleLogin(  name: string,email: string,password: string ): Promise<UserInterface | null> {
+    async googleLogin(  name: string,email: string,password: string , profilePicture : string ): Promise<UserInterface | null> {
         try {
             const user = await this.findByEmail(email);
     
@@ -60,9 +60,12 @@ export default class UserBaseRepository  implements IUserBaseRepository{
     
                 // Create a new user
                 const newUser = await this.createUser({
-                    name,
+                    
+                    username :name,
                     email,
                     hashedPassword: password,
+                    profilePicture : profilePicture,
+                    authenticationMethod : "Google"
                 });
     
                 if (!newUser) {

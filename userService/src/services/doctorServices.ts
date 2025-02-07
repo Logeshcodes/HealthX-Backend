@@ -27,9 +27,9 @@ export class DoctorServices{
             
         }
     }
-    public async updateProfile(id:any,data:object){
+    public async updateProfile(email:string,data:object){
         try {
-            const response=await this.doctorRepository.updateProfile(id,data)
+            const response=await this.doctorRepository.updateProfile( email ,data)
             return response
         } catch (error) {
             console.log(error)

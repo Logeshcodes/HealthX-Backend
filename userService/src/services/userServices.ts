@@ -19,16 +19,20 @@ export default class UserServices{
     public async getUserData(email:string){
         try {
             const response=await this.userRepository.getUserData(email)
+            console.log(response , 'getuserdata -service')
             return response
         } catch (error) {
             console.log(error)
             
         }
     }
-    public async updateProfile(id:any,data:object){
+    public async updateProfile(email: string,data:object){
         try {
-            const response=await this.userRepository.updateProfile(id,data)
+            console.log("update-service")
+            const response=await this.userRepository.updateProfile(email ,data)
+            console.log("update-service",response)
             return response
+            
         } catch (error) {
             console.log(error)
             

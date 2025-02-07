@@ -234,19 +234,20 @@ export class UserController implements IUserControllers{
     try {
       console.log("Google login in controller", req.body);
 
-      const { name, email, password } = req.body;
+      const { name, email, password , profilePicture } = req.body;
       const hashedPassword = password
       const existingStudent = await this.userService.findByEmail(email);
       if (!existingStudent) {
         const user: any = await this.userService.googleLogin(
           name,
           email,
-          hashedPassword 
+          hashedPassword ,
+          profilePicture
         );
         console.log(user, "User after creation in controller Google");
 
         if (user) {
-          await produce("add-student", user);
+          await produce("add-user", user);
           console.log(user.token, "User token");
           const role = user.role;
           const accesstoken = await this.JWT.accessToken({ email, role });

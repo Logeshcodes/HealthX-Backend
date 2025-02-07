@@ -25,11 +25,14 @@ export class DoctorBaseRepository<T extends Document> {
       throw error;
     }
   }
-  async updateProfile(id: any, data: object): Promise<DoctorInterface | null> {
+
+  // Doctor - Profile - update
+  async updateProfile(email:string, data: object): Promise<DoctorInterface | null> {
     try {
-      const doctorData = await DoctorModel.findByIdAndUpdate(id, data, {
-        new: true,
-      });
+      const doctorData = await DoctorModel.findOneAndUpdate( 
+        {email : email},
+        {$set : data},
+        {new: true});
       return doctorData;
     } catch (error) {
       throw error;

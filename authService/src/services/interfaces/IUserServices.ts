@@ -9,6 +9,6 @@ export default interface IUserServices {
     resetPassword(email:string,password:string): Promise<UserInterface | null>;
     updateProfile( email: string,data:any): Promise<UserInterface | null>;
 
-    googleLogin(name: string, email: string, password: string): Promise<UserInterface | null>;
+    googleLogin(name: string, email: string, password: string , profilePicture : string): Promise<UserInterface | null>;
    
 }

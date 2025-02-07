@@ -35,16 +35,27 @@ export class DoctorController {
 
   public async updateProfile(req: Request, res: Response): Promise<any> {
     try {
-      const { _id , name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData } = req.body;
+      const { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData } = req.body;
       console.log(req.body, "update Doctor Data");
       console.log(req.file, "update Doctor Data");
 
-      let profilePicUrl = "No Picture";
+      let profilePicture = "No Picture";
       let response;
+
+
+      
+      if (req.file) {
+        console.log("with profile pic")
+        profilePicture = await uploadToS3Bucket(req.file, "users");
+        
+        response = await this.doctorService.updateProfile( email ,  { name , Mobile , profilePicture , department , education , experience , consultationType , description , consultationFee , doctorProfileData });
+      } else {
+       
+        console.log("without profile pic")
+        response = await this.doctorService.updateProfile( email ,  { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData });
+      }
       
      
-        console.log("without profile pic")
-        response = await this.doctorService.updateProfile(_id,  { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData });
       
 
       if (response) {
@@ -140,7 +151,7 @@ export class DoctorController {
       const id=DoctorData._id
       const isBlocked=!DoctorData?.isBlocked
 
-      const DoctorStatus=await this.doctorService.updateProfile(id,{isBlocked})
+      const DoctorStatus=await this.doctorService.updateProfile( email,{isBlocked})
       await produce("block-doctor",{email,isBlocked})
 
       if(DoctorStatus?.isBlocked){

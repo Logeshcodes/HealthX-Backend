@@ -25,17 +25,25 @@ export default class UserBaseRepository <T extends Document>{
     
       async getUserData(email: string): Promise<UserInterface | null> {
         try {
-          const userData = await UserModel.findOne({ email: email });
+          console.log(email , "user-mail")
+          const userData = await UserModel.findOne({ email : email });
+          console.log(userData)
           return userData;
         } catch (error) {
           throw error;
         }
       }
-      async updateProfile(id: any, data: object): Promise<UserInterface | null> {
+
+      
+      async updateProfile( email : string , data: object): Promise<UserInterface | null> {
         try {
-          const userData = await UserModel.findByIdAndUpdate(id, data, {
-            new: true,
-          });
+          console.log("data..",data)
+          
+          const userData = await UserModel.findOneAndUpdate( 
+          {email : email},
+          { $set:data }, 
+          { new: true });
+          console.log("update-base-repo",userData)
           return userData;
         } catch (error) {
           throw error;

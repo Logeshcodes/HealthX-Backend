@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan('dev'))
 
-app.use('/patient' , userRoutes)
+app.use('/patient' , userRoutes)  // change /user
 app.use('/doctor' , doctorRoutes)
 app.use('/admin' , adminRoutes)
 

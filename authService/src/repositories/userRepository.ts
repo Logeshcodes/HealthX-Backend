@@ -29,9 +29,9 @@ export class UserRepository implements IUserRepository{
     }
 
 
-    public async googleLogin(name: string, email: string, password: string): Promise<UserInterface | null> {
+    public async googleLogin(name: string, email: string, password: string, profilePicture : string): Promise<UserInterface | null> {
         try {
-            const response = await this.baseRepository.googleLogin(name, email, password);
+            const response = await this.baseRepository.googleLogin(name, email, password , profilePicture);
             return response;
         } catch (error) {
             throw error;
