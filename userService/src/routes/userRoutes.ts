@@ -14,6 +14,7 @@ let userController=new UserController()
 
 // router.get('/getUsers',userController.getUsers.bind(userController))
 
+router.post('/profile/updateProfile',upload.single('profilePicture'),userController.updateProfile.bind(userController))
 
 router.get('/doctor_list' , userController.findAllDoctors.bind(userController))
 
@@ -23,7 +24,6 @@ router.get('/:email',userController.getUser.bind(userController))
 router.put('/profile/change-password',userController.updatePassword.bind(userController))
 
 // edit- profile
-router.put('/profile/updateProfile',upload.single('profile'),userController.updateProfile.bind(userController))
 
 
 const userRoutes=router

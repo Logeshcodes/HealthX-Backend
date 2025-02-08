@@ -186,6 +186,47 @@ export default class AdminController {
       });
     }
   }
+  async blockDoctor(req: any, res: any) {
+    try {
+      const { email } = req.params;
+  
+      // Fetch user data by email
+      const userData = await this.adminService.getDoctorData(email);
+  
+      if (!userData) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+  
+      
+      const emailId = userData.email;
+      const isBlocked = !userData?.isBlocked;
+      const status = userData?.status === "blocked" ? "approved" : "blocked";
+
+  
+      // Update the user profile
+      const userStatus = await this.adminService.updateDoctorProfile( emailId, { isBlocked , status });
+  
+      
+      // await produce("block-doctor", { email, isBlocked , status });
+      await produce("block-doctor", { email, isBlocked });
+  
+      
+      return res.status(200).json({
+        success: true,
+        message: userStatus?.isBlocked ? 'Doctor Blocked' : 'Doctor Unblocked',
+      });
+  
+    } catch (error) {
+      console.error("Error blocking/unblocking Doctor:", error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error blocking/unblocking Doctor',
+      });
+    }
+  }
   
   
   

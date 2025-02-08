@@ -49,6 +49,15 @@ export default class AdminRepository{
         }
     }
 
+    public async updateDoctorProfile(email:string,data:any): Promise<any> {
+        try {
+            const response = await this.adminBaseRepository.updateDoctorProfile(email,data);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async getDepartmentByName( departmentName:string): Promise<any> {
         try {
             console.log("in repo", departmentName)
@@ -73,6 +82,15 @@ export default class AdminRepository{
     async getUserData(email:string){
         try {
             const response=await this.adminBaseRepository.getUserData(email)
+            return response
+            
+        } catch (error) {
+            
+        }
+    }
+    async getDoctorData(email:string){
+        try {
+            const response=await this.adminBaseRepository.getDoctorData(email)
             return response
             
         } catch (error) {

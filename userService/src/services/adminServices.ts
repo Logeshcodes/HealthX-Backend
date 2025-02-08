@@ -47,6 +47,16 @@ export default class AdminService{
         }
       }
 
+
+      async updateDoctorProfile(email : string, data: any): Promise<object | any> {
+        try {
+          const response = await this.adminRepository.updateDoctorProfile(email, data);
+          return response;
+        } catch (error) {
+          throw error;
+        }
+      }
+
      
      
 
@@ -86,6 +96,15 @@ export default class AdminService{
       async getUserData(email:string){
         try {
             const response=await this.adminRepository.getUserData(email)
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+      async getDoctorData(email:string){
+        try {
+            const response=await this.adminRepository.getDoctorData(email)
             return response
         } catch (error) {
             console.log(error)

@@ -84,6 +84,20 @@ export class AdminBaseRepository<T extends Document> {
         }
       }
 
+      public async updateDoctorProfile(email: string, data: any): Promise<any> {
+        try {
+          const response = await DoctorModel.findOneAndUpdate(
+            { email },
+            { $set: data },
+            { new: true }
+          );
+          return response;
+        } catch (error) {
+          console.log(error);
+          throw error;
+        }
+      }
+
       public async getDepartmentByName( departmentName: string): Promise<any> {
         try {
          console.log("finding dept", departmentName)
@@ -120,8 +134,17 @@ export class AdminBaseRepository<T extends Document> {
 
       async getUserData(email: string): Promise<UserInterface | null> {
         try {
-          const studentData = await UserModel.findOne({ email: email });
-          return studentData;
+          const userData = await UserModel.findOne({ email: email });
+          return userData;
+        } catch (error) {
+          throw error;
+        }
+      }
+
+      async getDoctorData(email: string): Promise<DoctorInterface | null> {
+        try {
+          const doctorData = await DoctorModel.findOne({ email: email });
+          return doctorData;
         } catch (error) {
           throw error;
         }

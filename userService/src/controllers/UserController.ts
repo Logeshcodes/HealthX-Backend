@@ -37,39 +37,47 @@ export default class UserController {
 
   public async updateProfile(req: Request, res: Response): Promise<any> {
     try {
-      const { username, email, MobileNumber, age ,gender , height , weight , bloodGroup  } = req.body;
-      console.log(req.body, "update User Data");
-      console.log(req.file, "update User Data");
+      const { username, email, MobileNumber, age, gender, height, weight, bloodGroup } = req.body;
+  
+      console.log(req.body.profilePicture, "update User Data");
+      console.log(req.file, "profilepic - update User Data");
+      // console.log(req, "profilepics - update User Data");
 
+  
       let profilePicture = "No picture";
       let response;
-
-      
-      
+  
+      // Handle file upload if available
       if (req.file) {
-        console.log("with profile pic")
-        profilePicture = await uploadToS3Bucket(req.file, "users");
-        
-        response = await this.userService.updateProfile( email , {
+        console.log("with profile pic");
+        profilePicture = await uploadToS3Bucket(req.file, "usersProfile");
+  
+        response = await this.userService.updateProfile(email, {
           username,
           MobileNumber,
           profilePicture,
+          age,
+          gender,
+          height,
+          weight,
+          bloodGroup,
         });
       } else {
-        console.log("without profile pic")
-        response = await this.userService.updateProfile( email , {
+        console.log("without profile pic");
+        response = await this.userService.updateProfile(email, {
           username,
           MobileNumber,
           age,
-          gender ,
-          height , 
-          weight ,
-          bloodGroup 
+          gender,
+          height,
+          weight,
+          bloodGroup,
         });
       }
-
+  
+      // Send response to client
       if (response) {
-        await produce("update-profile-user",response)
+        await produce("update-profile-user", response);
         res.status(200).json({
           success: true,
           message: "Profile Updated!",
@@ -83,8 +91,13 @@ export default class UserController {
       }
     } catch (error) {
       console.log(error);
+      res.status(500).json({
+        success: false,
+        message: "An error occurred while updating the profile.",
+      });
     }
   }
+  
 
   public async updatePassword(req: Request, res: Response): Promise<any> {
     try {
