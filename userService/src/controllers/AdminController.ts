@@ -12,10 +12,6 @@ export default class AdminController {
   constructor() {
     this.adminService = new AdminService();
   }
-
-
-
-
   
 
   async createDepartment(req: Request, res: Response): Promise<any> {
@@ -97,11 +93,7 @@ export default class AdminController {
       const users = await this.adminService.getAllUsers();
   
       if (users && users.length > 0) {
-        return res.status(200).json({
-          success: true,
-          message: "Users retrieved successfully",
-          users,
-        });
+        return res.status(200).json({success: true,message: "Users retrieved successfully",users});
       } else {
         return res.status(404).json({
           success: false,
