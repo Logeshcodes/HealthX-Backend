@@ -4,6 +4,8 @@ import { config } from 'dotenv';
 import connectDB from "./config/db";
 import cors from 'cors'
 
+import morgan from 'morgan'
+
 
 import verificationRoutes from "./routes/verificationRoutes";
 
@@ -11,8 +13,10 @@ import verificationRoutes from "./routes/verificationRoutes";
 config()
 
 
+
+
 let app:Application=express()
-const PORT:number=Number(process.env.port)||5002
+const PORT:number=Number(process.env.port)||5004
 
 const corsOptions = {
     origin: String(process.env.FRONTEND_URL),
@@ -23,10 +27,10 @@ app.use(cookieParser());
 app.use(cors(corsOptions))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'))
 
 
-
-app.use('/',verificationRoutes)
+app.use('/doctor',verificationRoutes)
 
 
 

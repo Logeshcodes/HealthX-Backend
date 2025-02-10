@@ -19,6 +19,7 @@ async function consume() {
         "password-reset-user",
         "add-doctor",
         "password-reset-doctor",
+        "verification-request"
       ],
       fromBeginning: true,
     });
@@ -55,6 +56,11 @@ async function consume() {
 
             case "password-reset-doctor":
               await doctorController.passwordReset(messageValue);
+              console.log("Processing add-doctor event:", messageValue);
+              break;
+
+            case "verification-request":
+              await doctorController.VerificationRequest(messageValue);
               console.log("Processing add-doctor event:", messageValue);
               break;
 

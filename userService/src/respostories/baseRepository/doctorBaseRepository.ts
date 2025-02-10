@@ -56,6 +56,27 @@ export class DoctorBaseRepository<T extends Document> {
     }
   }
 
+
+  async VerificationRequest(emailID: string, status: string): Promise<DoctorInterface | null> {
+    try {
+
+      console.log(emailID , status , "consume data...")
+      const doctorData = await DoctorModel.findOneAndUpdate(
+        {  email : emailID },
+        {
+          $set: {
+            status: status ,
+          },
+        },
+        { new: true }
+      );
+      console.log(doctorData)
+      return doctorData;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getDoctors(){
     try {
         const response=await DoctorModel.find()

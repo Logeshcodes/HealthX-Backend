@@ -72,6 +72,17 @@ export class UserRepository{
         }
     }
     
+    async findAllDepartment(){
+        try {
+            const response=await this.userBaseRepository.findAllDepartment()
+            return response
+            
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+    
     
     
 }

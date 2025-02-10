@@ -173,6 +173,19 @@ export default class UserController {
       
     }
   }
+  public async findAllDepartment(req:Request,res:Response){
+    try {
+    console.log('findAllDepartment')
+      const departments=await this.userService.findAllDepartment()
+      console.log(departments,"findAllDoctors allll")
+       res.status(200).json({
+        departments:departments
+      })
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
 
 
   public async blockUser(req:Request,res:Response){

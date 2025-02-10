@@ -35,7 +35,8 @@ export class DoctorController {
 
   public async updateProfile(req: Request, res: Response): Promise<any> {
     try {
-      const { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData } = req.body;
+      const { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData ,  } = req.body;
+
       console.log(req.body, "update Doctor Data");
       console.log(req.file, "update Doctor Data");
 
@@ -46,7 +47,7 @@ export class DoctorController {
       
       if (req.file) {
         console.log("with profile pic")
-        profilePicture = await uploadToS3Bucket(req.file, "users");
+        profilePicture = await uploadToS3Bucket(req.file, "doctorsProfile");
         
         response = await this.doctorService.updateProfile( email ,  { name , Mobile , profilePicture , department , education , experience , consultationType , description , consultationFee , doctorProfileData });
       } else {
@@ -181,6 +182,21 @@ export class DoctorController {
       const response = await this.doctorService.updatePassword(
         email,
         password
+      );
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  async VerificationRequest(data:any){
+    try {
+      const {emailID , status}=data
+      console.log(emailID , status , 'coming...')
+      const response = await this.doctorService.VerificationRequest(
+        emailID,
+        status,
       );
       return response
     } catch (error) {

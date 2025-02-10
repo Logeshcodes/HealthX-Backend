@@ -5,12 +5,8 @@ import { IsAdmin, IsUser , IsDoctor } from "../middlewares/roleauth" ;
 
 const router = Router();
 
-router.post("/verificationRequest",
-  upload.fields([
-    { name: "degreeCertificate", maxCount: 1 },
-    { name: "experienceCertificate", maxCount: 1 },
-  ]),
-  IsDoctor,
+router.post("/verificationRequest",upload.fields([{ name: "medicalLicense", maxCount: 1 },{ name: "degreeCertificate", maxCount: 1},
+  ]),IsDoctor,
   verificationController.submitRequest.bind(verificationController)
 );
 

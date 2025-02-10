@@ -3,10 +3,10 @@ import { IVerificationModel } from "../../models/verificationModel";
 
 export interface IVerificationBaseRepository{
     createRequest(
-        username:string,
+        name:string,
         email:string,
-        doctorLicenseUrl:string,
-        resumeUrl:string
+         department : string , education : string,
+        medicalLicenseUrl:string,degreeCertificateUrl:string
     ):Promise<IVerificationModel >
 
     getRequestDataByEmail(       

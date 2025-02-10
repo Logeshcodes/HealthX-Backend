@@ -5,9 +5,9 @@ import { IVerificationBaseRepository } from "./IVerificationBaseRepository";
 export class VerificationBaseRepository implements IVerificationBaseRepository{
 
 
-    async createRequest(username:string,email:string,doctorLicenseUrl:string,resumeUrl:string):Promise<IVerificationModel >{
+    async createRequest(name:string,email:string ,department : string , education : string,medicalLicenseUrl:string,degreeCertificateUrl:string):Promise<IVerificationModel >{
         try {
-            const verifyRequest=await VerificationModel.create({username,email,doctorLicenseUrl,resumeUrl})
+            const verifyRequest=await VerificationModel.create({name,email, department , education,medicalLicenseUrl,degreeCertificateUrl})
             if(!verifyRequest){
                 throw new Error("Verify Request Document failed Creation")
             }

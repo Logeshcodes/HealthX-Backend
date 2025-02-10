@@ -2,6 +2,7 @@ import { Document, Model } from "mongoose";
 
 import UserModel , { UserInterface } from "../../models/userModel"
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
+import DepartmentModel from "../../models/departmentModel";
 
 export default class UserBaseRepository <T extends Document>{
 
@@ -81,6 +82,17 @@ export default class UserBaseRepository <T extends Document>{
       async findAllDoctors(){
         try {
             const response=await DoctorModel.find()
+            return response
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+      }
+
+      async findAllDepartment(){
+        try {
+            const response=await DepartmentModel.find()
             return response
             
         } catch (error) {

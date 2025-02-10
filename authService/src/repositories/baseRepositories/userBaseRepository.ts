@@ -93,16 +93,17 @@ export default class UserBaseRepository  implements IUserBaseRepository{
     }
 
 
-    public async updateProfile(email: string, data: any): Promise<any> {
+    async updateProfile( email : string , data: object): Promise<UserInterface | null> {
         try {
-          const response = await UserModel.findOneAndUpdate(
-            { email },
-            { $set: data },
-            { new: true }
-          );
-          return response;
+          console.log("data..",data)
+          
+          const userData = await UserModel.findOneAndUpdate( 
+          {email : email},
+          { $set: {...data} }, 
+          { new: true });
+          console.log("update-auth-base-repo",userData)
+          return userData;
         } catch (error) {
-          console.log(error);
           throw error;
         }
       }

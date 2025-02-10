@@ -64,4 +64,14 @@ export default class UserServices{
         }
     }
     
+    public async findAllDepartment(){
+        try {
+            const response=await this.userRepository.findAllDepartment()
+            console.log("doctor ", response)
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
 }

@@ -15,7 +15,10 @@ export class VerificationContoller implements IVerificationControllers {
 
   async submitRequest(req: Request, res: Response): Promise<void> {
     try {
-      const { username, email } = req.body;
+      const { name, email , department , education } = req.body;
+
+      console.log(name , email , department , education , "datas...")
+
       if (!req.files || typeof req.files !== "object") {
         throw new Error("No documents received");
       }
@@ -26,24 +29,21 @@ export class VerificationContoller implements IVerificationControllers {
       };
 
       // Safely access the files
+      const medicalLicense = files.medicalLicense?.[0] || null;
       const degreeCertificate = files.degreeCertificate?.[0] || null;
-      const resume = files.resume?.[0] || null;
-      //   console.log(degreeCertificate,resume)
-      let doctorLicenseUrl;
-      let resumeUrl;
-      if (degreeCertificate && resume) {
-        doctorLicenseUrl = await uploadToS3Bucket(
-          degreeCertificate,
-          "degreeCertificate"
-        );
-        resumeUrl = await uploadToS3Bucket(resume, "resume");
+      
+      console.log(degreeCertificate,medicalLicense)
 
-        let response = await this.verificationService.sendVerifyRequest(
-          username,
-          email,
-          doctorLicenseUrl,
-          resumeUrl
-        );
+      let medicalLicenseUrl;
+      let degreeCertificateUrl;
+
+      if (degreeCertificate && medicalLicense) {
+
+        medicalLicenseUrl = await uploadToS3Bucket(medicalLicense, "medicalLicense");
+        degreeCertificateUrl = await uploadToS3Bucket(degreeCertificate,"degreeCertificate");
+
+        let response = await this.verificationService.sendVerifyRequest( name,email , department , education,medicalLicenseUrl,degreeCertificateUrl);
+        
         const emailID = response.email;
         const status = response.status;
 

@@ -48,6 +48,18 @@ export class DoctorRepository{
             
         }
     }
+
+
+    async VerificationRequest(emailID:string,status:string){
+        try {
+            const response=await this.doctorBaseRepository.VerificationRequest(emailID,status)
+            return response
+            
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
     async getDoctors(){
         try {
             const response=await this.doctorBaseRepository.getDoctors()

@@ -6,7 +6,7 @@ import { IsDoctor } from "../middleware/RoleBasedAuth";
 const router=Router()
 let doctorController=new DoctorController()
 
-router.put('/profile/edit-profile',upload.single('profile'),doctorController.updateProfile.bind(doctorController))
+router.put('/profile/edit-profile',upload.single('profilePicture'),doctorController.updateProfile.bind(doctorController))
 router.put('/profile/change-password',doctorController.updatePassword.bind(doctorController))
 
 

@@ -9,10 +9,10 @@ export class VerificationService implements IVerificationService{
     constructor(verificationRepository:IVerificationRepository){
         this.verificationRepository=verificationRepository
     }
-    async sendVerifyRequest(username:string,email:string,doctorLicenseUrl:string,resumeUrl:string):Promise<IVerificationModel>{
+    async sendVerifyRequest(name:string,email:string, department: string , education: string,medicalLicenseUrl:string,degreeCertificateUrl:string):Promise<IVerificationModel>{
         try {
-            console.log(username,email,doctorLicenseUrl,resumeUrl,"verificationnnn serviceee")
-            const response=await this.verificationRepository.sendVerifyRequest(username,email,doctorLicenseUrl,resumeUrl)
+            console.log(name,email,medicalLicenseUrl,degreeCertificateUrl,"verificationnnn serviceee")
+            const response=await this.verificationRepository.sendVerifyRequest(name,email, department , education,medicalLicenseUrl,degreeCertificateUrl)
             console.log("verification...serviceeee")
             return response
         } catch (error) {
