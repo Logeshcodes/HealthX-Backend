@@ -50,9 +50,9 @@ export class DoctorRepository{
     }
 
 
-    async VerificationRequest(emailID:string,status:string){
+    async VerificationRequest(emailID:string,status:string ,medicalLicenseUrl: string , degreeCertificateUrl : string ){
         try {
-            const response=await this.doctorBaseRepository.VerificationRequest(emailID,status)
+            const response=await this.doctorBaseRepository.VerificationRequest(emailID,status ,medicalLicenseUrl , degreeCertificateUrl)
             return response
             
         } catch (error) {

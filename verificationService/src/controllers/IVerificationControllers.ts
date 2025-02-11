@@ -7,4 +7,5 @@ export interface IVerificationControllers {
   getRequestData(req: Request, res: Response): Promise<void>;
   getAllRequests(req: Request, res: Response): Promise<void>;
   approveRequest(req: Request, res: Response): Promise<void>;
+ 
 }

@@ -86,11 +86,14 @@ export class AdminBaseRepository<T extends Document> {
 
       public async updateDoctorProfile(email: string, data: any): Promise<any> {
         try {
+          console.log(data , " data details")
           const response = await DoctorModel.findOneAndUpdate(
             { email },
             { $set: data },
             { new: true }
           );
+
+          console.log('confirm repsonse' , response)
           return response;
         } catch (error) {
           console.log(error);
@@ -103,6 +106,19 @@ export class AdminBaseRepository<T extends Document> {
          console.log("finding dept", departmentName)
         const response = await DepartmentModel.find({departmentName});  
         console.log("first ,,", response) 
+          return response; 
+          
+        } catch (error) {
+          console.error('Error fetching department by name:', error);
+          throw error; 
+        }
+      }
+
+      public async getDoctorByEmail( email: string): Promise<any> {
+        try {
+         console.log("finding dept", email)
+        const response = await DoctorModel.find({email});  
+        console.log("resp,,,", response) 
           return response; 
           
         } catch (error) {

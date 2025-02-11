@@ -67,6 +67,16 @@ export default class AdminRepository{
             throw error;
         }
     }
+    
+    public async getDoctorByEmail( email:string): Promise<any> {
+        try {
+            console.log("in repo", email)
+            const response = await this.adminBaseRepository.getDoctorByEmail(email);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
 
 
     public async updateDepartment( departmentName:string,data:any): Promise<any> {

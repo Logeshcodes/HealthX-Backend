@@ -47,7 +47,7 @@ export class VerificationContoller implements IVerificationControllers {
         const emailID = response.email;
         const status = response.status;
 
-        produce("verification-request", { emailID, status });
+        produce("verification-request", { emailID, status , medicalLicenseUrl ,degreeCertificateUrl  });
 
         res.status(200).send({
           success: true,
@@ -221,4 +221,6 @@ export class VerificationContoller implements IVerificationControllers {
       throw new Error("Error in controller ");
     }
   }
+
+ 
 }

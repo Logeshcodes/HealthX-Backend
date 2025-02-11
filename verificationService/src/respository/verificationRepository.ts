@@ -49,6 +49,7 @@ export class VerificationRepository implements IVerificationRepository {
             
         }
     }
+ 
     async updateRequest(email:string,data:updateRequestType):Promise<IVerificationModel | null>{
         try {
             const response=await this.verificationBaseRepository.updateRequest(email,data)

@@ -45,9 +45,9 @@ export class DoctorServices{
         }
     }
 
-    public async VerificationRequest(emailID:string,status:string){
+    public async VerificationRequest(emailID:string,status:string ,medicalLicenseUrl : string , degreeCertificateUrl : string){
         try {
-            const response=await this.doctorRepository.VerificationRequest(emailID,status)
+            const response=await this.doctorRepository.VerificationRequest(emailID,status ,medicalLicenseUrl , degreeCertificateUrl)
             return response
         } catch (error) {
             console.log(error)

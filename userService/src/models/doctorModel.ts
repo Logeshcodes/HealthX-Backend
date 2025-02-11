@@ -46,7 +46,7 @@ const doctorSchema : Schema<DoctorInterface> = new Schema({
     isBlocked : { type : Boolean , required : true , default: false },
     isApproved : { type : Boolean , required : true , default: false },
     status : { type : String , required : true  , default : 'requested'},
-    rejectedReason : { type : String , required : false },
+    rejectedReason : { type : String , required : true , default: 'No data' },
     consultationType : { type : String , required : true },
     consultationFee : { type : String , required : false },
 },{

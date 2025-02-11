@@ -13,7 +13,9 @@ async function consume() {
       topics: [
         "send-otp-email",
         "send-forgotPassword-email",
-        "verified-Doctor-email"
+        "verified-Doctor-email",
+        "document-rejection-mail",
+        "document-approval-mail"
       ],
       fromBeginning: true,
     });
@@ -44,6 +46,14 @@ async function consume() {
             case "verified-Doctor-email":
               await notificatinController.sendVerifiedDoctorEmail(messageValue);
               console.log("Processing verified-Doctor-email event:", messageValue);
+              break;
+            case "document-rejection-mail":
+              await notificatinController.sendRejectionDoctorEmail(messageValue);
+              console.log("Processing document-rejection-mail event:", messageValue);
+              break;
+            case "document-approval-mail":
+              await notificatinController.sendApprovalDoctorEmail(messageValue);
+              console.log("Processing document-approval-mail event:", messageValue);
               break;
             
 

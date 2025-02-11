@@ -76,6 +76,21 @@ export default class AdminService{
         }
 
 
+        async getDoctorByEmail(email: string): Promise<object | null> {
+          try {
+            console.log("in service" , email)
+
+            const doctor = await this.adminRepository.getDoctorByEmail(email);  
+            if (!doctor) {
+              throw new Error('Department not found');
+            }
+            return doctor;
+          } catch (error) {
+            throw error;
+          }
+        }
+
+
 
          
         async updateDepartment(departmentName: string, data: any): Promise<object | null> {

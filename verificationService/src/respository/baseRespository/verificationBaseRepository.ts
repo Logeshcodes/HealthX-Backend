@@ -66,6 +66,8 @@ export class VerificationBaseRepository implements IVerificationBaseRepository{
             
         }
     }
+
+   
     async updateRequest(email:string,data:updateRequestType):Promise<IVerificationModel | null>{
         try {
             console.log("before>>",email,data)

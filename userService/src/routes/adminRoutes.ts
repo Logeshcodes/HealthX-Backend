@@ -16,11 +16,16 @@ router.get('/blockDoctor/:email',IsAdmin, authenticateToken , adminController.bl
 
 
 
+router.post('/rejectDocuments/:email',IsAdmin, authenticateToken , adminController.rejectDocuments.bind(adminController));
+router.post('/approveDocuments/:email',  adminController.approveDocuments.bind(adminController)); // add some auth
+
+
+
 // Fetch department by ID
 router.get('/editDepartment/:departmentName',IsAdmin,authenticateToken ,  adminController.getDepartmentByName.bind(adminController));
 router.put('/editDepartment/:departmentName',IsAdmin,authenticateToken , adminController.updateDepartment.bind(adminController));
 
-
+router.get('/getDoctorByEmail/:email',IsAdmin,authenticateToken ,  adminController.getDoctorByEmail.bind(adminController));
 
 
 

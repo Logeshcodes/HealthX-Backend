@@ -192,11 +192,13 @@ export class DoctorController {
 
   async VerificationRequest(data:any){
     try {
-      const {emailID , status}=data
-      console.log(emailID , status , 'coming...')
+      const {emailID , status ,medicalLicenseUrl , degreeCertificateUrl}=data
+      console.log(emailID , status ,medicalLicenseUrl , degreeCertificateUrl, 'coming...')
       const response = await this.doctorService.VerificationRequest(
         emailID,
         status,
+        medicalLicenseUrl ,
+        degreeCertificateUrl,
       );
       return response
     } catch (error) {

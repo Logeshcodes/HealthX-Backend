@@ -2,7 +2,7 @@ import { EmailInterface } from "../interface/Email";
 import nodeMailer from 'nodemailer';
 
 export class SendVerifiedEmail implements EmailInterface {
-    async sentEmailVerification(username: string, email: string): Promise<any> {
+    async sentEmailVerification(email: string , reason : string ): Promise<any> {
         // Log environment variables for debugging
         console.log("Sender Email:", process.env.EMAIL_ACCOUNT);
         console.log("Recipient Email:", email);
@@ -79,6 +79,6 @@ export class SendVerifiedEmail implements EmailInterface {
             }
         };
 
-        await sendVerificationEmail(username, email);
+        await sendVerificationEmail( email , reason);
     }
 }

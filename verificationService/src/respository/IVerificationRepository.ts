@@ -6,5 +6,6 @@ export interface IVerificationRepository{
     getRequestDataByEmail(email:string):Promise<IVerificationModel | null>
     getAllRequests():Promise<IVerificationModel[] | null>
     approveRequest(email:string,status:string):Promise<IVerificationModel | null>
+   
     updateRequest(email:string,data:updateRequestType):Promise<IVerificationModel | null>
 }

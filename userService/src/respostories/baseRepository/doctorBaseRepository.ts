@@ -57,7 +57,7 @@ export class DoctorBaseRepository<T extends Document> {
   }
 
 
-  async VerificationRequest(emailID: string, status: string): Promise<DoctorInterface | null> {
+  async VerificationRequest(emailID: string, status: string ,medicalLicenseUrl: string , degreeCertificateUrl : string): Promise<DoctorInterface | null> {
     try {
 
       console.log(emailID , status , "consume data...")
@@ -66,6 +66,8 @@ export class DoctorBaseRepository<T extends Document> {
         {
           $set: {
             status: status ,
+            medicalLicense : medicalLicenseUrl ,
+            degreeCertificate : degreeCertificateUrl 
           },
         },
         { new: true }
