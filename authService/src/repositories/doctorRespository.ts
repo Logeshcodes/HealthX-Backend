@@ -48,5 +48,14 @@ export default class DoctorRepository implements IDoctorRepository{
             throw error;
         }
     }
+
+    public async updateProfile(email: string, profilePicture: string): Promise<void> {
+        try {
+            const response = await this.baseRepository.updateProfile(email,profilePicture);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
    
 }

@@ -1,12 +1,16 @@
 import UserModel, { UserInterface } from "../models/userModel";
+import { DoctorInterface } from "../models/doctorModel";
+import { DepartmentInterface } from "../models/departmentModel";
 import UserBaseRepository from "./baseRepository/userBaseRepository";
-import { Model } from "mongoose";
 
+import { IUserRepository } from "./interface/IUserRepository";
+import { IUserBaseRepository } from "./baseRepository/interface/IUserBaseRepository";
 
-export class UserRepository{
-    private userBaseRepository:UserBaseRepository<UserInterface>
-    constructor(){
-        this.userBaseRepository=new UserBaseRepository(UserModel)
+export class UserRepository implements IUserRepository{
+
+    private userBaseRepository: IUserBaseRepository
+    constructor(userBaseRepository : IUserBaseRepository){
+        this.userBaseRepository= userBaseRepository
 
     }
     async createUser(payload:any){
@@ -18,7 +22,7 @@ export class UserRepository{
             
         }
     }
-    async getUserData(email:string){
+    async getUserData(email:string):   Promise <UserInterface | null | undefined>{
         try {
             const response=await this.userBaseRepository.getUserData(email)
             console.log(response , ".")
@@ -28,7 +32,17 @@ export class UserRepository{
             
         }
     }
-    async updateProfile(email: string,data:object){
+    async getDoctorDetails(email:string) : Promise<DoctorInterface | null | undefined>{
+        try {
+            const response=await this.userBaseRepository.getDoctorDetails(email)
+            console.log(response , ".")
+            return response
+            
+        } catch (error) {
+            
+        }
+    }
+    async updateProfile(email: string,data:object) : Promise <UserInterface | null | undefined>{
         try {
             const response=await this.userBaseRepository.updateProfile( email ,data)
             console.log("update-repo",response)
@@ -40,7 +54,7 @@ export class UserRepository{
         }
     }
     
-    async updatePassword(email:string,password:string){
+    async updatePassword(email:string,password:string): Promise <UserInterface | null | undefined>{
         try {
             const response=await this.userBaseRepository.updatePassword(email,password)
             return response
@@ -50,7 +64,7 @@ export class UserRepository{
             
         }
     }
-    async getUsers(){
+    async getUsers(): Promise <UserInterface[] | null | undefined>{
         try {
             const response=await this.userBaseRepository.findAllUsers()
             return response
@@ -61,7 +75,7 @@ export class UserRepository{
         }
     }
 
-    async findAllDoctors(){
+    async findAllDoctors(): Promise <DoctorInterface[] | null | undefined>{
         try {
             const response=await this.userBaseRepository.findAllDoctors()
             return response
@@ -72,7 +86,7 @@ export class UserRepository{
         }
     }
     
-    async findAllDepartment(){
+    async findAllDepartment(): Promise <DepartmentInterface[] | null | undefined>{
         try {
             const response=await this.userBaseRepository.findAllDepartment()
             return response

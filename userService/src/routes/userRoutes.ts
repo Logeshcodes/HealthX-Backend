@@ -1,4 +1,4 @@
-import UserController from "../controllers/UserController";
+import { userController } from "../config/dependencyInjector";
 import { Router } from "express";
 import upload from "../helpers/multer";
 import authenticateToken from "../middleware/AuthenticatedRoutes";
@@ -7,22 +7,24 @@ import { IsUser } from "../middleware/RoleBasedAuth";
 
 
 const router=Router()
-let userController=new UserController()
-
 
 
 
 // router.get('/getUsers',userController.getUsers.bind(userController))
 
-router.post('/profile/updateProfile',upload.single('profilePicture'),userController.updateProfile.bind(userController))
+router.post('/profile/updateProfile', IsUser, authenticateToken,upload.single('profilePicture'),userController.updateProfile.bind(userController))
 
-router.get('/doctor_list' , userController.findAllDoctors.bind(userController))
-router.get('/department_list' , userController.findAllDepartment.bind(userController))
+router.get('/doctor_list' , IsUser, authenticateToken, userController.findAllDoctors.bind(userController))
+router.get('/department_list', IsUser, authenticateToken , userController.findAllDepartment.bind(userController))
 
 // profile
-router.get('/:email',userController.getUser.bind(userController))
+router.get('/:email', IsUser, authenticateToken,userController.getUser.bind(userController));
+
+ // For Doctor Details Page
+router.get('/doctor_details/:email', IsUser, authenticateToken,userController.getDoctorDetails.bind(userController));
+
 // change - password
-router.put('/profile/change-password',userController.updatePassword.bind(userController))
+router.put('/profile/change-password', IsUser, authenticateToken,userController.updatePassword.bind(userController))
 
 // edit- profile
 

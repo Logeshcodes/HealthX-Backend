@@ -18,7 +18,7 @@ export default interface IUserControllers {
     // below not implements - Google & Kafka Consume
 
     updatePassword(data:{ email: string; password: string }): Promise<UserInterface | null | undefined>;
-    updateProfile(data:{ email: string; data :object }): Promise<void>;
+    updateProfile(data:{ email: string; profilePicture: string }): Promise<void>;
     blockUser(data:{email:string,isBlocked:string}): Promise<void>;
   
 }

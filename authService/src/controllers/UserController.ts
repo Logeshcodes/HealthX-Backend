@@ -458,11 +458,11 @@ export class UserController implements IUserControllers{
     }
   }
 
-  async updateProfile(data:{ email: string;data : object }) {
+  async updateProfile(data:{ email: string; profilePicture: string } ) {
     try {
-      const { email } = data;
-      console.log(data, "consumeeee");
-      const response=await this.userService.updateProfile(email,{data})
+      const { email , profilePicture } = data;
+      console.log(data , "consumeeee....");
+      const response=await this.userService.updateProfile(email, profilePicture)
     } catch (error) {
       console.log(error);
     }

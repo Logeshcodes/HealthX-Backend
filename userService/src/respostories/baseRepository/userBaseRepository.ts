@@ -2,16 +2,13 @@ import { Document, Model } from "mongoose";
 
 import UserModel , { UserInterface } from "../../models/userModel"
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
-import DepartmentModel from "../../models/departmentModel";
+import DepartmentModel, { DepartmentInterface } from "../../models/departmentModel";
 
-export default class UserBaseRepository <T extends Document>{
+import { IUserBaseRepository } from "./interface/IUserBaseRepository";
 
-    private model : Model <T> 
+export default class UserBaseRepository implements IUserBaseRepository {
 
-    constructor(model:Model<T>){
-        this.model=model
-
-    }
+  
 
 
     async createUser(payload: UserInterface): Promise<UserInterface | null> {
@@ -34,6 +31,20 @@ export default class UserBaseRepository <T extends Document>{
           throw error;
         }
       }
+
+      async getDoctorDetails(email: string): Promise<DoctorInterface | null> {
+        try {
+          console.log(email , "user-mail")
+          const doctorData = await DoctorModel.findOne({ email : email });
+          console.log(doctorData)
+          return doctorData;
+        } catch (error) {
+          throw error;
+        }
+      }
+
+     
+      
 
       
       async updateProfile( email : string , data: object): Promise<UserInterface | null> {
@@ -68,7 +79,7 @@ export default class UserBaseRepository <T extends Document>{
         }
       }
     
-      async findAllUsers(){
+      async findAllUsers(): Promise <UserInterface[] | null | undefined>{
         try {
             const response=await UserModel.find()
             return response
@@ -79,7 +90,7 @@ export default class UserBaseRepository <T extends Document>{
         }
       }
 
-      async findAllDoctors(){
+      async findAllDoctors(): Promise <DoctorInterface[] | null | undefined>{
         try {
             const response=await DoctorModel.find()
             return response
@@ -90,7 +101,7 @@ export default class UserBaseRepository <T extends Document>{
         }
       }
 
-      async findAllDepartment(){
+      async findAllDepartment(): Promise <DepartmentInterface[] | null | undefined>{
         try {
             const response=await DepartmentModel.find()
             return response

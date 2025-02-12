@@ -1,13 +1,18 @@
-
+import { UserInterface } from "../models/userModel"
+import { DoctorInterface } from "../models/doctorModel"
 import { UserRepository } from "../respostories/userRepository"
 
-export default class UserServices{
-    private userRepository:UserRepository
-    constructor(){
-        this.userRepository=new UserRepository()
+import { IUserService } from "./interface/IUserService"
+import { IUserRepository } from "../respostories/interface/IUserRepository"
+
+export default class UserServices implements IUserService{
+
+    private userRepository:IUserRepository
+    constructor(userRepository :IUserRepository){
+        this.userRepository= userRepository
 
     }
-    public async createUser(payload:object){
+    public async createUser(payload: UserInterface){
         try {
             const response=await this.userRepository.createUser(payload)
             return response
@@ -16,7 +21,7 @@ export default class UserServices{
             
         }
     }
-    public async getUserData(email:string){
+    public async getUserData(email:string): Promise<UserInterface | undefined | null> {
         try {
             const response=await this.userRepository.getUserData(email)
             console.log(response , 'getuserdata -service')
@@ -26,7 +31,17 @@ export default class UserServices{
             
         }
     }
-    public async updateProfile(email: string,data:object){
+    public async getDoctorDetails(email:string): Promise <DoctorInterface | null | undefined>{
+        try {
+            const response=await this.userRepository.getDoctorDetails(email)
+            console.log(response , 'getDoctorDetails -service')
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+    public async updateProfile(email: string,data:object): Promise<UserInterface | null | undefined>{
         try {
             console.log("update-service")
             const response=await this.userRepository.updateProfile(email ,data)
@@ -38,7 +53,7 @@ export default class UserServices{
             
         }
     }
-    public async updatePassword(email:string,password:string){
+    public async updatePassword(email:string,password:string): Promise <UserInterface | null | undefined>{
         try {
             const response=await this.userRepository.updatePassword(email,password)
             return response
@@ -46,7 +61,7 @@ export default class UserServices{
             console.log(error)
         }
     }
-    public async getUsers(){
+    public async getUsers(): Promise <UserInterface[] | null | undefined>{
         try {
             const response=await this.userRepository.getUsers()
             return response
@@ -54,7 +69,7 @@ export default class UserServices{
             console.log(error)
         }
     }
-    public async findAllDoctors(){
+    public async findAllDoctors() : Promise <DoctorInterface[] | null | undefined>{
         try {
             const response=await this.userRepository.findAllDoctors()
             console.log("doctor ", response)

@@ -1,12 +1,12 @@
 import kafka from "./kafkaConfig";
 
 
-import UserController from "../../controllers/UserController";
-import { DoctorController } from "../../controllers/DoctorController";
+import { userController , doctorController } from "../dependencyInjector";
+
 
 async function consume() {
-  const userController = new UserController();
-  const doctorController=new DoctorController()
+  
+  
   const consumer = kafka.consumer({ groupId: "user-service" });
 
   try {

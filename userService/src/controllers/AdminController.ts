@@ -3,15 +3,20 @@ import { Request, Response } from "express";
 import AdminService from "../services/adminServices";
 
 import produce from "../config/kafka/producer";
+import DepartmentModel, { DepartmentInterface } from "../models/departmentModel";
 
-export default class AdminController {
-  private adminService: AdminService;
+import { IAdminController } from "./interface/IAdminController";
+import { IAdminService } from "../services/interface/IAdminservice";
 
-  constructor() {
-    this.adminService = new AdminService();
+export default class AdminController implements IAdminController {
+
+  private adminService: IAdminService;
+
+  constructor(adminService :  IAdminService) {
+    this.adminService = adminService ;
   }
 
-  async createDepartment(req: Request, res: Response): Promise<any> {
+  async createDepartment(req: Request, res: Response): Promise<void> {
     try {
       const { departmentName, isListed } = req.body;
 
@@ -21,36 +26,40 @@ export default class AdminController {
       );
 
       if (existingDept) {
-        return res.json({
+         res.json({
           success: false,
           message: "Department already exists",
           user: existingDept,
         });
+        return ;
       } else {
         const deptData = { departmentName, isListed };
-        const dept = await this.adminService.createDepartment(deptData);
+        const dept = await this.adminService.createDepartment(departmentName );
 
         if (dept) {
           await produce("add-department", dept);
-          return res.status(201).json({
+          res.status(201).json({
             success: true,
             message: "Department registration successful!",
             dept,
           });
+          return ;
         } else {
-          return res.status(400).json({
+         res.status(400).json({
             success: false,
             message: "Department registration failed!",
           });
+          return ;
         }
       }
     } catch (error: any) {
       console.error(error);
-      return res.status(500).json({
+       res.status(500).json({
         success: false,
         message: "Internal Server Error",
         error: error.message,
       });
+      return ;
     }
   }
 
@@ -311,7 +320,7 @@ export default class AdminController {
   }
 
   // Get Department by Name
-  async getDepartmentByName(req: Request, res: Response): Promise<any> {
+  async getDepartmentByName(req: Request, res: Response):  Promise< void>{
     try {
       console.log("oooooo", req.params);
 
@@ -322,9 +331,10 @@ export default class AdminController {
       );
 
       if (!deptData) {
-        return res
+         res
           .status(404)
           .json({ success: false, message: "Department not found" });
+          return;
       }
 
       res.json({ success: true, data: deptData });
@@ -358,7 +368,7 @@ export default class AdminController {
   }
 
   // Update Department by Name
-  async updateDepartment(req: Request, res: Response): Promise<any> {
+  async updateDepartment(req: Request, res: Response): Promise<void> {
     try {
       console.log("iiiii", req.params);
 
@@ -373,11 +383,13 @@ export default class AdminController {
         updateData.deptData.departmentName
       );
       if (existingDept) {
-        return res.json({
+        res.json({
           success: false,
           message: "Department already exists",
           user: existingDept,
+
         });
+        return ;
       }
       const deptData = await this.adminService.updateDepartment(
         departmentName,

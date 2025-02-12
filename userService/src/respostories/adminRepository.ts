@@ -2,18 +2,22 @@ import { AdminBaseRepository } from "./baseRepository/adminBaseRepository";
 
 import DepartmentModel , {DepartmentInterface} from "../models/departmentModel";
 
-export default class AdminRepository{
+import { IAdminRepository } from "./interface/IAdminRepository";
 
-    private adminBaseRepository : AdminBaseRepository<DepartmentInterface>
+import { IAdminBaseRepository } from "./baseRepository/interface/IAdminBaseRepository";
 
-    constructor(){
-        this.adminBaseRepository = new AdminBaseRepository(DepartmentModel)
+export default class AdminRepository implements IAdminRepository{
+
+    private adminBaseRepository : IAdminBaseRepository
+
+    constructor( adminBaseRepository : IAdminBaseRepository){
+        this.adminBaseRepository = adminBaseRepository
     }
 
 
 
 
-    async createDepartment(deptData : any) {
+    async createDepartment(deptData : DepartmentInterface) {
         const response =  await this.adminBaseRepository.createDepartment(deptData)
         return response ;
     }

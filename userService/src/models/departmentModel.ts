@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface DepartmentInterface extends Document {
   departmentName: string;
-  isListed: boolean;
+  isListed?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

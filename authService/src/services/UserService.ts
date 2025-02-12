@@ -41,9 +41,9 @@ class UserServices implements IUserServices{
    
 
 
-      public async updateProfile(email: string, data: any): Promise<UserInterface | null> {
+      public async updateProfile(email: string, profilePicture: string): Promise<UserInterface | null> {
         try {
-          const response = await this.userRepository.updateProfile(email, data);
+          const response = await this.userRepository.updateProfile(email, profilePicture);
           return response || null;
         } catch (error) {
           throw error;

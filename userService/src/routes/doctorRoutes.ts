@@ -3,8 +3,9 @@ import { Router } from "express";
 import upload from "../helpers/multer";
 import authenticateToken from "../middleware/AuthenticatedRoutes";
 import { IsDoctor } from "../middleware/RoleBasedAuth";
+import { doctorController } from "../config/dependencyInjector";
 const router=Router()
-let doctorController=new DoctorController()
+
 
 router.put('/profile/edit-profile',upload.single('profilePicture'),doctorController.updateProfile.bind(doctorController))
 router.put('/profile/change-password',doctorController.updatePassword.bind(doctorController))

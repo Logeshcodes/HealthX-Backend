@@ -42,8 +42,8 @@ const services = [
         context: "/notification", 
     },
     {
-        path: VERIFICATION_URL, // Target service URL
-        context: "/verification", // Route on your gateway
+        path: VERIFICATION_URL, 
+        context: "/verification", 
     },
 ];
 

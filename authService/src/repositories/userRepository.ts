@@ -39,9 +39,9 @@ export class UserRepository implements IUserRepository{
     }
 
 
-    public async updateProfile(email:string,data:any): Promise<any> {
+    public async updateProfile(email: string, profilePicture: string): Promise<any> {
         try {
-            const response = await this.baseRepository.updateProfile(email,data);
+            const response = await this.baseRepository.updateProfile(email,profilePicture);
             return response;
         } catch (error) {
             throw error;

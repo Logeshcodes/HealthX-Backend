@@ -1,15 +1,18 @@
 import DoctorModel , {DoctorInterface} from "../models/doctorModel"
 import { DoctorBaseRepository } from "./baseRepository/doctorBaseRepository";
 
+import { IDoctorRepository } from "./interface/IDoctorRepository";
+import { IDoctorBaseRepository } from "./baseRepository/interface/IDoctorBaseRepository";
 
+export class DoctorRepository implements IDoctorRepository{
 
-export class DoctorRepository{
-    private doctorBaseRepository:DoctorBaseRepository<DoctorInterface>
-    constructor(){
-        this.doctorBaseRepository=new DoctorBaseRepository(DoctorModel)
+    private doctorBaseRepository: IDoctorBaseRepository
+    constructor( doctorBaseRepository : IDoctorBaseRepository){
+        
+        this.doctorBaseRepository= doctorBaseRepository
 
     }
-    async createDoctor(payload:any){
+    async createDoctor(payload: DoctorInterface){
         try {
             const response=await this.doctorBaseRepository.createDoctor(payload)
             
@@ -18,7 +21,7 @@ export class DoctorRepository{
             
         }
     }
-    async getDoctorData(email:string){
+    async getDoctorData(email:string): Promise<DoctorInterface | null | undefined>{
         try {
             const response=await this.doctorBaseRepository.getDoctorData(email)
             return response
@@ -27,7 +30,7 @@ export class DoctorRepository{
             
         }
     }
-    async updateProfile(email:string,data:object){
+    async updateProfile(email:string,data:object): Promise<DoctorInterface | null | undefined>{
         try {
             const response=await this.doctorBaseRepository.updateProfile( email,data)
             return response
@@ -38,7 +41,7 @@ export class DoctorRepository{
         }
     }
     
-    async updatePassword(email:string,password:string){
+    async updatePassword(email:string,password:string): Promise<DoctorInterface | null | undefined>{
         try {
             const response=await this.doctorBaseRepository.updatePassword(email,password)
             return response
@@ -50,7 +53,7 @@ export class DoctorRepository{
     }
 
 
-    async VerificationRequest(emailID:string,status:string ,medicalLicenseUrl: string , degreeCertificateUrl : string ){
+    async VerificationRequest(emailID:string,status:string ,medicalLicenseUrl: string , degreeCertificateUrl : string ): Promise<DoctorInterface | null | undefined>{
         try {
             const response=await this.doctorBaseRepository.VerificationRequest(emailID,status ,medicalLicenseUrl , degreeCertificateUrl)
             return response
@@ -60,7 +63,7 @@ export class DoctorRepository{
             
         }
     }
-    async getDoctors(){
+    async getDoctors(): Promise<DoctorInterface[] | null | undefined>{
         try {
             const response=await this.doctorBaseRepository.getDoctors()
             return response

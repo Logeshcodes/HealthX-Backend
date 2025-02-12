@@ -1,11 +1,10 @@
 import { Document, Model } from "mongoose";
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
 
-export class DoctorBaseRepository<T extends Document> {
-  private model: Model<T>;
-  constructor(model: Model<T>) {
-    this.model = model;
-  }
+import { IDoctorBaseRepository } from "./interface/IDoctorBaseRepository";
+
+export class DoctorBaseRepository implements IDoctorBaseRepository {
+
 
   async createDoctor(payload: DoctorInterface): Promise<DoctorInterface | null> {
     try {
@@ -17,7 +16,7 @@ export class DoctorBaseRepository<T extends Document> {
     }
   }
 
-  async getDoctorData(email: string): Promise<DoctorInterface | null> {
+  async getDoctorData(email: string): Promise<DoctorInterface | null | undefined> {
     try {
       const doctorData = await DoctorModel.findOne({ email: email });
       return doctorData;
@@ -27,7 +26,7 @@ export class DoctorBaseRepository<T extends Document> {
   }
 
   // Doctor - Profile - update
-  async updateProfile(email:string, data: object): Promise<DoctorInterface | null> {
+  async updateProfile(email:string, data: object): Promise<DoctorInterface | null | undefined> {
     try {
       const doctorData = await DoctorModel.findOneAndUpdate( 
         {email : email},
@@ -39,7 +38,7 @@ export class DoctorBaseRepository<T extends Document> {
     }
   }
 
-  async updatePassword(email: string, password: string): Promise<DoctorInterface | null> {
+  async updatePassword(email: string, password: string): Promise<DoctorInterface | null | undefined> {
     try {
       const doctorData = await DoctorModel.findOneAndUpdate(
         { email },
@@ -57,7 +56,7 @@ export class DoctorBaseRepository<T extends Document> {
   }
 
 
-  async VerificationRequest(emailID: string, status: string ,medicalLicenseUrl: string , degreeCertificateUrl : string): Promise<DoctorInterface | null> {
+  async VerificationRequest(emailID: string, status: string ,medicalLicenseUrl: string , degreeCertificateUrl : string):  Promise<DoctorInterface | null | undefined> {
     try {
 
       console.log(emailID , status , "consume data...")
@@ -79,7 +78,7 @@ export class DoctorBaseRepository<T extends Document> {
     }
   }
 
-  async getDoctors(){
+  async getDoctors(): Promise<DoctorInterface[] | null | undefined>{
     try {
         const response=await DoctorModel.find()
         return response

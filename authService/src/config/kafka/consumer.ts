@@ -50,11 +50,11 @@ async function consume() {
 
             case "update-profile-user":
               await userController.updateProfile(messageValue);
-              console.log("Processing add-doctor event:", messageValue);
+              console.log("Processing update - user event:", messageValue);
               break;
             case "block-user":
               await userController.blockUser(messageValue);
-              console.log("Processing add-doctor event:", messageValue);
+              console.log("Processing block-user event:", messageValue);
               break;
 
               //doctor
@@ -63,6 +63,11 @@ async function consume() {
                 await doctorController.updatePassword(messageValue);
                 console.log("Processed add-password doctor event:", messageValue);
                 break;
+              
+                case "update-profile-doctor":
+                  await doctorController.updateProfile(messageValue);
+                  console.log("Processed updateProfile doctor event:", messageValue);
+                  break;
 
                 //admin
   

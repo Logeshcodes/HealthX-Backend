@@ -9,25 +9,42 @@ import verifyToken from "../utils/jwt";
 import JwtService from "../utils/jwt";
 import produce from "../config/kafka/producer";
 
+import { IUserController } from "./interface/IUserController";
+import { IUserService } from "../services/interface/IUserService";
 
-export default class UserController {
-  private userService: UserServices;
-  constructor() {
-    this.userService = new UserServices();
+
+export default class UserController implements IUserController  {
+
+  private userService: IUserService;
+  constructor(userService:IUserService) {
+    this.userService = userService;
   }
 
-  public async addUser(payload: UserInterface): Promise<any> {
+  public async addUser(payload: UserInterface): Promise<void> {
     try {
       let response = await this.userService.createUser(payload);
     } catch (error) {
       console.log(error);
     }
   }
-  public async getUser(req: Request, res: Response): Promise<any> {
+
+  public async getUser(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.params;
       console.log(email,"get user Data poda")
       let response = await this.userService.getUserData(email);
+       console.log(response , "Res")
+      res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  public async getDoctorDetails(req: Request, res: Response): Promise<any> {
+    try {
+      const { email } = req.params;
+      console.log(email,"get user doctor Data ")
+      let response = await this.userService.getDoctorDetails(email);
        console.log(response , "Res")
       res.json(response);
     } catch (error) {
@@ -77,7 +94,7 @@ export default class UserController {
   
       // Send response to client
       if (response) {
-        await produce("update-profile-user", response);
+        await produce("update-profile-user", {email ,profilePicture : profilePicture });
         res.status(200).json({
           success: true,
           message: "Profile Updated!",
@@ -146,7 +163,7 @@ export default class UserController {
     }
   }
 
-  public async getUsers(req:Request,res:Response){
+  public async getUsers(req:Request,res:Response): Promise<void>{
     try {
     
       const users=await this.userService.getUsers()
@@ -160,7 +177,7 @@ export default class UserController {
     }
   }
   
-  public async findAllDoctors(req:Request,res:Response){
+  public async findAllDoctors(req:Request,res:Response): Promise<void>{
     try {
     console.log('lissssssssst')
       const users=await this.userService.findAllDoctors()
@@ -173,7 +190,7 @@ export default class UserController {
       
     }
   }
-  public async findAllDepartment(req:Request,res:Response){
+  public async findAllDepartment(req:Request,res:Response): Promise<void>{
     try {
     console.log('findAllDepartment')
       const departments=await this.userService.findAllDepartment()
@@ -188,7 +205,7 @@ export default class UserController {
   }
 
 
-  public async blockUser(req:Request,res:Response){
+  public async blockUser(req:Request,res:Response): Promise<void>{
     try {
       const { email }=req.params
 
@@ -224,7 +241,7 @@ export default class UserController {
 
 
   ///kafka consume
-  async passwordReset(data:any){
+  async passwordReset(data:any): Promise<UserInterface | undefined | null>{
     try {
       const {password,email}=data
       const response = await this.userService.updatePassword(

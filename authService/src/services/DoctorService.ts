@@ -46,6 +46,16 @@ export default class DoctorService implements IDoctorServices{
         }
     }
 
+
+      public async updateProfile(email: string, profilePicture: string): Promise<void> {
+            try {
+              const response = await this.doctorRepository.updateProfile(email, profilePicture);
+            
+            } catch (error) {
+              throw error;
+            }
+          }
+          
   
 
 

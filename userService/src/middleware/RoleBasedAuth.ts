@@ -68,7 +68,7 @@ export const IsAdmin = async ( req : Request , res : Response , next : NextFunct
 
     try {
 
-        const Token =  req.cookies.accessToken ;
+        const Token =  req.cookies.accessToken2 ;
         console.log("tokrn " , Token)
 
         if(!Token){

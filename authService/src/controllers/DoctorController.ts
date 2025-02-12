@@ -465,6 +465,16 @@ export default class DoctorController implements IDoctorControllers {
         }
         
 
+        async updateProfile(data:{ email: string; profilePicture: string } ) {
+          try {
+            const { email , profilePicture } = data;
+            console.log(data , "consumeeee....");
+            const response=await this.doctorService.updateProfile(email, profilePicture)
+          } catch (error) {
+            console.log(error);
+          }
+        }
+
 
       
 }

@@ -8,20 +8,24 @@ import produce from "../config/kafka/producer";
 import mongoose from "mongoose";
 import JwtService from "../utils/jwt";
 
-export class DoctorController {
-  private doctorService: DoctorServices;
-  constructor() {
-    this.doctorService = new DoctorServices();
+import { IDoctorController } from "./interface/IDoctorController";
+import { IDoctorService } from "../services/interface/IDoctorService";
+
+export class DoctorController implements IDoctorController {
+
+  private doctorService: IDoctorService;
+  constructor(doctorService :IDoctorService) {
+    this.doctorService = doctorService
   }
 
-  public async addDoctor(payload: DoctorInterface): Promise<any> {
+  public async addDoctor(payload: DoctorInterface): Promise<void> {
     try {
       let response = await this.doctorService.createDoctor(payload);
     } catch (error) {
       console.log(error);
     }
   }
-  public async getDoctor(req: Request, res: Response): Promise<any> {
+  public async getDoctor(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.params;
       // console.log(email,"get Doctor Data")
@@ -60,7 +64,7 @@ export class DoctorController {
       
 
       if (response) {
-        await produce("update-profile-doctor",response)
+        await produce("update-profile-doctor",{email ,profilePicture : profilePicture })
         res.status(200).json({
           success: true,
           message: "Profile Updated!",
@@ -139,7 +143,7 @@ export class DoctorController {
       
     }
   }
-  public async blockDoctor(req:Request,res:Response){
+  public async blockDoctor(req:Request,res:Response): Promise<void>{
     try {
       const { email }=req.params
       console.log(email,"Doctor...")
@@ -176,7 +180,7 @@ export class DoctorController {
 
 
   ///kafka consume
-  async passwordReset(data:any){
+  async passwordReset(data:any) : Promise<DoctorInterface | null | undefined>{
     try {
       const {password,email}=data
       const response = await this.doctorService.updatePassword(
@@ -190,7 +194,7 @@ export class DoctorController {
   }
 
 
-  async VerificationRequest(data:any){
+  async VerificationRequest(data:any): Promise<DoctorInterface | null | undefined>{
     try {
       const {emailID , status ,medicalLicenseUrl , degreeCertificateUrl}=data
       console.log(emailID , status ,medicalLicenseUrl , degreeCertificateUrl, 'coming...')

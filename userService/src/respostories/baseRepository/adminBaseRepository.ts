@@ -4,18 +4,12 @@ import DepartmentModel , {DepartmentInterface} from "../../models/departmentMode
 import UserModel , {UserInterface} from "../../models/userModel";
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
 
-export class AdminBaseRepository<T extends Document> {
+import { IAdminBaseRepository } from "./interface/IAdminBaseRepository";
 
-  private model: Model<T>;
-
-  constructor(model: Model<T>) {
-    this.model = model;
-  }
+export class AdminBaseRepository implements IAdminBaseRepository {
 
 
-
-
-    async createDepartment (deptData : any) :Promise< DepartmentInterface|null>{
+    async createDepartment (deptData : DepartmentInterface) :Promise< DepartmentInterface|null>{
 
        try {
 

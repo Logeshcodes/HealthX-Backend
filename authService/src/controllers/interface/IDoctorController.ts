@@ -17,6 +17,8 @@ export default interface IDoctorControllers {
     
     updatePassword(data: { email: string; password: string }): Promise<void>;
 
+    updateProfile(data:{ email: string; profilePicture: string } ): Promise<void>;
+
     doGoogleLogin(req: Request, res: Response): Promise<void>;
    
 }

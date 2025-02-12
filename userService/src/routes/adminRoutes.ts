@@ -1,11 +1,12 @@
 import { Router } from "express";
 
 import AdminController from "../controllers/AdminController";
-import authenticateToken from "../middleware/AuthenticatedRoutes";
+import authenticateToken from "../helpers/AdminAuthRoutes";
 import { IsAdmin } from "../middleware/RoleBasedAuth";
+import { adminController } from "../config/dependencyInjector";
 const router=Router()
 
-let adminController=new AdminController()
+
 
 router.post('/addDepartment',IsAdmin , authenticateToken,adminController.createDepartment.bind(adminController))
 router.get('/department', IsAdmin, authenticateToken, adminController.getAllDepartments.bind(adminController));

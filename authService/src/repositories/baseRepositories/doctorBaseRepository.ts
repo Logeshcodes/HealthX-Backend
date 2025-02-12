@@ -101,13 +101,18 @@ export default class DoctorBaseRepository implements IDoctorBaseRepository{
 
 
 
-    async updateProfile(email:string,data: any) {
+    async updateProfile( email: string, profilePicture: string): Promise<  void> {
         try {
+          console.log("data..!",profilePicture)
           
-          const response = await DoctorModel.findOneAndUpdate({ email } , {$set: data} , {new: true });
-          return response
+          const userData = await DoctorModel.findOneAndUpdate( 
+          {email : email},
+          { $set: { profilePicture : profilePicture} }, 
+          { new: true });
+          console.log("update-auth-base-repo",userData)
+        
         } catch (error) {
-          console.log(error);
+          throw error;
         }
       }
 }
