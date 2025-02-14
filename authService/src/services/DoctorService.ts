@@ -55,6 +55,16 @@ export default class DoctorService implements IDoctorServices{
               throw error;
             }
           }
+
+
+      public async blockDoctor(email : string, isBlocked : boolean  , status : string  ) : Promise<void> {
+            try {
+              const response = await this.doctorRepository.blockDoctor(email, isBlocked  , status);
+            
+            } catch (error) {
+              throw error;
+            }
+          }
           
   
 

@@ -4,7 +4,7 @@ import { DepartmentInterface } from "@/models/departmentModel";
 
 export interface IUserBaseRepository{
 
-    createUser(payload: UserInterface): Promise<UserInterface | null>
+    createUser(payload: UserInterface): Promise<void>
     getUserData(email: string): Promise<UserInterface | null>
     getDoctorDetails(email: string): Promise<DoctorInterface | null>
     updateProfile( email : string , data: object): Promise<UserInterface | null>

@@ -12,7 +12,7 @@ export interface UserInterface extends Document{
     isVerified : boolean ,
     isBlocked : boolean ,
     createdAt?: Date ,
-    updateAt? : Date ,
+    updatedAt? : Date ,
 
     age? : number ,
     gender? : string ,
@@ -26,7 +26,7 @@ const UserSchema : Schema<UserInterface> = new Schema({
     email : { type : String , required : true , unique : true },
     MobileNumber : { type : String , required : false , unique : true },
     hashedPassword : { type : String , required : true },
-    role : { type : String , required : false , default : 'user' },
+    role : { type : String , required : false , default : 'User' },
     profilePicture : { type : String , required : false , default : 'No Picture' },
     authenticationMethod : { type : String , required : false , default : 'Password' },
     isVerified : { type : Boolean , required : true , default : false },

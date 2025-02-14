@@ -468,10 +468,12 @@ export class UserController implements IUserControllers{
     }
   }
 
-  async blockUser(data:any){
+  async blockUser(data :{email:string,isBlocked:boolean}): Promise <void>{
     try {
-      const {email,isBlocked}=data
-      const response=await this.userService.updateProfile(email,{isBlocked})
+
+      const {email , isBlocked} = data ;
+     
+      const response=await this.userService.blockUser(email,isBlocked )
       console.log(response)
     } catch (error) {
       console.log(error)

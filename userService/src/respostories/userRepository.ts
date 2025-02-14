@@ -13,10 +13,12 @@ export class UserRepository implements IUserRepository{
         this.userBaseRepository= userBaseRepository
 
     }
-    async createUser(payload:any){
+    async createUser(payload:UserInterface): Promise<void>{
         try {
+
+            console.log('in the repository ', payload)
             const response=await this.userBaseRepository.createUser(payload)
-            
+            return response
             
         } catch (error) {
             

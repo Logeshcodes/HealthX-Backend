@@ -9,4 +9,5 @@ export default interface IDoctorRepository {
     getAllDepartments():Promise<DepartmentInterface[] | null> ;
     updateProfile(email: string, profilePicture: string): Promise<void>
     googleLogin(name: string, email: string, password: string): Promise<DoctorInterface | null>;
+    blockDoctor(email : string, isBlocked : boolean  , status : string  ) : Promise<void>
 }

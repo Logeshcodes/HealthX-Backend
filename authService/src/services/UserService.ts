@@ -50,6 +50,15 @@ class UserServices implements IUserServices{
         }
       }
       
+      public async blockUser(email:string,isBlocked:boolean): Promise<UserInterface | null> {
+        try {
+          const response = await this.userRepository.blockUser(email, isBlocked);
+          return response || null;
+        } catch (error) {
+          throw error;
+        }
+      }
+      
 
 }
 

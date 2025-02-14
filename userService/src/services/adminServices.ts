@@ -98,8 +98,8 @@ export default class AdminService implements IAdminService{
 
 
       
-        async createDepartment(deptData : DepartmentInterface): Promise<DepartmentInterface | null| undefined > {
-            const response =  await this.adminRepository.createDepartment(deptData)
+        async createDepartment(departmentName : string): Promise<DepartmentInterface | null| undefined > {
+            const response =  await this.adminRepository.createDepartment(departmentName)
             return response ;
         }
 

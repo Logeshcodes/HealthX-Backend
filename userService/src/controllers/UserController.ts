@@ -22,7 +22,11 @@ export default class UserController implements IUserController  {
 
   public async addUser(payload: UserInterface): Promise<void> {
     try {
+      console.log('in the ontroller ', payload)
+
       let response = await this.userService.createUser(payload);
+      //return response
+      console.log("user created =>>>>>>>>>>>",response)
     } catch (error) {
       console.log(error);
     }

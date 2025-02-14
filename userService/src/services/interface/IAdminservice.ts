@@ -18,7 +18,7 @@ export interface IAdminService{
     
     updateDepartment(departmentName: string, data: any): Promise <DepartmentInterface | null | undefined>
     getDepartmentByName(departmentName: string): Promise <DepartmentInterface | null | undefined>
-    createDepartment(deptData : DepartmentInterface ): Promise <DepartmentInterface | null | undefined>;
+    createDepartment(departmentName : string ): Promise <DepartmentInterface | null | undefined>;
     findDepartmentByName(departmentName : string ) : Promise <DepartmentInterface | null | undefined> ;
     getAllDepartments(): Promise <DepartmentInterface[] | null | undefined>;
 }

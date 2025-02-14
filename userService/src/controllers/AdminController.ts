@@ -304,7 +304,7 @@ export default class AdminController implements IAdminController {
       });
 
       // await produce("block-doctor", { email, isBlocked , status });
-      await produce("block-doctor", { email, isBlocked });
+      await produce("block-doctor", { email, isBlocked  , status});
 
       return res.status(200).json({
         success: true,

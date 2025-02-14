@@ -47,5 +47,13 @@ export class UserRepository implements IUserRepository{
             throw error;
         }
     }
+    public async blockUser(email:string,isBlocked:boolean): Promise<any> {
+        try {
+            const response = await this.baseRepository.blockUser(email,isBlocked);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
     
 }

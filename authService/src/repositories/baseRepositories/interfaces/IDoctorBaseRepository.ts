@@ -8,5 +8,6 @@ export default interface IDoctorBaseRepository {
     resetPassword(email:string,password:string): Promise<DoctorInterface | null>;
     getAllDepartments():Promise<DepartmentInterface[] | null> ;
     updateProfile( email: string, profilePicture: string): Promise<  void>
+    blockDoctor(email : string, isBlocked : boolean  , status : string  ) : Promise<void>
     googleLogin(name: string, email: string, password: string): Promise<DoctorInterface | null>;
 }

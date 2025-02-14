@@ -13,7 +13,7 @@ router.get('/department', IsAdmin, authenticateToken, adminController.getAllDepa
 router.get('/users',IsAdmin,authenticateToken , adminController.getAllUsers.bind(adminController));
 router.get('/getDoctors',IsAdmin,authenticateToken , adminController.getAllDoctors.bind(adminController));
 router.get('/blockUser/:email',IsAdmin, authenticateToken , adminController.blockUser.bind(adminController));
-router.get('/blockDoctor/:email',IsAdmin, authenticateToken , adminController.blockDoctor.bind(adminController));
+router.get('/blockDoctor/:email',IsAdmin, authenticateToken , adminController.blockDoctor.bind(adminController)); // post
 
 
 

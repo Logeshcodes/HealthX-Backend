@@ -115,4 +115,18 @@ export default class DoctorBaseRepository implements IDoctorBaseRepository{
           throw error;
         }
       }
+    async blockDoctor(email : string, isBlocked : boolean  , status : string  ) : Promise<void> {
+        try {
+          console.log("data..!",email, isBlocked  , status)
+          
+          const userData = await DoctorModel.findOneAndUpdate( 
+          {email : email},
+          { $set: { isBlocked : isBlocked , status : status} }, 
+          { new: true });
+          console.log("update-auth-base-repo",userData)
+        
+        } catch (error) {
+          throw error;
+        }
+      }
 }

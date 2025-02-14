@@ -57,5 +57,14 @@ export default class DoctorRepository implements IDoctorRepository{
             throw error;
         }
     }
+
+    public async blockDoctor(email : string, isBlocked : boolean  , status : string  ) : Promise<void>{
+        try {
+            const response = await this.baseRepository.blockDoctor(email, isBlocked  , status);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
    
 }

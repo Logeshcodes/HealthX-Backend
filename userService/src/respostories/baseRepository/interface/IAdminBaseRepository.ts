@@ -13,7 +13,7 @@ export interface IAdminBaseRepository{
     getDoctorByEmail( email: string): Promise<any>
     getDoctorData(email: string): Promise<DoctorInterface | null>
 
-    createDepartment (deptData : DepartmentInterface) :Promise< DepartmentInterface|null>;
+    createDepartment (departmentName : string) :Promise< DepartmentInterface|null>;
     findDepartmentByName(departmentName: string): Promise<DepartmentInterface | null>;
     getAllDepartments(): Promise<DepartmentInterface[] | null>
     getDepartmentByName( departmentName: string): Promise<any>

@@ -14,7 +14,7 @@ export default interface IDoctorControllers {
     resetPassword(req: Request, res: Response): Promise<void>;
     getAllDepartments(req: Request, res: Response): Promise<void>;
 
-    
+    blockDoctor(data:{email : string, isBlocked : boolean  , status : string } ) : Promise<void>
     updatePassword(data: { email: string; password: string }): Promise<void>;
 
     updateProfile(data:{ email: string; profilePicture: string } ): Promise<void>;

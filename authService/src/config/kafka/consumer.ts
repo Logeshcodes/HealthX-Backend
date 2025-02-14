@@ -69,6 +69,11 @@ async function consume() {
                   console.log("Processed updateProfile doctor event:", messageValue);
                   break;
 
+                case "block-doctor":
+                    await doctorController.blockDoctor(messageValue);
+                    console.log("Processing block-user event:", messageValue);
+                    break;
+
                 //admin
   
             case "add-department":

@@ -17,8 +17,8 @@ export default class AdminRepository implements IAdminRepository{
 
 
 
-    async createDepartment(deptData : DepartmentInterface) {
-        const response =  await this.adminBaseRepository.createDepartment(deptData)
+    async createDepartment(departmentName : string) {
+        const response =  await this.adminBaseRepository.createDepartment(departmentName)
         return response ;
     }
 

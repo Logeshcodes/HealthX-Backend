@@ -11,15 +11,23 @@ export default class UserBaseRepository implements IUserBaseRepository {
   
 
 
-    async createUser(payload: UserInterface): Promise<UserInterface | null> {
-        try {
-          const user = await UserModel.create(payload);
-          await user.save();
-          return user;
-        } catch (error) {
-          throw error;
+        async createUser(payload: UserInterface): Promise<any> {
+          try {
+            // Omit _id from payload if it exists
+            const { _id , createdAt , updatedAt , ...userPayload } = payload;
+        
+            console.log('create user:', userPayload);
+            
+            const user = await UserModel.create(userPayload);
+            console.log('User created or updated:', user);
+            
+            return user;
+          } catch (error) {
+            console.error('Error creating user:', error);
+            throw error;
+          }
         }
-      }
+  
     
       async getUserData(email: string): Promise<UserInterface | null> {
         try {
@@ -92,7 +100,7 @@ export default class UserBaseRepository implements IUserBaseRepository {
 
       async findAllDoctors(): Promise <DoctorInterface[] | null | undefined>{
         try {
-            const response=await DoctorModel.find()
+            const response=await DoctorModel.find({isBlocked: false , status : "approved"})
             return response
             
         } catch (error) {

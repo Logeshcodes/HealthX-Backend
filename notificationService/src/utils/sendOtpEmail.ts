@@ -8,6 +8,9 @@ export class SendEmail implements EmailInterface {
     async sentEmailVerification( email: string, verification: string): Promise<any> {
         const transporter = nodeMailer.createTransport({
             service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465, 
+            secure: true,
             auth: {
                 user: process.env.EMAIL_ACCOUNT,
                 pass: process.env.ACCOUNT_PASSWORD,

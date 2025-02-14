@@ -209,6 +209,17 @@ export default class DoctorController implements IDoctorControllers {
               message: "Invalid Password",
             });
           }
+
+          if (doctor.status === "blocked") {
+            console.log(" blocked...")
+            return res.json({
+              success: false,
+              message: "Doctor Blocked !",
+            });
+        
+          }
+
+
           let role = doctor.role;
           // Generate a JWT token if credentials are correct
           const accesstoken = await this.JWT.accessToken({ email, role });
@@ -470,6 +481,17 @@ export default class DoctorController implements IDoctorControllers {
             const { email , profilePicture } = data;
             console.log(data , "consumeeee....");
             const response=await this.doctorService.updateProfile(email, profilePicture)
+          } catch (error) {
+            console.log(error);
+          }
+        }
+
+
+        async blockDoctor(data:{email : string, isBlocked : boolean  , status : string } ) : Promise<void>{
+          try {
+            const { email, isBlocked  , status } = data;
+            console.log(data , "consumeeee....");
+            const response=await this.doctorService.blockDoctor(email, isBlocked  , status)
           } catch (error) {
             console.log(error);
           }

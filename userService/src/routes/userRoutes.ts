@@ -4,7 +4,7 @@ import upload from "../helpers/multer";
 import authenticateToken from "../middleware/AuthenticatedRoutes";
 
 import { IsUser } from "../middleware/RoleBasedAuth";
-
+import { IsUserBlocked } from "../middleware/blockedUsers";
 
 const router=Router()
 
@@ -12,7 +12,7 @@ const router=Router()
 
 // router.get('/getUsers',userController.getUsers.bind(userController))
 
-router.post('/profile/updateProfile', IsUser, authenticateToken,upload.single('profilePicture'),userController.updateProfile.bind(userController))
+router.post('/profile/updateProfile', IsUser , authenticateToken,upload.single('profilePicture'),userController.updateProfile.bind(userController))
 
 router.get('/doctor_list' , IsUser, authenticateToken, userController.findAllDoctors.bind(userController))
 router.get('/department_list', IsUser, authenticateToken , userController.findAllDepartment.bind(userController))

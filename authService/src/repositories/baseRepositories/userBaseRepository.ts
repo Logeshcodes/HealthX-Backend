@@ -107,5 +107,20 @@ export default class UserBaseRepository  implements IUserBaseRepository{
           throw error;
         }
       }
+
+    async blockUser(email:string,isBlocked:boolean): Promise<UserInterface | null> {
+        try {
+          console.log("data..********************!",isBlocked)
+          
+          const userData = await UserModel.findOneAndUpdate( 
+          {email : email},
+          { $set: { isBlocked : isBlocked} }, 
+          { new: true });
+          console.log("update-auth-base-repo",userData)
+          return userData;
+        } catch (error) {
+          throw error;
+        }
+      }
     
 }

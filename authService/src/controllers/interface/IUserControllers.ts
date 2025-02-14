@@ -19,6 +19,6 @@ export default interface IUserControllers {
 
     updatePassword(data:{ email: string; password: string }): Promise<UserInterface | null | undefined>;
     updateProfile(data:{ email: string; profilePicture: string }): Promise<void>;
-    blockUser(data:{email:string,isBlocked:string}): Promise<void>;
+    blockUser(data :{email:string,isBlocked:boolean}): Promise <void>
   
 }

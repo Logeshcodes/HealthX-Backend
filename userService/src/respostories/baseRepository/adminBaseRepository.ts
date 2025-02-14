@@ -9,11 +9,11 @@ import { IAdminBaseRepository } from "./interface/IAdminBaseRepository";
 export class AdminBaseRepository implements IAdminBaseRepository {
 
 
-    async createDepartment (deptData : DepartmentInterface) :Promise< DepartmentInterface|null>{
+    async createDepartment (departmentName : string) :Promise< DepartmentInterface|null>{
 
        try {
 
-        const dept = await DepartmentModel.create(deptData)
+        const dept = await DepartmentModel.create({departmentName})
         console.log("dept data : " , dept)
         await dept.save()
 
