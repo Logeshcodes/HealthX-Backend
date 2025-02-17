@@ -8,14 +8,14 @@ import { IsUserBlocked } from "../middleware/blockedUsers";
 
 const router=Router()
 
+// Home Page doctor and dept list
+router.get('/doctor_list' , userController.findAllDoctors.bind(userController))
+router.get('/department_list', userController.findAllDepartment.bind(userController))
 
-
-// router.get('/getUsers',userController.getUsers.bind(userController))
 
 router.post('/profile/updateProfile', IsUser , authenticateToken,upload.single('profilePicture'),userController.updateProfile.bind(userController))
 
-router.get('/doctor_list' , IsUser, authenticateToken, userController.findAllDoctors.bind(userController))
-router.get('/department_list', IsUser, authenticateToken , userController.findAllDepartment.bind(userController))
+
 
 // profile
 router.get('/:email', IsUser, authenticateToken,userController.getUser.bind(userController));

@@ -41,6 +41,8 @@ export class DoctorController implements IDoctorController {
     try {
       const { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData ,  } = req.body;
 
+      console.log("consultationFee" , consultationFee)
+
       console.log(req.body, "update Doctor Data");
       console.log(req.file, "update Doctor Data");
 

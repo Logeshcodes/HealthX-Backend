@@ -8,11 +8,11 @@ import morgan from "morgan" ;
 
 config();
 
-const {PORT ,  FRONTEND_URL , AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL } = process.env
+const {PORT ,  FRONTEND_URL , AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL , BOOKING_URL } = process.env
 
 const app : Application = express()
 
-console.log("Environment Variables:", { PORT, FRONTEND_URL, AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL });
+console.log("Environment Variables:", { PORT, FRONTEND_URL, AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL , BOOKING_URL });
 
 // cors
 
@@ -44,6 +44,10 @@ const services = [
     {
         path: VERIFICATION_URL, 
         context: "/verification", 
+    },
+    {
+        path: BOOKING_URL, 
+        context: "/booking", 
     },
 ];
 
