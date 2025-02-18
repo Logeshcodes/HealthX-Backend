@@ -16,6 +16,17 @@ export default class UserBaseRepository implements IUserBaseRepository {
             throw error;
         }
     }
+
+    public async  getSlotDetailsById( id : string ) : Promise <SlotInterface | null | undefined> {
+        try {
+            const response = await SlotModel.findById({_id : id})
+                
+            return response;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
     
 
 

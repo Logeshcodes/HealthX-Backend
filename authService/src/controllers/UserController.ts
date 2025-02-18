@@ -42,7 +42,7 @@ export class UserController implements IUserControllers{
   public async userSignUp(req: Request, res: Response): Promise<any> {
     try {
 
-      let { email, password } = req.body;
+      let { username , email, password  , mobileNumber} = req.body;
       console.log(email, password);
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -69,8 +69,10 @@ export class UserController implements IUserControllers{
         )
     
         const token = await this.JWT.createToken({
+          username ,
           email,
           hashedPassword,
+          mobileNumber ,
           role: "User",
         });
 

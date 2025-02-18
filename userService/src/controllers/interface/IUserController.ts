@@ -15,6 +15,8 @@ export interface IUserController{
     passwordReset( data:any): Promise<UserInterface | undefined | null>;
 
 
+    paymentSuccess(req : Request , res : Response): Promise <any> ;
+
 
 
     getDoctorDetails( req : Request , res : Response) : Promise <void> ;

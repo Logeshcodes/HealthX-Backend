@@ -29,5 +29,8 @@ router.put('/profile/change-password', IsUser, authenticateToken,userController.
 // edit- profile
 
 
+// payment :
+router.post('/payment-success',userController.paymentSuccess.bind(userController))
+
 const userRoutes=router
 export default userRoutes

@@ -22,6 +22,14 @@ export class UserRepository implements IUserRepository{
                 console.log(error);
             }
         }
+        async getSlotDetailsById( id : string ) : Promise <SlotInterface | null | undefined> {
+            try {
+                const response=await this.userBaseRepository.getSlotDetailsById(id)
+                return response;
+            } catch (error) {
+                console.log(error);
+            }
+        }
         
     
     

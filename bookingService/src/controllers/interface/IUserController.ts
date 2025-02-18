@@ -6,5 +6,5 @@ export interface IUserController {
 
    
     getSlotBooking(req: Request, res: Response): Promise<void>;
- 
+    getSlotDetailsById(req: Request, res: Response): Promise < void >;
 }

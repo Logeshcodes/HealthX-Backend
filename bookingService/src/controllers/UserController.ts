@@ -61,6 +61,45 @@ export class UserController implements IUserController {
         }
     }
     
+
+    public async getSlotDetailsById(req: Request, res: Response): Promise < void >{
+
+       try {
+        
+        const { id } = req.params;
+
+        console.log(" slot id" , id)
+
+        const response = await this.userService.getSlotDetailsById( id); 
+
+
+        if (response) {
+            
+            res.json({
+                success: true,
+                message: "Slots fetched successfully",
+                data: response,
+                
+            });
+            return ;
+        } else {
+            res.status(404).json({
+                success: false,
+                message: "No slots found!",
+            });
+        }
+
+
+       } catch (error) {
+
+            console.error("Error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Internal server error",
+            });
+       }
+
+    }
       
 
 }

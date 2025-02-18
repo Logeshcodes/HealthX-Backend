@@ -1,5 +1,6 @@
 import { UserInterface } from "../models/userModel";
 import { Request, Response } from "express";
+import * as crypto from 'crypto';
 
 import UserServices from "../services/userServices";
 
@@ -11,6 +12,10 @@ import produce from "../config/kafka/producer";
 
 import { IUserController } from "./interface/IUserController";
 import { IUserService } from "../services/interface/IUserService";
+
+import { config } from 'dotenv';
+
+config()
 
 
 export default class UserController implements IUserController  {
@@ -257,4 +262,33 @@ export default class UserController implements IUserController  {
       console.log(error)
     }
   }
+
+
+
+  async  paymentSuccess(req: Request, res: Response) : Promise <any> {
+    const data = req.body;
+    const hashString = `${process.env.PAYU_SALT}|${data.status}|||||||||||${data.email}|${data.firstname}|${data.productinfo}|${data.amount}|${data.txnid}|${process.env.PAYU_KEY}`;
+    const generatedHash = crypto.createHash('sha512').update(hashString).digest('hex');
+
+    
+  
+    if (generatedHash !== data.hash) {
+
+      return res.status(400).json({ success: false, message: 'Invalid transaction.' });
+
+
+    }
+  
+    try {
+      // Update appointment status in database
+      // const appointment = await Appointment.findByIdAndUpdate(data.productinfo, { status: 'Paid', transactionId: data.txnid }, { new: true });
+  
+      // Optionally update user wallet, send email, etc.
+  
+      res.redirect(`/user/payment-success?txnid=${data.txnid}&amount=${data.amount}&productinfo=${data.productinfo}`);
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Error processing payment.', error });
+    }
+  };
+
 }

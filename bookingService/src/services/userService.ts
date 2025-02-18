@@ -25,5 +25,15 @@ export class UserServices implements IUserService{
             
         }
     }
+
+    public async getSlotDetailsById(id: string ): Promise<SlotInterface | null | undefined>{
+        try {
+            const response=await this.userRepository.getSlotDetailsById(id )
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
     
 }

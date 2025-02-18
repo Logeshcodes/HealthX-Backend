@@ -4,7 +4,7 @@ export interface UserInterface extends Document{
     
     username? : string , 
     email : string , 
-    MobileNumber? : string , 
+    mobileNumber? : number , 
     hashedPassword : string , 
     role: string ,
     profilePicture? : string ,
@@ -12,7 +12,7 @@ export interface UserInterface extends Document{
     isVerified : boolean ,
     isBlocked : boolean ,
     createdAt?: Date ,
-    updateAt? : Date ,
+    updatedAt? : Date ,
 
     age? : number ,
     gender? : string ,
@@ -24,7 +24,7 @@ export interface UserInterface extends Document{
 const UserSchema : Schema<UserInterface> = new Schema({
     username : { type : String , required : false},
     email : { type : String , required : true , unique : true },
-    MobileNumber : { type : String , required : false , unique : true },
+    mobileNumber : { type : Number , required : false , unique : true },
     hashedPassword : { type : String , required : true },
     role : { type : String , required : false , default : 'User' },
     profilePicture : { type : String , required : false , default : 'No Picture' },
