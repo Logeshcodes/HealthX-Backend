@@ -4,7 +4,7 @@ import { IDoctorController } from "./interface/IDoctorController";
 import { Request, Response } from "express";
 
 import { IDoctorService } from "../services/interface/IDoctorService";
-
+import produce from "../config/kafka/producer";
 
 
 export class DoctorController implements IDoctorController {
@@ -24,6 +24,10 @@ export class DoctorController implements IDoctorController {
            console.log("body response" ,response)
 
           if (response) {
+
+
+            await produce('add-slot',response)
+
             return res.json({
               success: true,
               message: "Slot Updated...",
@@ -53,6 +57,8 @@ export class DoctorController implements IDoctorController {
            console.log("delete response", response);
     
            if (response) {
+
+            await produce('remove-slot',response)
              return res.json({
                success: true,
                message: "Slot deleted Successfully...",

@@ -1,4 +1,5 @@
 import { UserInterface } from "../../models/userModel";
+import { AppointmentInterface } from "../../models/appointmentModel";
 
 import { Request, Response } from "express";
 
@@ -16,9 +17,11 @@ export interface IUserController{
 
 
     paymentSuccess(req : Request , res : Response): Promise <any> ;
+    paymentFailure(req : Request , res : Response): Promise <any> ;
 
 
 
     getDoctorDetails( req : Request , res : Response) : Promise <void> ;
+    getAppointmentDetails(req :Request , res : Response ) : Promise < any>;
 
 }

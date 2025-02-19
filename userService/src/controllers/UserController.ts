@@ -1,5 +1,5 @@
 import { UserInterface } from "../models/userModel";
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import * as crypto from 'crypto';
 
 import UserServices from "../services/userServices";
@@ -16,6 +16,12 @@ import { IUserService } from "../services/interface/IUserService";
 import { config } from 'dotenv';
 
 config()
+
+
+import AppointmentModel from "../models/appointmentModel";
+import { AppointmentInterface } from "../models/appointmentModel";
+import DoctorModel from "../models/doctorModel";
+import SlotModel from "../models/slotModel";
 
 
 export default class UserController implements IUserController  {
@@ -265,30 +271,101 @@ export default class UserController implements IUserController  {
 
 
 
-  async  paymentSuccess(req: Request, res: Response) : Promise <any> {
-    const data = req.body;
-    const hashString = `${process.env.PAYU_SALT}|${data.status}|||||||||||${data.email}|${data.firstname}|${data.productinfo}|${data.amount}|${data.txnid}|${process.env.PAYU_KEY}`;
-    const generatedHash = crypto.createHash('sha512').update(hashString).digest('hex');
-
-    
-  
-    if (generatedHash !== data.hash) {
-
-      return res.status(400).json({ success: false, message: 'Invalid transaction.' });
-
-
-    }
-  
+  async paymentSuccess(req: Request, res: Response): Promise<any> {
     try {
-      // Update appointment status in database
-      // const appointment = await Appointment.findByIdAndUpdate(data.productinfo, { status: 'Paid', transactionId: data.txnid }, { new: true });
+      console.log("Received Request Body:", req.body);
   
-      // Optionally update user wallet, send email, etc.
+      const { txnid, amount, productinfo, firstname, email, udf1, phone, status } = req.body;
   
-      res.redirect(`/user/payment-success?txnid=${data.txnid}&amount=${data.amount}&productinfo=${data.productinfo}`);
+      console.log(txnid, amount, productinfo, firstname, email, udf1, phone, status, "details");
+  
+  
+      const slot = await SlotModel.findById(productinfo);
+      if (!slot) {
+        return res.status(404).json({ error: "Slot not found" });
+      }
+      
+      if(slot){
+        await produce('slot-booked', slot )
+      }
+   
+      const updateResponse = await SlotModel.findByIdAndUpdate(
+        productinfo, 
+        { $set: { avaliable: false } },
+        { new: true }
+      
+      );
+  
+      console.log("Updated slot:", updateResponse);
+  
+      const doctorEmail = slot.email;
+  
+      const doctor = await DoctorModel.findOne({ email: doctorEmail });
+      if (!doctor) {
+        return res.status(404).json({ error: "Doctor not found" });
+      }
+
+      const appointment = new AppointmentModel({
+        doctorEmail: doctor.email,
+        patientEmail: udf1, 
+        paymentId: txnid,
+        amount: amount,
+        mode: slot.mode,
+        paymentStatus: status,
+        appointmentDate: slot.date,
+        appointmentDay: slot.day,
+        appointmentTime: slot.timeSlot,
+      });
+  
+      const savedAppointment = await appointment.save();
+  
+      // res.status(200).json({
+      //   success:true,
+      //   message: "Payment successful and appointment booked!",
+      //   appointment: savedAppointment,
+      // });
+
+      return res.redirect(`http://localhost:3000/user/patient/payment-success/${txnid}`);
     } catch (error) {
-      res.status(500).json({ success: false, message: 'Error processing payment.', error });
+      
+      console.error("Error in paymentSuccess:", error);
+      res.status(500).json({ error: "Error processing payment success" });
     }
   };
+
+  async paymentFailure(req: Request, res: Response): Promise<any>{
+
+    return res.redirect(`http://localhost:3000/user/patient/payment-failure`);
+
+  }
+  
+
+  async getAppointmentDetails(req: Request, res: Response): Promise<any> {
+    try {
+        const { txnid } = req.params;
+
+        console.log(txnid, "id....");
+
+        if (!txnid) {
+            return res.status(400).json({ message: "Transaction ID is required" });
+        }
+
+        const appointment = await AppointmentModel.findOne({ paymentId: txnid });
+
+        if (!appointment) {
+            return res.status(404).json({ message: "Appointment not found" });
+        }
+
+        console.log("return appointment", appointment);
+        return res.status(200).json(appointment);
+
+    } catch (error) {
+        console.error("Error fetching appointment:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+
+ 
 
 }

@@ -1,5 +1,5 @@
 import { DoctorInterface } from "../../models/doctorModel";
-
+import { SlotInterface } from "../../models/slotModel";
 import { Request, Response } from "express";
 
 export interface IDoctorController {
@@ -12,5 +12,6 @@ export interface IDoctorController {
     blockDoctor( req : Request , res : Response) : Promise <void> ;
     passwordReset(data : any ) : Promise<DoctorInterface | null | undefined> ;
     VerificationRequest(data : any ) : Promise<DoctorInterface | null | undefined> ;
-
+    createSlot(payload : SlotInterface) : Promise < void> ;
+    removeSlot(payload : SlotInterface) : Promise <void>;
 }

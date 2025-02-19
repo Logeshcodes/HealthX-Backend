@@ -19,7 +19,9 @@ async function consume() {
         "password-reset-user",
         "add-doctor",
         "password-reset-doctor",
-        "verification-request"
+        "verification-request",
+        "add-slot",
+        "remove-slot",
       ],
       fromBeginning: true,
     });
@@ -62,6 +64,14 @@ async function consume() {
             case "verification-request":
               await doctorController.VerificationRequest(messageValue);
               console.log("Processing add-doctor event:", messageValue);
+              break;
+            case "add-slot":
+              await doctorController.createSlot(messageValue);
+              console.log("Processing add-slot event:", messageValue);
+              break;
+            case "remove-slot":
+              await doctorController.removeSlot(messageValue);
+              console.log("Processing remove-slot event:", messageValue);
               break;
 
             default:

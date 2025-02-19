@@ -9,7 +9,7 @@ export class DoctorBaseRepository implements IDoctorBaseRepository {
 
   async createSlot(data: object): Promise<SlotInterface | null> {
     try {
-      console.log("data base..", data);
+      console.log("data base..dta..", data);
       const slot = await SlotModel.create(data);  
       console.log("base respo", slot);
       return slot;

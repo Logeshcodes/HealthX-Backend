@@ -8,8 +8,11 @@ import produce from "../config/kafka/producer";
 import mongoose from "mongoose";
 import JwtService from "../utils/jwt";
 
+import { SlotInterface }  from "../models/slotModel";
+import SlotModel from "../models/slotModel";
 import { IDoctorController } from "./interface/IDoctorController";
 import { IDoctorService } from "../services/interface/IDoctorService";
+
 
 export class DoctorController implements IDoctorController {
 
@@ -211,4 +214,40 @@ export class DoctorController implements IDoctorController {
       console.log(error)
     }
   }
+
+
+  async createSlot(payload : SlotInterface): Promise<void> {
+    try {
+      console.log("data base..slot comingo...", payload);
+
+      const slot = await SlotModel.create(payload);  
+      console.log("base respo", slot);
+      
+    } catch (error) {
+      console.error("Error creating slot:", error);
+    
+    }
+}
+
+
+  async removeSlot(payload : SlotInterface): Promise<void> {
+    try {
+      console.log("data base id..", payload);
+
+      const {_id } = payload ;
+
+      const slot = await SlotModel.findOneAndDelete({_id : _id });
+      console.log("base respo id", slot);
+      
+    } catch (error) {
+      console.error("Error creating slot:", error);
+      
+    }
+
+
+}
+
+
+
+
 }

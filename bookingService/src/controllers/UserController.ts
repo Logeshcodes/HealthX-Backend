@@ -100,6 +100,31 @@ export class UserController implements IUserController {
        }
 
     }
+
+    public async updateSlot( payload : SlotInterface ) : Promise <void>{
+
+        console.log("load" ,payload) ;
+
+       const {_id } = payload ;
+
+        try {
+
+            const updateResponse = await SlotModel.findByIdAndUpdate(
+                _id, 
+                { $set: { avaliable: false } },
+                { new: true }
+              
+              );
+
+        console.log("Successfully updated slot ..." ,updateResponse )
+
+            
+        } catch (error) {
+
+            console.error("Error:", error);
+
+        }
+    }
       
 
 }

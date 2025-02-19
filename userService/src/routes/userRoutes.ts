@@ -30,7 +30,10 @@ router.put('/profile/change-password', IsUser, authenticateToken,userController.
 
 
 // payment :
+
 router.post('/payment-success',userController.paymentSuccess.bind(userController))
+router.get('/payment-success/:txnid', userController.getAppointmentDetails.bind(userController));
+router.post('/payment-failure/', userController.paymentFailure.bind(userController));
 
 const userRoutes=router
 export default userRoutes

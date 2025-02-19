@@ -6,13 +6,14 @@ import cors from 'cors'
 
 import morgan from 'morgan'
 
+import consume from "./config/kafka/consumer";
 
 import doctorRoutes from "./routes/doctorRoutes";
 import userRoutes from "./routes/userRoutes";
 
 config()
 
-
+consume()
 
 
 let app:Application=express()
