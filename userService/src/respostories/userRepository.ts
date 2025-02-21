@@ -5,6 +5,7 @@ import UserBaseRepository from "./baseRepository/userBaseRepository";
 
 import { IUserRepository } from "./interface/IUserRepository";
 import { IUserBaseRepository } from "./baseRepository/interface/IUserBaseRepository";
+import { AppointmentInterface } from "../models/appointmentModel";
 
 export class UserRepository implements IUserRepository{
 
@@ -96,6 +97,23 @@ export class UserRepository implements IUserRepository{
         } catch (error) {
             console.log(error)
             
+        }
+    }
+
+    async getAllAppointmentDetails(email: string, skip: number, limit: number  , filter : string): Promise<AppointmentInterface[] | null | undefined> {
+        try {
+            const response=await this.userBaseRepository.getAllAppointmentDetails(email, skip , limit , filter)
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined> {
+        try {
+            const response=await this.userBaseRepository.getAppointment(email)
+            return response;
+        } catch (error) {
+            console.log(error);
         }
     }
     

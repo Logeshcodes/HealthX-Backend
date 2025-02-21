@@ -23,5 +23,8 @@ export interface IUserController{
 
     getDoctorDetails( req : Request , res : Response) : Promise <void> ;
     getAppointmentDetails(req :Request , res : Response ) : Promise < any>;
+    getAllAppointmentDetails(req: Request, res: Response): Promise<void> 
+    // stats
+    getAppointment(req: Request, res: Response): Promise<void> 
 
 }

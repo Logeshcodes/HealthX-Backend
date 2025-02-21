@@ -2,7 +2,7 @@
 import { DoctorInterface } from "../../models/doctorModel";
 
 import { Request, Response } from "express";
-
+import { AppointmentInterface } from "../../models/appointmentModel";
 
 export interface IDoctorRepository{
 
@@ -13,5 +13,7 @@ export interface IDoctorRepository{
     VerificationRequest(emailID:string,status:string ,medicalLicenseUrl: string , degreeCertificateUrl : string ): Promise<DoctorInterface | null | undefined>
 
     getDoctors() : Promise<DoctorInterface[] | null | undefined>
+
+    getAllAppointmentDetails(email: string, skip: number, limit: number  , filter : string): Promise<AppointmentInterface[] | null | undefined>
 
 }

@@ -13,6 +13,8 @@ import SlotModel from "../models/slotModel";
 import { IDoctorController } from "./interface/IDoctorController";
 import { IDoctorService } from "../services/interface/IDoctorService";
 
+import AppointmentModel from "../models/appointmentModel";
+
 
 export class DoctorController implements IDoctorController {
 
@@ -92,7 +94,7 @@ export class DoctorController implements IDoctorController {
       const { currentPassword, newPassword } = req.body;
       console.log("password..." , currentPassword, newPassword )
       const jwtService = new JwtService();
-      const tokenData = await jwtService.verifyToken(req.cookies["accessToken"]);
+      const tokenData = await jwtService.verifyToken(req.cookies["accessToken2"]);
 
       if (!tokenData) {
         throw new Error("Token expiered!");
@@ -245,6 +247,74 @@ export class DoctorController implements IDoctorController {
     }
 
 
+}
+
+
+ // get All appointments by email to user :
+
+ public async getAllAppointmentDetails(req: Request, res: Response): Promise<void> {
+  try {
+    const { email } = req.params;
+    const { page, limit, filter } = req.query;
+
+    // Ensure filter is a string (default to 'all' if not provided)
+    const filterString = typeof filter === 'string' ? filter : 'all';
+
+    console.log(`Fetching appointments for email: ${email} - Page: ${page}, Limit: ${limit}, Filter: ${filterString}`);
+
+    const pageNum = Math.max(parseInt(page as string, 10) || 1, 1);
+    const limitNum = Math.max(parseInt(limit as string, 10) || 4, 1);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Fetch filtered appointments
+    const response = await this.doctorService.getAllAppointmentDetails(email, skip, limitNum, filterString);
+
+    if (response) {
+      // Apply the same filter logic for counting total appointments
+      let countQuery: any = { patientEmail: email };
+      const today = new Date();
+      switch (filterString) {
+        case 'upcoming':
+          countQuery.appointmentDate = { $gte: today };
+          countQuery.status = { $ne: 'cancelled' };
+          break;
+        case 'past':
+          countQuery.appointmentDate = { $lt: today };
+          countQuery.status = { $ne: 'cancelled' };
+          break;
+        case 'cancelled':
+          countQuery.status = 'cancelled';
+          break;
+        default:
+          // No filter applied
+          break;
+      }
+
+      const totalAppointments = await AppointmentModel.countDocuments(countQuery);
+
+      console.log("Response:", response, "Total Appointments:", totalAppointments, "Page:", pageNum);
+
+      res.json({
+        success: true,
+        message: "Appointments fetched successfully",
+        data: response,
+        total: totalAppointments,
+        page: pageNum,
+        totalPages: Math.ceil(totalAppointments / limitNum),
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "No appointments found!",
+      });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 }
 
 

@@ -229,8 +229,8 @@ export default class DoctorController implements IDoctorControllers {
           return (
             res
               .status(200)
-              .cookie("accessToken", accesstoken,{ httpOnly: true })
-              .cookie("refreshToken", refreshToken,{ httpOnly: true })
+              .cookie("accessToken2", accesstoken,{ httpOnly: true })
+              .cookie("refreshToken2", refreshToken,{ httpOnly: true })
               .send({
                 success: true,
                 message: "Doctor Logged Successfully",
@@ -278,8 +278,8 @@ export default class DoctorController implements IDoctorControllers {
       
               res
                 .status(200)
-                .cookie("accessToken", accesstoken, { httpOnly: true })
-                .cookie("refreshToken", refreshToken, { httpOnly: true })
+                .cookie("accessToken2", accesstoken, { httpOnly: true })
+                .cookie("refreshToken2", refreshToken, { httpOnly: true })
                 .json({
                   success: true,
                   message: "Logging in with GOOGLE Account",
@@ -309,8 +309,8 @@ export default class DoctorController implements IDoctorControllers {
   async logout(req: Request, res: Response) {
     try {
       console.log("Doctor logged out");
-      res.clearCookie("accessToken");
-      res.clearCookie("refreshToken");
+      res.clearCookie("accessToken2");
+      res.clearCookie("refreshToken2");
       res.status(200).send({ success: true, message: "Logged out successfully" });
     } catch (error) {
       console.error("Error during logout:", error);

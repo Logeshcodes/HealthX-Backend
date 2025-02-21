@@ -1,4 +1,5 @@
 import { DoctorInterface } from "../../../models/doctorModel";
+import { AppointmentInterface } from "../../../models/appointmentModel";
 
 export interface IDoctorBaseRepository{
 
@@ -10,5 +11,5 @@ export interface IDoctorBaseRepository{
 
     getDoctors(): Promise<DoctorInterface[] | null | undefined>;
     
-
+    getAllAppointmentDetails(email: string, skip: number, limit: number , filter : string): Promise<AppointmentInterface[] | null | undefined>
 }

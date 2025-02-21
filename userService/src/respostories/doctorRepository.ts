@@ -3,6 +3,7 @@ import { DoctorBaseRepository } from "./baseRepository/doctorBaseRepository";
 
 import { IDoctorRepository } from "./interface/IDoctorRepository";
 import { IDoctorBaseRepository } from "./baseRepository/interface/IDoctorBaseRepository";
+import { AppointmentInterface } from "../models/appointmentModel";
 
 export class DoctorRepository implements IDoctorRepository{
 
@@ -73,6 +74,17 @@ export class DoctorRepository implements IDoctorRepository{
             
         }
     }
+
+
+
+     async getAllAppointmentDetails(email: string, skip: number, limit: number  , filter : string): Promise<AppointmentInterface[] | null | undefined> {
+            try {
+                const response=await this.doctorBaseRepository.getAllAppointmentDetails(email, skip , limit , filter)
+                return response;
+            } catch (error) {
+                console.log(error);
+            }
+        }
     
     
     

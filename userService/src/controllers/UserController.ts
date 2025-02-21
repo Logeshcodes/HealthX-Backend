@@ -271,6 +271,117 @@ export default class UserController implements IUserController  {
 
 
 
+  // get All appointments by email to user :
+
+  public async getAllAppointmentDetails(req: Request, res: Response): Promise<void> {
+    try {
+      const { email } = req.params;
+      const { page, limit, filter } = req.query;
+  
+      // Ensure filter is a string (default to 'all' if not provided)
+      const filterString = typeof filter === 'string' ? filter : 'all';
+  
+      console.log(`Fetching appointments for email: ${email} - Page: ${page}, Limit: ${limit}, Filter: ${filterString}`);
+  
+      const pageNum = Math.max(parseInt(page as string, 10) || 1, 1);
+      const limitNum = Math.max(parseInt(limit as string, 10) || 4, 1);
+      const skip = (pageNum - 1) * limitNum;
+  
+      // Fetch filtered appointments
+      const response = await this.userService.getAllAppointmentDetails(email, skip, limitNum, filterString);
+  
+      if (response) {
+        // Apply the same filter logic for counting total appointments
+        let countQuery: any = { patientEmail: email };
+        const today = new Date();
+        switch (filterString) {
+          case 'upcoming':
+            countQuery.appointmentDate = { $gte: today };
+            countQuery.status = { $ne: 'cancelled' };
+            break;
+          case 'past':
+            countQuery.appointmentDate = { $lt: today };
+            countQuery.status = { $ne: 'cancelled' };
+            break;
+          case 'cancelled':
+            countQuery.status = 'cancelled';
+            break;
+          default:
+            // No filter applied
+            break;
+        }
+  
+        const totalAppointments = await AppointmentModel.countDocuments(countQuery);
+  
+        console.log("Response:", response, "Total Appointments:", totalAppointments, "Page:", pageNum);
+  
+        res.json({
+          success: true,
+          message: "Appointments fetched successfully",
+          data: response,
+          total: totalAppointments,
+          page: pageNum,
+          totalPages: Math.ceil(totalAppointments / limitNum),
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "No appointments found!",
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  }
+
+  public async getAppointment(req: Request, res: Response): Promise<void> {
+
+    try {
+
+
+      const { email } = req.params;
+      
+
+      console.log(`Fetching appointments for email: ${email}`);
+
+
+
+      const response = await this.userService.getAppointment(email);
+
+
+      if (response) {
+        
+        res.json({
+            success: true,
+            message: "totalAppointments fetched successfully",
+            data: response,
+            
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            message: "No slots found!",
+        });
+    }
+      
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({
+          success: false,
+          message: "Internal server error",
+      });
+    }
+
+
+
+  }
+
+
+
   async paymentSuccess(req: Request, res: Response): Promise<any> {
     try {
       console.log("Received Request Body:", req.body);
@@ -306,11 +417,14 @@ export default class UserController implements IUserController  {
       }
 
       const appointment = new AppointmentModel({
+        doctorName : doctor.name ,
+        profilePicture : doctor.profilePicture ,
         doctorEmail: doctor.email,
         patientEmail: udf1, 
         paymentId: txnid,
         amount: amount,
         mode: slot.mode,
+        department : doctor.department ,
         paymentStatus: status,
         appointmentDate: slot.date,
         appointmentDay: slot.day,
@@ -325,7 +439,10 @@ export default class UserController implements IUserController  {
       //   appointment: savedAppointment,
       // });
 
-      return res.redirect(`http://localhost:3000/user/patient/payment-success/${txnid}`);
+      setTimeout(() => {
+        res.redirect(`http://localhost:3000/user/patient/payment-success/${txnid}`);
+      }, 1000);
+
     } catch (error) {
       
       console.error("Error in paymentSuccess:", error);

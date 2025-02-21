@@ -3,6 +3,8 @@ import { IDoctorController } from "./interface/IDoctorController";
 
 import { Request, Response } from "express";
 
+import SlotModel from "../models/slotModel";
+
 import { IDoctorService } from "../services/interface/IDoctorService";
 import produce from "../config/kafka/producer";
 
@@ -14,37 +16,48 @@ export class DoctorController implements IDoctorController {
       this.doctorService = doctorService
     }
 
+    
     public async slotBooking(req: Request, res: Response): Promise<any> {
-        try {
-
-           console.log("body" ,req.body)
-           const { name , email , date , day , timeSlot , mode} = req.body ;
-           let response = await this.doctorService.createSlot({email , name , date , day , timeSlot  , mode});
-
-           console.log("body response" ,response)
-
-          if (response) {
-
-
-            await produce('add-slot',response)
-
-            return res.json({
-              success: true,
-              message: "Slot Updated...",
-              data : response 
-            });
-          }else{
-            return res.json({
-              success: false,
-              message: "Slot Not Updated !",
-            });
-          }
-
+      try {
+          console.log("body", req.body);
+          const { name, email, date, day, timeSlot, mode } = req.body;
   
-        } catch (error) {
+          
+          const existingSlot = await SlotModel.findOne({ date, timeSlot, mode });
+  
+          if (existingSlot) {
+              return res.json({
+                  success: false,
+                  message: "Slot already allocated!",
+              });
+          }
+  
+         
+          let response = await this.doctorService.createSlot({ email, name, date, day, timeSlot, mode });
+  
+          console.log("body response", response);
+  
+          if (response) {
+              await produce('add-slot', response);
+  
+              return res.json({
+                  success: true,
+                  message: "Slot Updated...",
+                  data: response
+              });
+          } else {
+              return res.json({
+                  success: false,
+                  message: "Slot Not Updated!",
+              });
+          }
+  
+      } catch (error) {
           console.log(error);
-        }
+          return res.status(500).json({ success: false, message: "Internal Server Error" });
       }
+  }
+  
    
 
       public async deleteSlot(req: Request, res: Response): Promise<any> {

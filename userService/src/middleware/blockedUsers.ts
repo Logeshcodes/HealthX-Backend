@@ -38,7 +38,7 @@ export const IsDoctorBlocked = async ( req : Request , res : Response , next : N
 
     try {
 
-        const Token =  req.cookies.accessToken ;
+        const Token =  req.cookies.accessToken2 ;
 
         if(!Token){
             res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);

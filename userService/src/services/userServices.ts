@@ -5,6 +5,8 @@ import { UserRepository } from "../respostories/userRepository"
 import { IUserService } from "./interface/IUserService"
 import { IUserRepository } from "../respostories/interface/IUserRepository"
 
+import { AppointmentInterface } from "../models/appointmentModel"
+
 export default class UserServices implements IUserService{
 
     private userRepository:IUserRepository
@@ -86,6 +88,26 @@ export default class UserServices implements IUserService{
             return response
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    public async getAllAppointmentDetails(email: string , skip: number, limit: number , filter : string): Promise<AppointmentInterface[] | null | undefined>{
+        try {
+            const response=await this.userRepository.getAllAppointmentDetails(email , skip , limit , filter)
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+
+    public async getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined>{
+        try {
+            const response=await this.userRepository.getAppointment(email )
+            return response
+        } catch (error) {
+            console.log(error)
+            
         }
     }
     

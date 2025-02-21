@@ -1,8 +1,9 @@
-import { Document, Model } from "mongoose";
 
 import UserModel , { UserInterface } from "../../models/userModel"
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
 import DepartmentModel, { DepartmentInterface } from "../../models/departmentModel";
+import { AppointmentInterface } from "../../models/appointmentModel";
+import AppointmentModel from "../../models/appointmentModel";
 
 import { IUserBaseRepository } from "./interface/IUserBaseRepository";
 
@@ -120,6 +121,30 @@ export default class UserBaseRepository implements IUserBaseRepository {
         }
       }
 
+
+      public async  getAllAppointmentDetails(email: string, skip: number, limit: number  , filter : string): Promise<AppointmentInterface[] | null | undefined> {
+        try {
+            const response = await AppointmentModel.find({patientEmail : email })
+                .skip(skip)  
+                .limit(limit)  
+                .exec();
+            return response;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+      public async  getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined> {
+        try {
+            const response = await AppointmentModel.find({patientEmail : email })
+                
+            return response;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
 
 
 }

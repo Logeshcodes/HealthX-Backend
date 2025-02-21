@@ -39,7 +39,7 @@ export const IsDoctor = async ( req : Request , res : Response , next : NextFunc
 
     try {
 
-        const Token =  req.cookies.accessToken ;
+        const Token =  req.cookies.accessToken2 ;
 
         if(!Token){
             res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);
@@ -68,7 +68,7 @@ export const IsAdmin = async ( req : Request , res : Response , next : NextFunct
 
     try {
 
-        const Token =  req.cookies.accessToken ;
+        const Token =  req.cookies.accessToken3 ;
 
         if(!Token){
             res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);

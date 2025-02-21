@@ -2,6 +2,8 @@ import { DoctorInterface } from "../../models/doctorModel";
 import { SlotInterface } from "../../models/slotModel";
 import { Request, Response } from "express";
 
+import { AppointmentInterface } from "../../models/appointmentModel";
+
 export interface IDoctorController {
 
     addDoctor(payload : DoctorInterface): Promise<void>;
@@ -14,4 +16,7 @@ export interface IDoctorController {
     VerificationRequest(data : any ) : Promise<DoctorInterface | null | undefined> ;
     createSlot(payload : SlotInterface) : Promise < void> ;
     removeSlot(payload : SlotInterface) : Promise <void>;
+
+
+    getAllAppointmentDetails(req: Request, res: Response): Promise<void> 
 }

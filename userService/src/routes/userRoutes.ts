@@ -1,7 +1,7 @@
 import { userController } from "../config/dependencyInjector";
 import { Router } from "express";
 import upload from "../helpers/multer";
-import authenticateToken from "../middleware/AuthenticatedRoutes";
+import authenticateToken from "../helpers/UserAuthRoutes";
 
 import { IsUser } from "../middleware/RoleBasedAuth";
 import { IsUserBlocked } from "../middleware/blockedUsers";
@@ -13,7 +13,7 @@ router.get('/doctor_list' , userController.findAllDoctors.bind(userController))
 router.get('/department_list', userController.findAllDepartment.bind(userController))
 
 
-router.post('/profile/updateProfile', IsUser , authenticateToken,upload.single('profilePicture'),userController.updateProfile.bind(userController))
+router.post('/profile/updateProfile',IsUser,authenticateToken,upload.single('profilePicture'),userController.updateProfile.bind(userController))
 
 
 
@@ -34,6 +34,10 @@ router.put('/profile/change-password', IsUser, authenticateToken,userController.
 router.post('/payment-success',userController.paymentSuccess.bind(userController))
 router.get('/payment-success/:txnid', userController.getAppointmentDetails.bind(userController));
 router.post('/payment-failure/', userController.paymentFailure.bind(userController));
+
+
+router.get('/appointments/:email' , userController.getAllAppointmentDetails.bind(userController))
+router.get('/appointmentData/:email' , userController.getAppointment.bind(userController))
 
 const userRoutes=router
 export default userRoutes
