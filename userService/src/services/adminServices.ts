@@ -3,7 +3,7 @@ import AdminRepository from "../respostories/adminRepository";
 import DepartmentModel , {DepartmentInterface} from "../models/departmentModel";
 import { UserInterface } from "../models/userModel";
 import { DoctorInterface } from "../models/doctorModel";
-
+import { BannerInterface } from "../models/bannerModel";
 import { IAdminService } from "./interface/IAdminservice";
 import { IAdminRepository } from "../respostories/interface/IAdminRepository";
 
@@ -19,6 +19,10 @@ export default class AdminService implements IAdminService{
     
     async getAllDepartments(): Promise<DepartmentInterface[] | null | undefined > {
       const response = await this.adminRepository.getAllDepartments();
+      return response;
+    }
+    async getAllBanner(): Promise<BannerInterface[] | null | undefined> {
+      const response = await this.adminRepository.getAllBanner();
       return response;
     }
 
@@ -126,6 +130,20 @@ export default class AdminService implements IAdminService{
           }
         }
 
+        async getBannerById(id: string): Promise< BannerInterface | null | undefined> {
+          try {
+            console.log("in service" , id)
+
+            const banner = await this.adminRepository.getBannerById(id);  
+            if (!banner) {
+              throw new Error('banner not found');
+            }
+            return banner;
+          } catch (error) {
+            throw error;
+          }
+        }
+
 
 
 
@@ -144,7 +162,30 @@ export default class AdminService implements IAdminService{
           }
         }
 
+
+        async updateBanner(id: string, data: any): Promise<BannerInterface | null | undefined> {
+          try {
+            
+            const updatedBanner = await this.adminRepository.updateBanner( id, data);  
+            if (!updatedBanner) {
+              throw new Error('banner not found');
+            }
+            return updatedBanner;
+          } catch (error) {
+            throw error;
+          }
+        }
+
       
+        public async addBanner(payload: BannerInterface) : Promise<any>{
+          try {
+              const response=await this.adminRepository.addBanner(payload)
+              return response
+          } catch (error) {
+              console.log(error)
+              
+          }
+      }
 
      
      

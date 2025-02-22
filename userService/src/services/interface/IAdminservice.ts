@@ -1,8 +1,10 @@
 import {Request ,  Response } from "express";
 
-import { DepartmentInterface } from "@/models/departmentModel";
+import { DepartmentInterface } from "../../models/departmentModel";
 import { UserInterface } from "../../models/userModel";
 import { DoctorInterface } from "../../models/doctorModel";
+import { BannerData } from "../../types/bannerType";
+import { BannerInterface } from "@/models/bannerModel";
 
 export interface IAdminService{
     
@@ -16,9 +18,14 @@ export interface IAdminService{
     getDoctorData(email:string)  : Promise <DoctorInterface | null | undefined>
     
     
-    updateDepartment(departmentName: string, data: any): Promise <DepartmentInterface | null | undefined>
     getDepartmentByName(departmentName: string): Promise <DepartmentInterface | null | undefined>
+    updateDepartment(departmentName: string, data: any): Promise <DepartmentInterface | null | undefined>
+    getBannerById(id: string): Promise <BannerInterface | null | undefined>
+    updateBanner(id: string, data: any): Promise <BannerInterface | null | undefined>
     createDepartment(departmentName : string ): Promise <DepartmentInterface | null | undefined>;
     findDepartmentByName(departmentName : string ) : Promise <DepartmentInterface | null | undefined> ;
     getAllDepartments(): Promise <DepartmentInterface[] | null | undefined>;
+
+    addBanner(payload : BannerData) : Promise <any> ;
+    getAllBanner() : Promise < BannerInterface[] | null | undefined> ;
 }

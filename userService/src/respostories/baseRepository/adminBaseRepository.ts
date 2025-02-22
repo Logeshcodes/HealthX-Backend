@@ -5,6 +5,7 @@ import UserModel , {UserInterface} from "../../models/userModel";
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
 
 import { IAdminBaseRepository } from "./interface/IAdminBaseRepository";
+import BannerModel, { BannerInterface } from "../../models/bannerModel";
 
 export class AdminBaseRepository implements IAdminBaseRepository {
 
@@ -38,6 +39,15 @@ export class AdminBaseRepository implements IAdminBaseRepository {
           const departments = await DepartmentModel.find();
           console.log("All departments: ", departments);
           return departments;
+        } catch (error) {
+          throw error;
+        }
+      }
+      async getAllBanner(): Promise< BannerInterface[] | null | undefined> {
+        try {
+          const banners = await BannerModel.find();
+          console.log("All banners: ", banners);
+          return banners;
         } catch (error) {
           throw error;
         }
@@ -108,6 +118,20 @@ export class AdminBaseRepository implements IAdminBaseRepository {
         }
       }
 
+
+      public async getBannerById( id : string): Promise<any> {
+        try {
+         console.log("finding banner", id )
+        const response = await BannerModel.findOne({_id : id});  
+        console.log("first ,,", response) 
+          return response; 
+          
+        } catch (error) {
+          console.error('Error fetching Banner by id:', error);
+          throw error; 
+        }
+      }
+
       public async getDoctorByEmail( email: string): Promise<any> {
         try {
          console.log("finding dept", email)
@@ -128,6 +152,24 @@ export class AdminBaseRepository implements IAdminBaseRepository {
          console.log("data",data)
           const response = await DepartmentModel.findOneAndUpdate(
             {departmentName},            
+            { $set: data }, 
+            { new: true }   
+          );
+
+          console.log(response, "response....")
+          return response;  
+        } catch (error) {
+          console.log(error);
+          throw error;  
+        }
+      }
+
+      
+      public async updateBanner( id: string, data: any): Promise<any> {
+        try {
+         console.log("data",data)
+          const response = await BannerModel.findByIdAndUpdate(
+             id,            
             { $set: data }, 
             { new: true }   
           );
@@ -161,7 +203,18 @@ export class AdminBaseRepository implements IAdminBaseRepository {
       }
       
       
-      
+      async addBanner(payload: BannerInterface): Promise<any> {
+        try {
+            console.log('create banner:', payload);
+            const banner = await BannerModel.create(payload);
+            console.log('banner added:', banner);
+            return banner;
+        } catch (error) {
+            console.error('Error banner add:', error);
+            throw error;
+        }
+    }
+    
 
 
 

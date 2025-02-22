@@ -1,6 +1,7 @@
 import { UserInterface } from "../../../models/userModel";
 import { DoctorInterface } from "../../../models/doctorModel";
 import { DepartmentInterface } from "../../../models/departmentModel";
+import { BannerInterface } from "../../../models/bannerModel";
 
 export interface IAdminBaseRepository{
 
@@ -18,5 +19,10 @@ export interface IAdminBaseRepository{
     getAllDepartments(): Promise<DepartmentInterface[] | null>
     getDepartmentByName( departmentName: string): Promise<any>
     updateDepartment( departmentName: string, data: any): Promise<any>   
+    getBannerById( id: string): Promise<any>
+    updateBanner( id : string, data: any): Promise<any>   
+
+    addBanner( payload : BannerInterface) : Promise <void> ;
+    getAllBanner(): Promise<BannerInterface[] | null | undefined>
 
 }

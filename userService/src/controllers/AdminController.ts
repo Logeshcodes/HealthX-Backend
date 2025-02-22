@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 
-import AdminService from "../services/adminServices";
 
+import { uploadToS3Bucket } from "../utils/s3Bucket";
 import produce from "../config/kafka/producer";
 import DepartmentModel, { DepartmentInterface } from "../models/departmentModel";
 
 import { IAdminController } from "./interface/IAdminController";
 import { IAdminService } from "../services/interface/IAdminservice";
+import BannerModel, { BannerInterface } from "@/models/bannerModel";
+
 
 export default class AdminController implements IAdminController {
 
@@ -185,6 +187,48 @@ export default class AdminController implements IAdminController {
     }
   }
 
+
+  async listBanner(req: any, res: any) {
+    try {
+      const { id  } = req.params;
+
+      
+      const bannerData = await this.adminService.getBannerById(id)
+
+      if (!bannerData) {
+        return res.status(404).json({
+          success: false,
+          message: "banner not found",
+        });
+      }
+
+      console.log(bannerData ,'dtaaa')
+
+     
+      const isListed = !bannerData?.isListed;
+
+      console.log("status updated*** __________====" , isListed)
+    
+
+      const bannerStatus = await this.adminService.updateBanner(id , {isListed})
+
+
+      return res.status(200).json({
+        success: true,
+        message: bannerStatus?.isListed ? "Banner Listed" : "Banner Unlisted",
+      });
+    } catch (error) {
+      console.error("Error listed/unlisted banner:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error listed/unlisted banner",
+      });
+    }
+  }
+
+
+ 
+
   async rejectDocuments(req: any, res: any) {
     try {
       const { email , } = req.params;
@@ -343,6 +387,35 @@ export default class AdminController implements IAdminController {
       res.status(500).json({ success: false, message: "Server Error." });
     }
   }
+
+
+  // Get getBannerById 
+  async getBannerById(req: Request, res: Response):  Promise< void>{
+    try {
+      console.log("idd", req.params);
+
+      const { id } = req.params;
+      console.log("banner Id ???????:", decodeURIComponent(id));
+      const bannerData = await this.adminService.getBannerById(
+        decodeURIComponent(id)
+      );
+
+      if (!bannerData) {
+         res
+          .status(404)
+          .json({ success: false, message: "banner not found" });
+          return;
+      }
+
+      res.json({ success: true, data: bannerData });
+    } catch (error) {
+      console.error("Error fetching banner by id:", error);
+      res.status(500).json({ success: false, message: "Server Error." });
+    }
+  }
+
+
+
   // Get Doctor by email
   async getDoctorByEmail(req: Request, res: Response): Promise<any> {
     try {
@@ -409,4 +482,113 @@ export default class AdminController implements IAdminController {
       res.status(500).json({ success: false, message: "Server Error." });
     }
   }
+
+
+  // Update updateBanner by id
+  async updateBanner(req: Request, res: Response): Promise<void> {
+    try {
+      console.log("iiiii", req.params);
+
+      const { id } = req.params;
+
+      const updateData = req.body;
+
+      console.log(id, "banner");
+      console.log(updateData.bannerData, "banner up");
+
+     
+      const bannerData = await this.adminService.updateBanner(
+        id,
+        updateData.bannerData
+      );
+     
+
+      res.json({
+        success: true,
+        message: "Banner updated successfully",
+        data: bannerData,
+      });
+    } catch (error) {
+      console.error("Error updating banner:", error);
+      res.status(500).json({ success: false, message: "Server Error." });
+    }
+  }
+
+
+
+public async addBanner(req: Request, res: Response): Promise<any> {
+  try {
+    const { bannerTitle, description, startDate, endDate, link, role } = req.body;
+
+    console.log(req.body.bannerImage, "Adding Banner Data");
+    console.log(req.file, "bannerImage - Adding Banner Data");
+
+    let bannerImage = "No image";
+
+    if (req.file) {
+      console.log("Uploading banner image...");
+      bannerImage = await uploadToS3Bucket(req.file, "banners");
+    }
+
+    const response = await this.adminService.addBanner({
+      bannerTitle,
+      description,
+      bannerImage,
+      startDate,
+      endDate,
+      link,
+      role
+    });
+
+    if (response) {
+      return res.status(200).json({
+        success: true,
+        message: "Banner added successfully!",
+        data : response,
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to add banner!",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while adding the banner.",
+    });
+  }
+}
+
+  
+  
+async getAllBanner(req: Request, res: Response): Promise<any> {
+  try {
+    // Fetch all departments from the service
+    const banners = await this.adminService.getAllBanner();
+
+    if (banners && banners.length > 0) {
+      return res.status(200).json({
+        success: true,
+        message: "banners retrieved successfully",
+        data : banners,
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: "No banners found",
+      });
+    }
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+}
+
+
 }

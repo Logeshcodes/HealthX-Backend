@@ -1,7 +1,7 @@
-import { UserInterface } from "@/models/userModel";
+import { UserInterface } from "../../models/userModel";
 import { DoctorInterface } from "../../models/doctorModel";
-import { DepartmentInterface } from "@/models/departmentModel";
-
+import { DepartmentInterface } from "../../models/departmentModel";
+import { BannerInterface } from "../../models/bannerModel";
 import { Request, Response } from "express";
 
 
@@ -25,7 +25,10 @@ export interface IAdminRepository{
     getAllDepartments() : Promise <DepartmentInterface[] | null | undefined>
     getDepartmentByName( departmentName:string) : Promise < DepartmentInterface >
     updateDepartment( departmentName:string,data:any) : Promise <DepartmentInterface> ;
+    getBannerById( id :string) : Promise < BannerInterface >
+    updateBanner( id :string,data:any) : Promise <BannerInterface> ;
 
-
+    addBanner( payload : BannerInterface) : Promise <void> ;
+    getAllBanner() : Promise <BannerInterface[] | null | undefined>
 
 }

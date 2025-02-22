@@ -1,7 +1,7 @@
 import { AdminBaseRepository } from "./baseRepository/adminBaseRepository";
 
 import DepartmentModel , {DepartmentInterface} from "../models/departmentModel";
-
+import { BannerInterface } from "../models/bannerModel";
 import { IAdminRepository } from "./interface/IAdminRepository";
 
 import { IAdminBaseRepository } from "./baseRepository/interface/IAdminBaseRepository";
@@ -30,6 +30,11 @@ export default class AdminRepository implements IAdminRepository{
 
     async getAllDepartments() {
         const response = await this.adminBaseRepository.getAllDepartments();
+        return response;
+      }
+
+    async getAllBanner() : Promise <BannerInterface[] | null | undefined>{
+        const response = await this.adminBaseRepository.getAllBanner();
         return response;
       }
 
@@ -71,6 +76,15 @@ export default class AdminRepository implements IAdminRepository{
             throw error;
         }
     }
+    public async getBannerById( id :string): Promise<any> {
+        try {
+            console.log("in repo", id )
+            const response = await this.adminBaseRepository.getBannerById(id );
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
     
     public async getDoctorByEmail( email:string): Promise<any> {
         try {
@@ -86,6 +100,15 @@ export default class AdminRepository implements IAdminRepository{
     public async updateDepartment( departmentName:string,data:any): Promise<any> {
         try {
             const response = await this.adminBaseRepository.updateDepartment(departmentName,data);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async updateBanner( id :string,data:any): Promise<any> {
+        try {
+            const response = await this.adminBaseRepository.updateBanner(id ,data);
             return response;
         } catch (error) {
             throw error;
@@ -111,5 +134,15 @@ export default class AdminRepository implements IAdminRepository{
             
         }
     }
+
+     public async addBanner(payload: BannerInterface){
+              try {
+                  const response=await this.adminBaseRepository.addBanner(payload)
+                  return response
+              } catch (error) {
+                  console.log(error)
+                  
+              }
+          }
 
 }

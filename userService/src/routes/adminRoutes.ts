@@ -1,10 +1,14 @@
 import { Router } from "express";
-
+import upload from "../helpers/multer";
 import AdminController from "../controllers/AdminController";
 import authenticateToken from "../helpers/AdminAuthRoutes";
 import { IsAdmin } from "../middleware/RoleBasedAuth";
 import { adminController } from "../config/dependencyInjector";
 const router=Router()
+
+router.get('/blockUser/:email',IsAdmin, authenticateToken , adminController.blockUser.bind(adminController));
+router.get('/blockDoctor/:email',IsAdmin, authenticateToken , adminController.blockDoctor.bind(adminController)); 
+router.get('/listBanner/:id',IsAdmin, authenticateToken , adminController.listBanner.bind(adminController)); 
 
 
 
@@ -12,13 +16,12 @@ router.post('/addDepartment',IsAdmin , authenticateToken,adminController.createD
 router.get('/department', IsAdmin, authenticateToken, adminController.getAllDepartments.bind(adminController));
 router.get('/users',IsAdmin,authenticateToken , adminController.getAllUsers.bind(adminController));
 router.get('/getDoctors',IsAdmin,authenticateToken , adminController.getAllDoctors.bind(adminController));
-router.get('/blockUser/:email',IsAdmin, authenticateToken , adminController.blockUser.bind(adminController));
-router.get('/blockDoctor/:email',IsAdmin, authenticateToken , adminController.blockDoctor.bind(adminController)); // post
+
 
 
 
 router.post('/rejectDocuments/:email',IsAdmin, authenticateToken , adminController.rejectDocuments.bind(adminController));
-router.post('/approveDocuments/:email',  adminController.approveDocuments.bind(adminController)); // add some auth
+router.post('/approveDocuments/:email',  adminController.approveDocuments.bind(adminController)); 
 
 
 
@@ -28,6 +31,12 @@ router.put('/editDepartment/:departmentName',IsAdmin,authenticateToken , adminCo
 
 router.get('/getDoctorByEmail/:email',IsAdmin,authenticateToken ,  adminController.getDoctorByEmail.bind(adminController));
 
+
+router.get('/banner',IsAdmin,authenticateToken ,  adminController.getAllBanner.bind(adminController));
+router.post('/banner',IsAdmin,authenticateToken ,upload.single('bannerImage'),  adminController.addBanner.bind(adminController));
+
+router.get('/editBanner/:id',IsAdmin,authenticateToken ,  adminController.getBannerById.bind(adminController));
+router.put('/editBanner/:id',IsAdmin,authenticateToken ,  adminController.updateBanner.bind(adminController));
 
 
 const adminRoutes=router
