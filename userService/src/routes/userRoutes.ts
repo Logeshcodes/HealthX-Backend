@@ -9,6 +9,7 @@ import { IsUserBlocked } from "../middleware/blockedUsers";
 const router=Router()
 
 // Home Page doctor and dept list
+router.get('/banner_list' , userController.findAllBanners.bind(userController))
 router.get('/doctor_list' , userController.findAllDoctors.bind(userController))
 router.get('/department_list', userController.findAllDepartment.bind(userController))
 

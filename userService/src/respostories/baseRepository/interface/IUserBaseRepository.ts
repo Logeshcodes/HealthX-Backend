@@ -2,6 +2,7 @@ import { UserInterface  } from "../../../models/userModel";
 import { DoctorInterface } from "../../../models/doctorModel";
 import { DepartmentInterface } from "../../../models/departmentModel";
 import { AppointmentInterface } from "../../../models/appointmentModel";
+import { BannerInterface } from "../../../models/bannerModel";
 
 export interface IUserBaseRepository{
 
@@ -12,6 +13,7 @@ export interface IUserBaseRepository{
     updatePassword(email: string, password: string): Promise<UserInterface | null>
 
     findAllUsers(): Promise<UserInterface[] | null | undefined> 
+    findAllBanners() : Promise<BannerInterface[] | null | undefined> 
     findAllDoctors() : Promise<DoctorInterface[] | null | undefined> 
     findAllDepartment(): Promise <DepartmentInterface[] | null | undefined>
 

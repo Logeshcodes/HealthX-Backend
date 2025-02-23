@@ -1,7 +1,7 @@
 import { UserInterface } from "../models/userModel"
 import { DoctorInterface } from "../models/doctorModel"
-import { UserRepository } from "../respostories/userRepository"
 
+import { BannerInterface } from "../models/bannerModel"
 import { IUserService } from "./interface/IUserService"
 import { IUserRepository } from "../respostories/interface/IUserRepository"
 
@@ -66,6 +66,15 @@ export default class UserServices implements IUserService{
     public async getUsers(): Promise <UserInterface[] | null | undefined>{
         try {
             const response=await this.userRepository.getUsers()
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    public async findAllBanners() : Promise <BannerInterface[] | null | undefined>{
+        try {
+            const response=await this.userRepository.findAllBanners()
+            console.log("Banners ", response)
             return response
         } catch (error) {
             console.log(error)

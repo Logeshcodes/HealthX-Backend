@@ -3,6 +3,7 @@ import { DoctorInterface } from "../../models/doctorModel";
 import { Request, Response } from "express";
 import { DepartmentInterface } from "../../models/departmentModel";
 import { AppointmentInterface } from "../../models/appointmentModel";
+import { BannerInterface } from "../../models/bannerModel";
 
 export interface IUserRepository{
 
@@ -12,6 +13,7 @@ export interface IUserRepository{
     updateProfile(email: string,data:object) : Promise <UserInterface | null | undefined> ;
     updatePassword(email:string,password:string) : Promise <UserInterface | null | undefined>;
     getUsers(): Promise <UserInterface[] | null | undefined> ;
+    findAllBanners(): Promise <BannerInterface[] | null | undefined> ;
     findAllDoctors(): Promise <DoctorInterface[] | null | undefined> ;
     findAllDepartment(): Promise <DepartmentInterface[] | null | undefined> ;
 

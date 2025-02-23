@@ -494,7 +494,16 @@ export default class AdminController implements IAdminController {
       const updateData = req.body;
 
       console.log(id, "banner");
-      console.log(updateData.bannerData, "banner up");
+      console.log(updateData.bannerData.bannerImage, "banner up");
+
+      console.log(req.file, "bannerImage - Adding Banner Data");
+
+    let bannerImage = "No image";
+
+    if (req.file) {
+      console.log("Uploading banner image...");
+      bannerImage = await uploadToS3Bucket(req.file, "banners");
+    }
 
      
       const bannerData = await this.adminService.updateBanner(

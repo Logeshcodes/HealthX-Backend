@@ -36,7 +36,7 @@ router.get('/banner',IsAdmin,authenticateToken ,  adminController.getAllBanner.b
 router.post('/banner',IsAdmin,authenticateToken ,upload.single('bannerImage'),  adminController.addBanner.bind(adminController));
 
 router.get('/editBanner/:id',IsAdmin,authenticateToken ,  adminController.getBannerById.bind(adminController));
-router.put('/editBanner/:id',IsAdmin,authenticateToken ,  adminController.updateBanner.bind(adminController));
+router.put('/editBanner/:id',IsAdmin,authenticateToken , upload.single('bannerImage'), adminController.updateBanner.bind(adminController));
 
 
 const adminRoutes=router

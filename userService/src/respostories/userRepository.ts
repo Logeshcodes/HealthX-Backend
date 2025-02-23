@@ -1,7 +1,7 @@
 import UserModel, { UserInterface } from "../models/userModel";
 import { DoctorInterface } from "../models/doctorModel";
 import { DepartmentInterface } from "../models/departmentModel";
-import UserBaseRepository from "./baseRepository/userBaseRepository";
+import { BannerInterface } from "../models/bannerModel";
 
 import { IUserRepository } from "./interface/IUserRepository";
 import { IUserBaseRepository } from "./baseRepository/interface/IUserBaseRepository";
@@ -70,6 +70,17 @@ export class UserRepository implements IUserRepository{
     async getUsers(): Promise <UserInterface[] | null | undefined>{
         try {
             const response=await this.userBaseRepository.findAllUsers()
+            return response
+            
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+
+    async findAllBanners(): Promise <BannerInterface[] | null | undefined>{
+        try {
+            const response=await this.userBaseRepository.findAllBanners()
             return response
             
         } catch (error) {

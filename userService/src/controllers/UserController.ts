@@ -192,6 +192,19 @@ export default class UserController implements IUserController  {
     }
   }
   
+  public async findAllBanners(req:Request,res:Response): Promise<void>{
+    try {
+    console.log('lissssssssst')
+      const banners=await this.userService.findAllBanners()
+      console.log(banners,"findAllBanner allll")
+       res.status(200).json({
+        banners:banners
+      })
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
   public async findAllDoctors(req:Request,res:Response): Promise<void>{
     try {
     console.log('lissssssssst')

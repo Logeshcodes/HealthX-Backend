@@ -4,6 +4,7 @@ import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
 import DepartmentModel, { DepartmentInterface } from "../../models/departmentModel";
 import { AppointmentInterface } from "../../models/appointmentModel";
 import AppointmentModel from "../../models/appointmentModel";
+import BannerModel, { BannerInterface } from "../../models/bannerModel";
 
 import { IUserBaseRepository } from "./interface/IUserBaseRepository";
 
@@ -99,6 +100,16 @@ export default class UserBaseRepository implements IUserBaseRepository {
         }
       }
 
+      async findAllBanners(): Promise <BannerInterface[] | null | undefined>{
+        try {
+            const response=await BannerModel.find({isListed: true , role : "Patient"})
+            return response
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+      }
       async findAllDoctors(): Promise <DoctorInterface[] | null | undefined>{
         try {
             const response=await DoctorModel.find({isBlocked: false , status : "approved"})
