@@ -111,9 +111,9 @@ export class UserRepository implements IUserRepository{
         }
     }
 
-    async getAllAppointmentDetails(email: string, skip: number, limit: number  , filter : string): Promise<AppointmentInterface[] | null | undefined> {
+    async getAllAppointmentDetails(email: string, skip: number, limit: number , activeTab : string  ): Promise<AppointmentInterface[] | null | undefined> {
         try {
-            const response=await this.userBaseRepository.getAllAppointmentDetails(email, skip , limit , filter)
+            const response=await this.userBaseRepository.getAllAppointmentDetails(email, skip , limit ,activeTab )
             return response;
         } catch (error) {
             console.log(error);

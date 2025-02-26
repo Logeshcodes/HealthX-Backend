@@ -8,11 +8,11 @@ import morgan from "morgan" ;
 
 config();
 
-const {PORT ,  FRONTEND_URL , AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL , BOOKING_URL } = process.env
+const {PORT ,  FRONTEND_URL , AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL , BOOKING_URL, VIDEO_CALL_URL  } = process.env
 
 const app : Application = express()
 
-console.log("Environment Variables:", { PORT, FRONTEND_URL, AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL , BOOKING_URL });
+console.log("Environment Variables:", { PORT, FRONTEND_URL, AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL , BOOKING_URL , VIDEO_CALL_URL  });
 
 // cors
 
@@ -49,6 +49,10 @@ const services = [
         path: BOOKING_URL, 
         context: "/booking", 
     },
+    {
+        path: VIDEO_CALL_URL , 
+        context: "/videoCall", 
+    },
 ];
 
 
@@ -78,6 +82,11 @@ services.forEach(({ context, path }) => {
 app.use((err: Error, req:Request, res:Response, next:NextFunction) => {
     console.error("Error:", err.message);
     res.status(500).json({ error: "Internal Server Error" });
+});
+
+app.use((err: Error, req:Request, res:Response, next:NextFunction) => {
+    console.error("Error:", err.message);
+    res.status(401).json({ error: "authentication credentials were invalid" });
 });
 
 app.listen(PORT , ()=>{

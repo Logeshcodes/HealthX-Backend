@@ -3,7 +3,8 @@ import { Request, Response, NextFunction } from "express";
 
 import { StatusCode } from "../utils/enum";
 import { ResponseError } from "../utils/constants";
-
+import UserModel from "../models/userModel";
+import DoctorModel from "../models/doctorModel";
 
 
 export const IsUserBlocked = async ( req : Request , res : Response , next : NextFunction) : Promise<void> =>{
@@ -11,7 +12,7 @@ export const IsUserBlocked = async ( req : Request , res : Response , next : Nex
     try {
 
         const Token =  req.cookies.accessToken ;
-
+        console.log("token.." , Token )
         if(!Token){
             res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);
             return 
@@ -20,7 +21,24 @@ export const IsUserBlocked = async ( req : Request , res : Response , next : Nex
         const JWT = new JwtService();
         const decode = await JWT.verifyToken(Token);
         if (decode) {
-            if (!decode.isBlocked) {
+
+            console.log("email.." , decode.email )
+            console.log("role.." , decode.role )
+            
+            if (decode.email && decode.role === 'User') {
+
+              const email = decode.email ;
+
+              const userData = await UserModel.findOne({ email : email });
+              console.log(userData?.isBlocked)
+
+              if(userData?.isBlocked){
+                res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);
+                return;
+              }
+             
+            }else{
+
               res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);
               return;
             }
@@ -48,7 +66,25 @@ export const IsDoctorBlocked = async ( req : Request , res : Response , next : N
         const JWT = new JwtService();
         const decode = await JWT.verifyToken(Token);
         if (decode) {
-            if (!decode.isBlocked) {
+
+           
+            console.log("email.." , decode.email )
+            console.log("role.." , decode.role )
+            
+            if (decode.email && decode.role === 'Doctor') {
+
+              const email = decode.email ;
+
+              const doctorData = await DoctorModel.findOne({ email : email });
+              console.log(doctorData?.isBlocked)
+
+              if(doctorData?.isBlocked){
+                res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);
+                return;
+              }
+             
+            }else{
+
               res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);
               return;
             }

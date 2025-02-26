@@ -487,31 +487,28 @@ export default class AdminController implements IAdminController {
   // Update updateBanner by id
   async updateBanner(req: Request, res: Response): Promise<void> {
     try {
-      console.log("iiiii", req.params);
+      console.log("Request params:", req.params);
 
-      const { id } = req.params;
-
-      const updateData = req.body;
-
-      console.log(id, "banner");
-      console.log(updateData.bannerData.bannerImage, "banner up");
-
-      console.log(req.file, "bannerImage - Adding Banner Data");
-
-    let bannerImage = "No image";
-
-    if (req.file) {
-      console.log("Uploading banner image...");
-      bannerImage = await uploadToS3Bucket(req.file, "banners");
-    }
-
+  
+      const { id } = req.params; 
+      let updateData = req.body; 
+      let bannerImage = updateData.bannerImage || "No image"; 
+  
+      console.log("Banner ID:", id);
+      console.log("Received File:", req.file);
+  
+      
+      if (req.file) {
+        console.log("Uploading new banner image...");
+        bannerImage = await uploadToS3Bucket(req.file, "banners");
+      }
+  
+      
+      updateData = { ...updateData, bannerImage };
+  
      
-      const bannerData = await this.adminService.updateBanner(
-        id,
-        updateData.bannerData
-      );
-     
-
+      const bannerData = await this.adminService.updateBanner(id, updateData);
+  
       res.json({
         success: true,
         message: "Banner updated successfully",
@@ -522,14 +519,14 @@ export default class AdminController implements IAdminController {
       res.status(500).json({ success: false, message: "Server Error." });
     }
   }
-
+  
 
 
 public async addBanner(req: Request, res: Response): Promise<any> {
   try {
     const { bannerTitle, description, startDate, endDate, link, role } = req.body;
 
-    console.log(req.body.bannerImage, "Adding Banner Data");
+    console.log(req.body, "Adding Banner Data");
     console.log(req.file, "bannerImage - Adding Banner Data");
 
     let bannerImage = "No image";

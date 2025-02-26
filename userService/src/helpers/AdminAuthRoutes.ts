@@ -28,7 +28,7 @@ const authenticateToken = async (req: AuthenticatedRequest, res: Response, next:
     const refreshToken = req.cookies['refreshToken3'];
 
     console.log('Cookies received:', req.cookies);
-    console.log("JWT__________SECRET",process.env.JWT_SECRET)
+    console.log("JWT__________SECRET",JWT_SECRET)
 
     console.log('accessToken3:', accessToken);
 

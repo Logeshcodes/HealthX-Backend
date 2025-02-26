@@ -16,7 +16,7 @@ export interface IUserService{
     findAllDepartment() : Promise <DepartmentInterface[] | null | undefined> ;
     getDoctorDetails(email:string) : Promise <DoctorInterface | null | undefined> ;
 
-    getAllAppointmentDetails(email: string, skip: number, limit: number , filter : string): Promise<AppointmentInterface[] | null | undefined>
+    getAllAppointmentDetails(email: string, skip: number, limit: number , activeTab : string ): Promise<AppointmentInterface[] | null | undefined>
     getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined>
 
 }

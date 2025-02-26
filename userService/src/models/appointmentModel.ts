@@ -10,6 +10,7 @@ export interface AppointmentInterface extends Document {
   mode : string ,
   status : string ,
   department : string ,
+  location : string ,
   paymentStatus: string;
   appointmentDate: Date;
   appointmentDay: string;
@@ -30,6 +31,7 @@ const AppointmentSchema: Schema<AppointmentInterface> = new Schema(
     mode: { type: String, required: true },
     status: { type: String, required: true , default : "Booked" },
     department: { type: String, required: true },
+    location: { type: String, required: false },
     paymentStatus: { type: String, required: true },
     appointmentDate: { type: Date, required: true },
     appointmentDay: { type: String, required: true },

@@ -22,6 +22,7 @@ export interface DoctorInterface extends Document{
     rejectedReason? : string ,
     consultationType : string ,
     consultationFee? : string ,
+    location? : string ,
     createdAt?: Date ,
     updateAt? : Date 
 }
@@ -38,7 +39,7 @@ const doctorSchema : Schema<DoctorInterface> = new Schema({
     education : { type : String , required : true },
     experience : { type : Number , required : true},
     description : {type : String , required : true },
-    profilePicture : { type : String , required : false , default : 'No Picture' },
+    profilePicture : { type : String , required : false },
     medicalLicense : { type : String , required : true , default : 'No Picture' },
     experienceCertificate : { type : String , required : true , default : 'No Picture' },
     degreeCertificate : { type : String , required : true , default : 'No Picture' },
@@ -49,6 +50,7 @@ const doctorSchema : Schema<DoctorInterface> = new Schema({
     rejectedReason : { type : String , required : true , default: 'No data' },
     consultationType : { type : String , required : true },
     consultationFee : { type : String , required : false },
+    location : { type : String , required : false  },
 },{
     timestamps : true 
 })

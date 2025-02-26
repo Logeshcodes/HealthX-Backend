@@ -44,14 +44,14 @@ export class DoctorController implements IDoctorController {
 
   public async updateProfile(req: Request, res: Response): Promise<any> {
     try {
-      const { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData ,  } = req.body;
+      const { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData ,location  } = req.body;
 
       console.log("consultationFee" , consultationFee)
 
       console.log(req.body, "update Doctor Data");
       console.log(req.file, "update Doctor Data");
 
-      let profilePicture = "No Picture";
+      let profilePicture  ;
       let response;
 
 
@@ -60,11 +60,11 @@ export class DoctorController implements IDoctorController {
         console.log("with profile pic")
         profilePicture = await uploadToS3Bucket(req.file, "doctorsProfile");
         
-        response = await this.doctorService.updateProfile( email ,  { name , Mobile , profilePicture , department , education , experience , consultationType , description , consultationFee , doctorProfileData });
+        response = await this.doctorService.updateProfile( email ,  { name , Mobile , profilePicture , department , education , experience , consultationType , description , consultationFee , doctorProfileData , location});
       } else {
        
         console.log("without profile pic")
-        response = await this.doctorService.updateProfile( email ,  { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData });
+        response = await this.doctorService.updateProfile( email ,  { name , Mobile , email , department , education , experience , consultationType , description , consultationFee , doctorProfileData , location });
       }
       
      
@@ -255,49 +255,52 @@ export class DoctorController implements IDoctorController {
  public async getAllAppointmentDetails(req: Request, res: Response): Promise<void> {
   try {
     const { email } = req.params;
-    const { page, limit, filter } = req.query;
+    const { page, limit, activeTab } = req.query;
 
-    // Ensure filter is a string (default to 'all' if not provided)
-    const filterString = typeof filter === 'string' ? filter : 'all';
+    console.log(`Fetching appointments for email: ${email} - Page: ${page}, Limit: ${limit}, activeTab: ${activeTab}`);
 
-    console.log(`Fetching appointments for email: ${email} - Page: ${page}, Limit: ${limit}, Filter: ${filterString}`);
-
-    const pageNum = Math.max(parseInt(page as string, 10) || 1, 1);
-    const limitNum = Math.max(parseInt(limit as string, 10) || 4, 1);
+    const pageNum = Math.max(Number(page) || 1, 1);
+    const limitNum = Math.max(Number(limit) || 10); 
     const skip = (pageNum - 1) * limitNum;
 
-    // Fetch filtered appointments
-    const response = await this.doctorService.getAllAppointmentDetails(email, skip, limitNum, filterString);
+   
+    const baseQuery: any = { doctorEmail: email };
 
-    if (response) {
-      // Apply the same filter logic for counting total appointments
-      let countQuery: any = { patientEmail: email };
-      const today = new Date();
-      switch (filterString) {
-        case 'upcoming':
-          countQuery.appointmentDate = { $gte: today };
-          countQuery.status = { $ne: 'cancelled' };
-          break;
-        case 'past':
-          countQuery.appointmentDate = { $lt: today };
-          countQuery.status = { $ne: 'cancelled' };
-          break;
-        case 'cancelled':
-          countQuery.status = 'cancelled';
-          break;
-        default:
-          // No filter applied
-          break;
-      }
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
 
-      const totalAppointments = await AppointmentModel.countDocuments(countQuery);
+    switch (activeTab) {
+      case 'upcoming':
+        baseQuery.appointmentDate = { $gte: today }; 
+        baseQuery.status = { $ne: 'cancelled' };
+        break;
+      case 'past':
+        baseQuery.appointmentDate = { $lt: today }; 
+        baseQuery.status = { $ne: 'cancelled' }; 
+        break;
+      case 'cancelled':
+        baseQuery.status = 'cancelled'; 
+        break;
+      default:
+       
+        break;
+    }
 
-      console.log("Response:", response, "Total Appointments:", totalAppointments, "Page:", pageNum);
+    
+    const allAppointments = await AppointmentModel.find(baseQuery).exec();
 
+  
+    const totalAppointments = allAppointments.length;
+    const paginatedAppointments = allAppointments.slice(skip, skip + limitNum);
+
+    console.log("Response:", paginatedAppointments, "Total Appointments:", totalAppointments, "Page:", pageNum);
+
+    if (paginatedAppointments.length > 0) {
       res.json({
         success: true,
         message: "Appointments fetched successfully",
-        data: response,
+        data: paginatedAppointments,
         total: totalAppointments,
         page: pageNum,
         totalPages: Math.ceil(totalAppointments / limitNum),
@@ -315,6 +318,50 @@ export class DoctorController implements IDoctorController {
       message: "Internal server error",
     });
   }
+}
+
+
+
+public async getAppointment(req: Request, res: Response): Promise<void> {
+
+  try {
+
+
+    const { email } = req.params;
+    
+
+    console.log(`Fetching appointments for email: ${email}`);
+
+
+
+    const response = await this.doctorService.getAppointment(email);
+
+
+    if (response) {
+      
+      res.json({
+          success: true,
+          message: "totalAppointments fetched successfully",
+          data: response,
+          
+      });
+  } else {
+      res.status(404).json({
+          success: false,
+          message: "No slots found!",
+      });
+  }
+    
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+        success: false,
+        message: "Internal server error",
+    });
+  }
+
+
+
 }
 
 

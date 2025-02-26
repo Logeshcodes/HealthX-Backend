@@ -27,7 +27,7 @@ const UserSchema : Schema<UserInterface> = new Schema({
     mobileNumber : { type : Number , required : false , unique : true },
     hashedPassword : { type : String , required : true },
     role : { type : String , required : false , default : 'User' },
-    profilePicture : { type : String , required : false  },
+    profilePicture : { type : String , required : false , default : 'No Picture' },
     authenticationMethod : { type : String , required : false , default : 'Password' },
     isVerified : { type : Boolean , required : true , default : false },
     isBlocked : { type : Boolean , required : true , default : false },

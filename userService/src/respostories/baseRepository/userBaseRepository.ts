@@ -133,18 +133,41 @@ export default class UserBaseRepository implements IUserBaseRepository {
       }
 
 
-      public async  getAllAppointmentDetails(email: string, skip: number, limit: number  , filter : string): Promise<AppointmentInterface[] | null | undefined> {
+      public async getAllAppointmentDetails(email: string, skip: number, limit: number, activeTab: string): Promise<AppointmentInterface[] | null | undefined> {
         try {
-            const response = await AppointmentModel.find({patientEmail : email })
+            let query: any = { patientEmail: email };
+    
+            const today = new Date();
+            switch (activeTab) {
+                case 'upcoming':
+                    query.appointmentDate = { $gte: today };
+                    query.status = { $ne: 'cancelled' };
+                    break;
+                case 'past':
+                    query.appointmentDate = { $lt: today };
+                    query.status = { $ne: 'cancelled' };
+                    break;
+                case 'cancelled':
+                    query.status = 'cancelled';
+                    break;
+                default:
+                    
+                    break;
+            }
+    
+            const response = await AppointmentModel.find(query)
+                .sort({appointmentDate : -1})
                 .skip(skip)  
                 .limit(limit)  
                 .exec();
+    
             return response;
         } catch (error) {
             console.log(error);
             throw error;
         }
     }
+    
 
       public async  getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined> {
         try {

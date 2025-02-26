@@ -19,4 +19,5 @@ export interface IDoctorController {
 
 
     getAllAppointmentDetails(req: Request, res: Response): Promise<void> 
+    getAppointment(req: Request, res: Response): Promise<void> 
 }

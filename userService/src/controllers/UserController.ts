@@ -1,12 +1,9 @@
 import { UserInterface } from "../models/userModel";
 import { Request, response, Response } from "express";
-import * as crypto from 'crypto';
 
-import UserServices from "../services/userServices";
 
 import { uploadToS3Bucket } from "../utils/s3Bucket";
 import bcrypt from "bcrypt";
-import verifyToken from "../utils/jwt";
 import JwtService from "../utils/jwt";
 import produce from "../config/kafka/producer";
 
@@ -285,53 +282,55 @@ export default class UserController implements IUserController  {
 
 
   // get All appointments by email to user :
-
   public async getAllAppointmentDetails(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.params;
-      const { page, limit, filter } = req.query;
+      const { page, limit, activeTab } = req.query;
   
-      // Ensure filter is a string (default to 'all' if not provided)
-      const filterString = typeof filter === 'string' ? filter : 'all';
+      console.log(`Fetching appointments for email: ${email} - Page: ${page}, Limit: ${limit}, activeTab: ${activeTab}`);
   
-      console.log(`Fetching appointments for email: ${email} - Page: ${page}, Limit: ${limit}, Filter: ${filterString}`);
-  
-      const pageNum = Math.max(parseInt(page as string, 10) || 1, 1);
-      const limitNum = Math.max(parseInt(limit as string, 10) || 4, 1);
+      const pageNum = Math.max(Number(page) || 1, 1);
+      const limitNum = Math.max(Number(limit) || 10); 
       const skip = (pageNum - 1) * limitNum;
   
-      // Fetch filtered appointments
-      const response = await this.userService.getAllAppointmentDetails(email, skip, limitNum, filterString);
+      
+      const baseQuery: any = { patientEmail: email };
   
-      if (response) {
-        // Apply the same filter logic for counting total appointments
-        let countQuery: any = { patientEmail: email };
-        const today = new Date();
-        switch (filterString) {
-          case 'upcoming':
-            countQuery.appointmentDate = { $gte: today };
-            countQuery.status = { $ne: 'cancelled' };
-            break;
-          case 'past':
-            countQuery.appointmentDate = { $lt: today };
-            countQuery.status = { $ne: 'cancelled' };
-            break;
-          case 'cancelled':
-            countQuery.status = 'cancelled';
-            break;
-          default:
-            // No filter applied
-            break;
-        }
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); 
   
-        const totalAppointments = await AppointmentModel.countDocuments(countQuery);
+      switch (activeTab) {
+        case 'upcoming':
+          baseQuery.appointmentDate = { $gte: today }; 
+          baseQuery.status = { $ne: 'cancelled' }; 
+          break;
+        case 'past':
+          baseQuery.appointmentDate = { $lt: today }; 
+          baseQuery.status = { $ne: 'cancelled' }; 
+          break;
+        case 'cancelled':
+          baseQuery.status = 'cancelled'; 
+          break;
+        default:
+          
+          break;
+      }
   
-        console.log("Response:", response, "Total Appointments:", totalAppointments, "Page:", pageNum);
+      // Fetch ALL filtered appointments
+      const allAppointments = await AppointmentModel.find(baseQuery).exec();
   
+      // Apply pagination manually
+      const totalAppointments = allAppointments.length;
+      const paginatedAppointments = allAppointments.slice(skip, skip + limitNum);
+  
+      console.log("Response:", paginatedAppointments, "Total Appointments:", totalAppointments, "Page:", pageNum);
+  
+      if (paginatedAppointments.length > 0) {
         res.json({
           success: true,
           message: "Appointments fetched successfully",
-          data: response,
+          data: paginatedAppointments,
           total: totalAppointments,
           page: pageNum,
           totalPages: Math.ceil(totalAppointments / limitNum),
@@ -350,6 +349,7 @@ export default class UserController implements IUserController  {
       });
     }
   }
+  
 
   public async getAppointment(req: Request, res: Response): Promise<void> {
 
@@ -433,6 +433,7 @@ export default class UserController implements IUserController  {
         doctorName : doctor.name ,
         profilePicture : doctor.profilePicture ,
         doctorEmail: doctor.email,
+        location : doctor.location,
         patientEmail: udf1, 
         paymentId: txnid,
         amount: amount,
