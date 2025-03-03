@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface AppointmentInterface extends Document {
+  slotId : string ,
   doctorName : string ,
   profilePicture : string ,
   doctorEmail: string;
@@ -21,7 +22,7 @@ export interface AppointmentInterface extends Document {
 
 const AppointmentSchema: Schema<AppointmentInterface> = new Schema(
   {
-    
+    slotId: { type: String, required: true },
     doctorName: { type: String, required: true },
     profilePicture: { type: String, required: false },
     doctorEmail: { type: String, required: true },

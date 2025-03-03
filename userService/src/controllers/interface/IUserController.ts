@@ -17,15 +17,10 @@ export interface IUserController{
     passwordReset( data:any): Promise<UserInterface | undefined | null>;
 
 
-    paymentSuccess(req : Request , res : Response): Promise <any> ;
-    paymentFailure(req : Request , res : Response): Promise <any> ;
-
-
-
     getDoctorDetails( req : Request , res : Response) : Promise <void> ;
-    getAppointmentDetails(req :Request , res : Response ) : Promise < any>;
-    getAllAppointmentDetails(req: Request, res: Response): Promise<void> 
-    // stats
-    getAppointment(req: Request, res: Response): Promise<void> 
+    
+    // getAllAppointmentDetails(req: Request, res: Response): Promise<void> 
+    // // stats
+    // getAppointment(req: Request, res: Response): Promise<void> 
 
 }

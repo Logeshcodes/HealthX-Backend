@@ -5,6 +5,9 @@ import { IUserService } from "./interface/IUserService"
 
 import { IUserRepository } from "../respostories/interface/IUserRepository"
 
+import { AppointmentInterface } from "../models/appointmentModel"
+import { UserInterface } from "../models/userModel"
+
 
 export class UserServices implements IUserService{
 
@@ -13,6 +16,28 @@ export class UserServices implements IUserService{
         this.userRepository= userRepository
 
     }
+
+    // kafka - user from auth
+    public async createUser(payload: UserInterface){
+        try {
+            const response=await this.userRepository.createUser(payload)
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+
+    // kafka update from user
+    
+    public async updateProfile(email: string, profilePicture: string): Promise<UserInterface | null> {
+        try {
+          const response = await this.userRepository.updateProfile(email, profilePicture);
+          return response || null;
+        } catch (error) {
+          throw error;
+        }
+      }
 
 
    
@@ -29,6 +54,17 @@ export class UserServices implements IUserService{
     public async getSlotDetailsById(id: string ): Promise<SlotInterface | null | undefined>{
         try {
             const response=await this.userRepository.getSlotDetailsById(id )
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+
+
+    public async getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined>{
+        try {
+            const response=await this.userRepository.getAppointment(id )
             return response
         } catch (error) {
             console.log(error)

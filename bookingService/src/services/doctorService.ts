@@ -1,5 +1,7 @@
 
 import { SlotInterface } from "../models/slotModel"
+import { DoctorInterface } from "../models/doctorModel"
+import { AppointmentInterface } from "../models/appointmentModel"
 
 import { IDoctorService } from "./interface/IDoctorService"
 
@@ -13,6 +15,25 @@ export class DoctorServices implements IDoctorService{
         this.doctorRepository= doctorRepository
 
     }
+
+    public async createDoctor(payload:DoctorInterface){
+        try {
+            const response=await this.doctorRepository.createDoctor(payload)
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+
+    public async updateProfile(email: string, profilePicture: string): Promise<void> {
+        try {
+          const response = await this.doctorRepository.updateProfile(email, profilePicture);
+        
+        } catch (error) {
+          throw error;
+        }
+      }
 
 
     public async createSlot( data : object): Promise<SlotInterface | null | undefined>{
@@ -39,6 +60,28 @@ export class DoctorServices implements IDoctorService{
     public async deleteSlot(_id: string): Promise<SlotInterface | null | undefined>{
         try {
             const response=await this.doctorRepository.deleteSlot(_id)
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+
+
+    
+    public async getAllAppointmentDetails(id: string , skip: number, limit: number , activeTab : string): Promise<AppointmentInterface[] | null | undefined>{
+        try {
+            const response=await this.doctorRepository.getAllAppointmentDetails(id , skip , limit , activeTab)
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+
+    public async getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined>{
+        try {
+            const response=await this.doctorRepository.getAppointment(id )
             return response
         } catch (error) {
             console.log(error)

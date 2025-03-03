@@ -1,5 +1,6 @@
 import { SlotInterface } from "../models/slotModel";
-
+import { DoctorInterface } from "../models/doctorModel";
+import { AppointmentInterface } from "../models/appointmentModel";
 import { IDoctorRepository } from "./interface/IDoctorRepository";
 
 import { IDoctorBaseRepository } from "./baseRepository/interface/IDoctorBaseRepository";
@@ -13,6 +14,26 @@ export class DoctorRepository implements IDoctorRepository{
         this.doctorBaseRepository= doctorBaseRepository
 
     }
+
+    async createDoctor(payload: DoctorInterface){
+        try {
+            const response=await this.doctorBaseRepository.createDoctor(payload)
+            
+            
+        } catch (error) {
+            
+        }
+    }
+
+    public async updateProfile(email: string, profilePicture: string): Promise<void> {
+        try {
+            const response = await this.doctorBaseRepository.updateProfile(email,profilePicture);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
    
     async createSlot(data : object) : Promise<SlotInterface | null | undefined>{
@@ -45,6 +66,25 @@ export class DoctorRepository implements IDoctorRepository{
             
         }
     }
+
+    async getAllAppointmentDetails(id: string, skip: number, limit: number  , activeTab : string): Promise<AppointmentInterface[] | null | undefined> {
+        try {
+            const response=await this.doctorBaseRepository.getAllAppointmentDetails(id, skip , limit , activeTab)
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined> {
+        try {
+            const response=await this.doctorBaseRepository.getAppointment(id)
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
    
     
 }

@@ -3,14 +3,9 @@ import bcrypt from "bcrypt";
 
 import { OtpGenerate } from "../utils/otpGenerator";
 import JwtService from "../utils/jwt";
-import UserServices from "../services/UserService";
-import otpService  from "../services/otpService";
 
-import { UserInterface } from "../models/userModel";
 
-import { access_token_options , refresh_token_options } from "../utils/tokenOptions";
-// import { SendForgotPasswordEmail } from "../utils/sendForgotPasswordEmail";
-// import SendEmail from "../utils/sentEmail";
+
 
 import produce from "../config/kafka/producer";
 

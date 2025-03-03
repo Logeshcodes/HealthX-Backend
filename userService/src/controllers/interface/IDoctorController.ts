@@ -17,7 +17,4 @@ export interface IDoctorController {
     createSlot(payload : SlotInterface) : Promise < void> ;
     removeSlot(payload : SlotInterface) : Promise <void>;
 
-
-    getAllAppointmentDetails(req: Request, res: Response): Promise<void> 
-    getAppointment(req: Request, res: Response): Promise<void> 
 }

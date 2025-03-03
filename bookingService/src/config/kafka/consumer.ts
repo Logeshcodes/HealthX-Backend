@@ -16,6 +16,10 @@ async function consume() {
     await consumer.subscribe({
       topics: [
         "slot-booked",
+        "add-user",
+        "update-profile-user",
+        "add-doctor",
+        "update-profile-doctor",
         
       ],
       fromBeginning: true,
@@ -44,6 +48,25 @@ async function consume() {
     console.log("Parsed message:", messageValue);
 
     switch (topic) {
+
+      case "add-user":
+              await userController.addUser(messageValue);
+              console.log("Processed add-user event:", messageValue);
+              break;
+
+       case "update-profile-user":
+              await userController.updateProfile(messageValue);
+              console.log("Processing update - user event:", messageValue);
+              break;
+       case "add-doctor":
+              await doctorController.addDoctor(messageValue);
+              console.log("Processed add-user event:", messageValue);
+              break;
+       case "update-profile-doctor":
+              await doctorController.updateProfile(messageValue);
+              console.log("Processed updateProfile doctor event:", messageValue);
+              break;
+
       case "slot-booked":
         await userController.updateSlot(messageValue);
         console.log("Processed slot-booked event:", messageValue);

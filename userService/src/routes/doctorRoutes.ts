@@ -40,20 +40,7 @@ router.get(
   doctorController.getDoctor.bind(doctorController)
 );
 
-router.get(
-  "/appointments/:email",
-  IsDoctor,
-  authenticateToken,
-  IsDoctorBlocked ,
-  doctorController.getAllAppointmentDetails.bind(doctorController)
-);
-router.get(
-  "/appointmentData/:email",
-  IsDoctor,
-  authenticateToken,
-  IsDoctorBlocked ,
-  doctorController.getAppointment.bind(doctorController)
-);
+
 
 const doctorRoutes = router;
 export default doctorRoutes;

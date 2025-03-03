@@ -1,4 +1,3 @@
-
 import UserModel , { UserInterface } from "../../models/userModel"
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
 import DepartmentModel, { DepartmentInterface } from "../../models/departmentModel";
@@ -15,12 +14,9 @@ export default class UserBaseRepository implements IUserBaseRepository {
 
         async createUser(payload: UserInterface): Promise<any> {
           try {
-            // Omit _id from payload if it exists
-            const { _id , createdAt , updatedAt , ...userPayload } = payload;
-        
-            console.log('create user:', userPayload);
+           
             
-            const user = await UserModel.create(userPayload);
+            const user = await UserModel.create(payload);
             console.log('User created or updated:', user);
             
             return user;

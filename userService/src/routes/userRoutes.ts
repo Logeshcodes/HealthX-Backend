@@ -49,39 +49,22 @@ router.put(
 
 // payment :
 
-router.post(
-  "/payment-success",
-  IsUser,
-  authenticateToken,
-  userController.paymentSuccess.bind(userController)
-);
-router.get(
-  "/payment-success/:txnid",
-  IsUser,
-  authenticateToken,
-  userController.getAppointmentDetails.bind(userController)
-);
-router.post(
-  "/payment-failure/",
-  IsUser,
-  authenticateToken,
-  userController.paymentFailure.bind(userController)
-);
 
-router.get(
-  "/appointments/:email",
-  IsUser,
-  authenticateToken,
-  IsUserBlocked ,
-  userController.getAllAppointmentDetails.bind(userController)
-);
-router.get(
-  "/appointmentData/:email",
-  IsUser,
-  authenticateToken,
-  IsUserBlocked ,
-  userController.getAppointment.bind(userController)
-);
+
+// router.get(
+//   "/appointments/:email",
+//   IsUser,
+//   authenticateToken,
+//   IsUserBlocked ,
+//   userController.getAllAppointmentDetails.bind(userController)
+// );
+// router.get(
+//   "/appointmentData/:email",
+//   IsUser,
+//   authenticateToken,
+//   IsUserBlocked ,
+//   userController.getAppointment.bind(userController)
+// );
 
 const userRoutes = router;
 export default userRoutes;
