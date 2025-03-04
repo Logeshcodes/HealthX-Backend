@@ -247,112 +247,132 @@ export class UserController implements IUserController {
   }
 
   // get All appointments by email to user :
-  public async getAllAppointmentDetails(
-    req: Request,
-    res: Response
-  ): Promise<void> {
+  public async getAllAppointmentDetails(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const { page, limit, activeTab } = req.query;
+        const { id } = req.params;
+        const { page, limit, activeTab } = req.query;
 
-      console.log(
-        `Fetching appointments for email: ${id} - Page: ${page}, Limit: ${limit}, activeTab: ${activeTab}`
-      );
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).json({ success: false, message: "Invalid doctor ID" });
+        }
 
-      const pageNum = Math.max(Number(page) || 1, 1);
-      const limitNum = Math.max(Number(limit) || 10);
-      const skip = (pageNum - 1) * limitNum;
+        console.log(`Fetching appointments for doctor ID: ${id} - Page: ${page}, Limit: ${limit}, activeTab: ${activeTab}`);
 
-      const baseQuery: any = { patientId: id };
+        const pageNum = Math.max(Number(page) || 1, 1);
+        const limitNum = Math.max(Number(limit) || 10, 1);
+        const skip = (pageNum - 1) * limitNum;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+        const baseQuery: any = { patientId: new mongoose.Types.ObjectId(id) };
 
-      switch (activeTab) {
-        case "upcoming":
-          baseQuery.appointmentDate = { $gte: today };
-          baseQuery.status = { $ne: "cancelled" };
-          break;
-        case "past":
-          baseQuery.appointmentDate = { $lt: today };
-          baseQuery.status = { $ne: "cancelled" };
-          break;
-        case "cancelled":
-          baseQuery.status = "cancelled";
-          break;
-        default:
-          break;
-      }
-      console.log("baseQuery", baseQuery, id);
+        switch (activeTab) {
+            case "upcoming":
+                baseQuery.appointmentDate = { $gte: today };
+                baseQuery.status = { $ne: "cancelled" };
+                break;
+            case "past":
+                baseQuery.appointmentDate = { $lt: today };
+                baseQuery.status = { $ne: "cancelled" };
+                break;
+            case "cancelled":
+                baseQuery.status = "cancelled";
+                break;
+        }
 
-      // Fetch ALL filtered appointments
-      const allAppointments = await AppointmentModel.aggregate([
-        { $match: { patientId: new mongoose.Types.ObjectId(id) } },
-        {
-          $lookup: {
-            from: "doctors",
-            localField: "doctorId",
-            foreignField: "_id",
-            as: "doctorDetails",
+        console.log("Base Query:", baseQuery);
+
+        // Fetch paginated appointments
+        const allAppointments = await AppointmentModel.aggregate([
+            { $match: baseQuery },
+            {
+                $lookup: {
+                    from: "doctors",
+                    localField: "doctorId",
+                    foreignField: "_id",
+                    as: "doctorDetails",
+                },
+            },
+            {
+              $lookup: {
+                  from: "users",
+                  localField: "patientId",
+                  foreignField: "_id",
+                  as: "patientDetails",
+              },
           },
-        },
-        {
-          $lookup: {
-            from: "timeslots",
-            localField: "slotId",
-            foreignField: "_id",
-            as: "slotDetails",
-          },
-        },
-        {
-          $unwind: "$doctorDetails",
-        },
-        {
-          $unwind: "$slotDetails",
-        },
-      ]);
+            {
+                $lookup: {
+                    from: "timeslots",
+                    localField: "slotId",
+                    foreignField: "_id",
+                    as: "slotDetails",
+                },
+            },
+            { $unwind: "$doctorDetails" },
+            { $unwind: "$patientDetails" },
+            { $unwind: "$slotDetails" },
+            { $skip: skip },
+            { $limit: limitNum },
+        ]);
 
-      console.log("allAppointments______", allAppointments);
+        // Aggregation for stats
+        const stats = await AppointmentModel.aggregate([
+            { $match: { patientId: new mongoose.Types.ObjectId(id) } },
+            {
+                $group: {
+                    _id: null,
+                    totalAppointments: { $sum: 1 },
+                    todayCount: {
+                        $sum: {
+                            $cond: [
+                                { $and: [{ $gte: ["$appointmentDate", today] }, { $ne: ["$status", "cancelled"] }] },
+                                1,
+                                0,
+                            ],
+                        },
+                    },
+                    completedCount: {
+                        $sum: {
+                            $cond: [
+                                { $and: [{ $lt: ["$appointmentDate", today] }, { $ne: ["$status", "cancelled"] }] },
+                                1,
+                                0,
+                            ],
+                        },
+                    },
+                    totalEarnings: { $sum: { $cond: [{ $lt: ["$appointmentDate", today] }, "$amount", 0] } },
+                },
+            },
+        ]);
 
-      // Apply pagination manually
-      const totalAppointments = allAppointments.length;
-      const paginatedAppointments = allAppointments.slice(
-        skip,
-        skip + limitNum
-      );
+        const {
+            totalAppointments = 0,
+            todayCount = 0,
+            completedCount = 0,
+            totalEarnings = 0
+        } = stats[0] || {};
 
-      console.log(
-        "Response:",
-        paginatedAppointments,
-        "Total Appointments:",
-        totalAppointments,
-        "Page:",
-        pageNum
-      );
+        console.log("Response:", { allAppointments, totalAppointments, todayCount, completedCount, totalEarnings });
 
-      if (paginatedAppointments.length > 0) {
         res.json({
-          success: true,
-          message: "Appointments fetched successfully",
-          data: paginatedAppointments,
-          total: totalAppointments,
-          page: pageNum,
-          totalPages: Math.ceil(totalAppointments / limitNum),
+            success: true,
+            message: "Appointments fetched successfully",
+            data: allAppointments || [],
+            total: totalAppointments,
+            page: pageNum,
+            todayCount,
+            completedCount,
+            totalEarnings,
+            totalPages: Math.ceil(totalAppointments / limitNum),
         });
-      } else {
-        res.status(404).json({
-          success: false,
-          message: "No appointments found!",
-        });
-      }
+
     } catch (error) {
-      console.error("Error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Internal server error",
-      });
+        console.error("Error:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
-  }
+}
+
 
   public async getAppointment(req: Request, res: Response): Promise<void> {
     try {

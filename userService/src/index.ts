@@ -1,69 +1,64 @@
-import express,{Application} from "express"
-import cookieParser from 'cookie-parser';
-import { config } from 'dotenv';
+import express, { Application } from "express";
+import cookieParser from "cookie-parser";
+import { config } from "dotenv";
 import connectDB from "./config/db";
-import cors from 'cors'
-
+import cors from "cors";
 import consume from "./config/kafka/consumer";
 import doctorRoutes from "./routes/doctorRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
+import morgan from "morgan";
 
-import morgan from 'morgan'
+config();
 
-config()
+let app: Application = express();
+const PORT: number = Number(process.env.PORT) || 5002;
 
-let app:Application=express()
-const PORT:number=Number(process.env.PORT) || 5002 ;
-
-
+// ✅ CORS Fix
 const corsOptions = {
-    origin: String(process.env.FRONTEND_URL),
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
 };
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Preflight fix
+
 app.use(cookieParser());
-app.use(cors(corsOptions))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(morgan('dev'))
+// ✅ Improved Logging
+const morganFormat = ':method :url :status :response-time ms - :res[content-length]';
+app.use(morgan(morganFormat));
 
-app.use('/patient' , userRoutes)  // change /user
-app.use('/doctor' , doctorRoutes)
-app.use('/admin' , adminRoutes)
+// Routes
+app.use("/patient", userRoutes); 
+app.use("/doctor", doctorRoutes);
+app.use("/admin", adminRoutes);
 
-consume()
+consume();
 
+// ✅ Improved Error Handling
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception:", err);
+});
 
-const morganFormat = ':method :url :status :response-time ms';
+process.on("unhandledRejection", (reason) => {
+    console.error("Unhandled Rejection:", reason);
+});
 
-app.use(morgan('dev'));
-
-
+// ✅ Ensure DB Connection Before Starting
 const userStart = async () => {
     try {
-      await connectDB(); 
-
-      app.listen(PORT, () => {
-        console.log(`${process.env.SERVICE} is listening on port ${process.env.PORT}`);
-      });
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`${process.env.SERVICE} is running on port ${PORT}`);
+        });
     } catch (error) {
-      console.error('Error starting the server:', error);
-      process.exit(1); 
+        console.error("Database connection failed:", error);
+        process.exit(1);
     }
-  };
+};
 
-
-  process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err.message);
-    process.exit(1);
-  });
-  
-  process.on('unhandledRejection', (reason: any) => {
-    console.error('Unhandled Rejection:', reason);
-    process.exit(1);
-  });
-  
-
-userStart()
+userStart();

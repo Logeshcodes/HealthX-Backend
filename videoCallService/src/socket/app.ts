@@ -1,3 +1,174 @@
+// import * as cookie from 'cookie';
+// import dotenv from "dotenv";
+// import { verifyToken } from './verify';
+// dotenv.config();
+
+// import { Server, Socket } from "socket.io";
+// import userCollection from "../models/userModel";
+// import doctorCollection from "../models/doctorModel";
+
+// interface OnlineUser {
+//   id: string;
+//   userId: string;
+//   socketId: string;
+//   lastActive: number;
+// }
+
+// interface DecodedToken {
+//   email: string;
+//   role: string;
+//   [key: string]: any; // Additional token claims
+// }
+
+// class SocketManager {
+//   private static instance: SocketManager;
+//   private onlineUsers: Map<string, OnlineUser> = new Map();
+
+//   private constructor() {
+//     // Clean up inactive users every 30 minutes
+//     setInterval(() => this.cleanupInactiveUsers(), 1000 * 60 * 30);
+//   }
+
+//   public static getInstance(): SocketManager {
+//     if (!SocketManager.instance) {
+//       SocketManager.instance = new SocketManager();
+//     }
+//     return SocketManager.instance;
+//   }
+
+//   public addUser(id: string, userId: string, socketId: string): void {
+//     this.onlineUsers.set(userId, {
+//       id,
+//       userId,
+//       socketId,
+//       lastActive: Date.now(),
+//     });
+//   }
+
+//   public removeUser(userId: string): void {
+//     this.onlineUsers.delete(userId);
+//   }
+
+//   public getUserSocketId(userId: string): string | undefined {
+//     return this.onlineUsers.get(userId)?.socketId;
+//   }
+
+//   public getUserSocketIdByUserId(email: string): OnlineUser | undefined {
+//     return this.onlineUsers.get(email);
+//   }
+
+//   public getAllOnlineUsers(): OnlineUser[] {
+//     return Array.from(this.onlineUsers.values());
+//   }
+
+//   private cleanupInactiveUsers(maxInactivityTime = 1000 * 60 * 30): void {
+//     const now = Date.now();
+//     this.onlineUsers.forEach((user, userId) => {
+//       if (now - user.lastActive > maxInactivityTime) {
+//         this.onlineUsers.delete(userId);
+//       }
+//     });
+//   }
+// }
+
+// async function initializeSocketIO(io: Server) {
+//   console.log("Initializing Socket.IO");
+//   const socketManager = SocketManager.getInstance();
+
+//   io.use(async (socket: Socket, next) => {
+//     try {
+//       const token = extractToken(socket);
+//       const JWT_SECRET = process.env.JWT_SECRET || "mySecertPassword";
+//       if (!JWT_SECRET) {
+//         throw new Error("JWT Secret not configured");
+//       }
+
+//       const decodedToken = await verifyToken(token) as DecodedToken;
+//       if (!decodedToken?.email || !decodedToken?.role) {
+//         throw new Error("Invalid or malformed token");
+//       }
+
+//       let entity;
+//       if (decodedToken.role === "User") {
+//         entity = await userCollection.findOne({ email: decodedToken.email });
+//       } else if (decodedToken.role === "Doctor") {
+//         entity = await doctorCollection.findOne({ email: decodedToken.email });
+//       } else {
+//         throw new Error("Invalid role in token");
+//       }
+
+//       if (!entity) {
+//         throw new Error("Entity not found");
+//       }
+
+//       socket.data.entity = entity;
+//       next();
+//     } catch (error: any) {
+//       console.error("Authentication error:", error.message);
+//       next(new Error(error.message || "Authentication failed"));
+//     }
+//   });
+
+//   io.on("connection", (socket) => {
+//     console.log("User connected:", socket.id);
+//     socketManager.addUser(String(socket.data.entity._id), socket.data.entity.email, socket.id);
+
+//     socket.on("outgoing:call", (data) => {
+//       const { to, fromOffer } = data;
+//       const recipientSocketId = socketManager.getUserSocketIdByUserId(to);
+//       if (!recipientSocketId) {
+//         socket.emit("call:error", { message: `User ${to} is not online`, code: "USER_OFFLINE" });
+//         return;
+//       }
+//       io.to(recipientSocketId.socketId).emit("incoming:call", { from: socket.id, offer: fromOffer, userEmail: recipientSocketId.userId });
+//     });
+
+//     socket.on("call:accepted", (data) => {
+//       const { to, answer } = data;
+//       const recipientSocketId = socketManager.getUserSocketIdByUserId(to);
+//       if (recipientSocketId) {
+//         io.to(recipientSocketId.socketId).emit("incoming:answer", { from: socket.id, answer });
+//       }
+//     });
+
+
+
+
+
+//     socket.on("ice:candidate", (data) => {
+//       const { to, candidate } = data;
+//       const recipientSocketId = socketManager.getUserSocketId(to);
+//       if (recipientSocketId) {
+//         io.to(recipientSocketId).emit("ice:candidate", { from: socket.id, candidate });
+//       }
+//     });
+
+//     socket.on("end:call", (data) => {
+//       const { to } = data;
+//       const recipientSocketId = socketManager.getUserSocketId(to);
+//       if (recipientSocketId) {
+//         io.to(recipientSocketId).emit("call:ended", { from: socket.id });
+//       }
+//     });
+
+//     socket.on("disconnect", () => {
+//       console.log("User disconnected:", socket.id);
+//       socketManager.removeUser(socket.data.entity._id);
+//     });
+//   });
+// }
+
+// function extractToken(socket: Socket): string {
+//   const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
+//   const token = cookies.accessToken || socket.handshake.auth?.token || cookies.accessToken2;
+//   if (!token) {
+//     throw new Error("No authentication token provided");
+//   }
+//   return token;
+// }
+
+// export { initializeSocketIO, SocketManager };
+
 import * as cookie from 'cookie';
 import dotenv from "dotenv";
 import { verifyToken } from './verify';
@@ -14,11 +185,20 @@ interface OnlineUser {
   lastActive: number;
 }
 
+interface DecodedToken {
+  email: string;
+  role: string;
+  [key: string]: any;
+}
+
 class SocketManager {
   private static instance: SocketManager;
   private onlineUsers: Map<string, OnlineUser> = new Map();
 
-  private constructor() {}
+  private constructor() {
+    // Clean up inactive users every 30 minutes
+    setInterval(() => this.cleanupInactiveUsers(), 1000 * 60 * 30);
+  }
 
   public static getInstance(): SocketManager {
     if (!SocketManager.instance) {
@@ -34,7 +214,6 @@ class SocketManager {
       socketId,
       lastActive: Date.now(),
     });
-    setInterval(() => this.cleanupInactiveUsers(), 1000 * 60 * 30);
   }
 
   public removeUser(userId: string): void {
@@ -45,10 +224,8 @@ class SocketManager {
     return this.onlineUsers.get(userId)?.socketId;
   }
 
-  public getUserSocketIdByUserId(email: string): any {
-    const data = this.onlineUsers.get(email);
-    console.log(this.onlineUsers, data, "fun");
-    return data;
+  public getUserSocketIdByUserId(email: string): OnlineUser | undefined {
+    return this.onlineUsers.get(email);
   }
 
   public getAllOnlineUsers(): OnlineUser[] {
@@ -66,116 +243,138 @@ class SocketManager {
 }
 
 async function initializeSocketIO(io: Server) {
-  console.log("Entered socket initialization");
+  console.log("Initializing Socket.IO");
   const socketManager = SocketManager.getInstance();
 
+  // Authentication middleware
   io.use(async (socket: Socket, next) => {
-    console.log(socketManager.getAllOnlineUsers(), "All online users here");
     try {
       const token = extractToken(socket);
-
-      const JWT_SECRET = 'mySecertPassword';
+      const JWT_SECRET = process.env.JWT_SECRET || "mySecertPassword";
       if (!JWT_SECRET) {
         throw new Error("JWT Secret not configured");
       }
-
-      const decodedToken: any = await verifyToken(token);
-
-      if (!decodedToken || !decodedToken.email || !decodedToken.role) {
+  
+      const decodedToken = await verifyToken(token) as DecodedToken;
+      if (!decodedToken?.email || !decodedToken?.role) {
         throw new Error("Invalid or malformed token");
       }
-
-      console.log("Decoded token:", decodedToken?.email);
-      console.log("Role:", decodedToken?.role);
-
+  
       let entity;
-      if (decodedToken?.role === "User") {
-        entity = await userCollection.findOne({ email: decodedToken?.email });
-      } else if (decodedToken?.role === "Doctor") {
-        entity = await doctorCollection.findOne({ email: decodedToken?.email });
+      if (decodedToken.role === "User") {
+        entity = await userCollection.findOne({ email: decodedToken.email });
+      } else if (decodedToken.role === "Doctor") {
+        entity = await doctorCollection.findOne({ email: decodedToken.email });
       } else {
         throw new Error("Invalid role in token");
       }
-
+  
       if (!entity) {
         throw new Error("Entity not found");
       }
+  
       socket.data.entity = entity;
+      socket.data.email = decodedToken.email;
       next();
     } catch (error: any) {
+      console.error("Authentication error:", error.message);
       next(new Error(error.message || "Authentication failed"));
     }
   });
-
+  
+  // Main connection handler
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
-
-    socketManager.addUser(String(socket.data.entity._id), socket.data.entity.email, socket.id);
-
+    
+    // Add user to online users
+    socketManager.addUser(
+      String(socket.data.entity._id), 
+      socket.data.entity.email, 
+      socket.id
+    );
+  
+    // Initiate outgoing call
     socket.on("outgoing:call", (data) => {
       const { to, fromOffer } = data;
-
-      console.log("Outgoing call from:", socket.id, "to:", to);
-
       const recipientSocketId = socketManager.getUserSocketIdByUserId(to);
-      console.log(recipientSocketId.socketId, "Recipient socket ID");
+      
       if (!recipientSocketId) {
-        console.log(`User ${to} is not online`);
-        socket.emit("call:error", { message: `User ${to} is not online`, code: "USER_OFFLINE" });
+        socket.emit("call:error", { 
+          message: `User ${to} is not online`, 
+          code: "USER_OFFLINE" 
+        });
         return;
       }
-
-      io.to(recipientSocketId.socketId).emit("incoming:call", { from: socket.id, offer: fromOffer,userEmail:recipientSocketId.userId });
+  
+      // Send incoming call to recipient
+      io.to(recipientSocketId.socketId).emit("incoming:call", { 
+        from: socket.data.email,  // Send caller's email
+        offer: fromOffer, 
+        userEmail: recipientSocketId.userId 
+      });
     });
-
+  
+    // Handle call acceptance
     socket.on("call:accepted", (data) => {
       const { to, answer } = data;
-      console.log("Call accepted by:", socket.id, "to:", to);
-
       const recipientSocketId = socketManager.getUserSocketIdByUserId(to);
+      
       if (recipientSocketId) {
-        io.to(recipientSocketId).emit("incoming:answer", { from: socket.id, answer });
+        io.to(recipientSocketId.socketId).emit("incoming:answer", { 
+          from: socket.data.email,  // Send caller's email
+          answer 
+        });
       }
     });
-
+  
+    // Handle ICE candidate exchange
     socket.on("ice:candidate", (data) => {
       const { to, candidate } = data;
-      console.log("ICE candidate from:", socket.id, "to:", to);
-      const recipientSocketId = socketManager.getUserSocketId(to);
+      const recipientSocketId = socketManager.getUserSocketIdByUserId(to);
+      
       if (recipientSocketId) {
-        io.to(recipientSocketId).emit("ice:candidate", { from: socket.id, candidate });
+        io.to(recipientSocketId.socketId).emit("ice:candidate", { 
+          from: socket.data.email,  // Send sender's email
+          candidate 
+        });
       }
     });
-
+  
+    // Handle call termination
     socket.on("end:call", (data) => {
       const { to } = data;
-      console.log("Call ended by:", socket.id, "to:", to);
-
-      const recipientSocketId = socketManager.getUserSocketId(to);
+      const recipientSocketId = socketManager.getUserSocketIdByUserId(to);
+      
       if (recipientSocketId) {
-        io.to(recipientSocketId).emit("call:ended", { from: socket.id });
+        io.to(recipientSocketId.socketId).emit("call:ended", { 
+          from: socket.data.email  // Send terminator's email
+        });
       }
     });
-
+  
+    // Handle disconnection
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
-      socketManager.removeUser(socket.data.entity._id);
+      socketManager.removeUser(socket.data.entity.email);
     });
   });
-}
-
-function extractToken(socket: Socket): string {
-  try {
+  }
+  
+  // Token extraction utility
+  function extractToken(socket: Socket): string {
     const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
-    let token = cookies.accessToken || socket.handshake.auth?.token;
-
+    
+    // Check for different access tokens based on role
+    const token = 
+      cookies.accessToken || 
+      socket.handshake.auth?.token || 
+      cookies.accessToken1 ||  // Patient token
+      cookies.accessToken2;    // Doctor token
+  
     if (!token) {
       throw new Error("No authentication token provided");
     }
     return token;
-  } catch (error) {
-    throw new Error("Error extracting authentication token");
   }
-}
-
-export { initializeSocketIO, SocketManager };
+  
+  export { initializeSocketIO, SocketManager };

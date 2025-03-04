@@ -11,10 +11,13 @@ import videoCallRoutes from "./routers/videoCallRoutes";
 
 config();
 
-let app: Application = express();
+const app: Application = express();
 const httpServer = createServer(app);
+
 const PORT: number = Number(process.env.PORT) || 5006;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const SERVICE = process.env.SERVICE || "Video Call Service";
+
 
 const corsOptions = {
   origin: FRONTEND_URL,
@@ -23,12 +26,14 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
+
 app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
+// Initialize Socket.IO
 const io = new Server(httpServer, {
   cors: {
     origin: FRONTEND_URL,
@@ -39,30 +44,53 @@ const io = new Server(httpServer, {
   transports: ["websocket", "polling"],
 });
 
-
 try {
   initializeSocketIO(io);
-  console.log("Socket handlers initializeSocketIO successfully");
+  console.log(" Socket.IO initialized successfully.");
 } catch (error) {
-  console.error("Failed to initializeSocketIO socket handlers:", error);
+  console.error(" Failed to initialize Socket.IO:", error);
 }
 
+// Routes
 app.use("/", videoCallRoutes);
 
+// Health Check Endpoint
+app.get("/health", (req: Request, res: Response) => {
+  res.json({ status: "OK", service: SERVICE, timestamp: new Date() });
+});
+
+// Logging Middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   res.on("finish", () => {
     const duration = Date.now() - start;
-    console.log(`LOGGING 📝 : ${req.method} ${req.originalUrl} - ${res.statusCode} - ${duration}ms`);
+    console.log(`📝 LOG: ${req.method} ${req.originalUrl} - ${res.statusCode} - ${duration}ms`);
   });
   next();
 });
 
+// Graceful Error Handling
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err.message);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason: any) => {
+  console.error(" Unhandled Rejection:", reason);
+  process.exit(1);
+});
+
+// Start the Service
 const start = async () => {
-  await connectDB();
-  httpServer.listen(PORT, () => {
-    console.log(`The ${process.env.SERVICE} is listening on port ${PORT}`);
-  });
+  try {
+    await connectDB();
+    httpServer.listen(PORT, () => {
+      console.log(` ${SERVICE} is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error(" Error starting the server:", error);
+    process.exit(1);
+  }
 };
 
 start();

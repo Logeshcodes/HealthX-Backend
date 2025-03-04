@@ -20,12 +20,15 @@ let app:Application=express()
 const PORT:number=Number(process.env.port)||5005
 
 const corsOptions = {
-    origin: String(process.env.FRONTEND_URL),
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
 };
-app.use(cookieParser());
+
 app.use(cors(corsOptions))
+app.options("*", cors(corsOptions)); 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'))
