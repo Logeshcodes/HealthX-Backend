@@ -19,15 +19,14 @@ export class DoctorRepository implements IDoctorRepository{
         try {
             const response=await this.doctorBaseRepository.createDoctor(payload)
             
-            
         } catch (error) {
             
         }
     }
 
-    public async updateProfile(email: string, profilePicture: string): Promise<void> {
+    public async updateProfile(email: string, profilePicture: string , location : string): Promise<void> {
         try {
-            const response = await this.doctorBaseRepository.updateProfile(email,profilePicture);
+            const response = await this.doctorBaseRepository.updateProfile(email,profilePicture , location);
             return response;
         } catch (error) {
             throw error;

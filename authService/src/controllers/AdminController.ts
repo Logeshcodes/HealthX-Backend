@@ -1,9 +1,6 @@
 import JwtService from "../utils/jwt";
 import { Request, Response } from "express";
 
-import { DepartmentInterface } from "../models/departmentModel";
-
-import AdminService from "../services/Adminservice";
 
 import { config } from 'dotenv';
 
@@ -13,12 +10,12 @@ config()
 export class AdminController{
 
 
-    private adminService: AdminService;
+ 
     private JWT: JwtService;
 
     constructor(){
          this.JWT=new JwtService();
-         this.adminService=new AdminService();
+       
     }
 
     
@@ -75,24 +72,7 @@ export class AdminController{
   
 
  
-
-
-      public async addDepartment(payload: DepartmentInterface): Promise<any> {
-        try {
-          let response = await this.adminService.createDepartment(payload);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      public async updateDepartment(payload: any): Promise<any> {
-        try {
-          const {departmentName , updateData} = payload
-          let response = await this.adminService.updateDepartment(departmentName , updateData );
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      
 
      
       

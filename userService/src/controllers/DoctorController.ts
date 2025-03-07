@@ -1,11 +1,8 @@
-import { DoctorInterface } from "../models/doctorModel";
+import DoctorModel, { DoctorInterface } from "../models/doctorModel";
 import { Request, Response } from "express";
-import { DoctorServices } from "../services/doctorServices";
 import { uploadToS3Bucket } from "../utils/s3Bucket";
 import bcrypt from "bcrypt";
-import verifyToken from "../utils/jwt";
 import produce from "../config/kafka/producer";
-import mongoose from "mongoose";
 import JwtService from "../utils/jwt";
 
 import { SlotInterface }  from "../models/slotModel";
@@ -13,7 +10,6 @@ import SlotModel from "../models/slotModel";
 import { IDoctorController } from "./interface/IDoctorController";
 import { IDoctorService } from "../services/interface/IDoctorService";
 
-import AppointmentModel from "../models/appointmentModel";
 
 
 export class DoctorController implements IDoctorController {
@@ -30,6 +26,7 @@ export class DoctorController implements IDoctorController {
       console.log(error);
     }
   }
+
   public async getDoctor(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.params;
@@ -71,7 +68,7 @@ export class DoctorController implements IDoctorController {
       
 
       if (response) {
-        await produce("update-profile-doctor",{email ,profilePicture : profilePicture })
+        await produce("update-profile-doctor",{email ,profilePicture : profilePicture , location});
         res.status(200).json({
           success: true,
           message: "Profile Updated!",
@@ -186,6 +183,21 @@ export class DoctorController implements IDoctorController {
   }
 
 
+   public async findAllBanners(req:Request,res:Response): Promise<void>{
+      try {
+      
+        const banners=await this.doctorService.findAllBanners()
+       
+         res.status(200).json({
+          banners:banners
+        })
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+
+
   ///kafka consume
   async passwordReset(data:any) : Promise<DoctorInterface | null | undefined>{
     try {
@@ -251,7 +263,56 @@ export class DoctorController implements IDoctorController {
 
 
 
+async updateWallet( data:{doctorId : string ,appointmentId : string , transactionId : string , amount : number , type : string}): Promise<DoctorInterface | undefined | null>{
+  try {
 
+
+    console.log("update- doctor wallet data" , data)
+    const { doctorId , appointmentId , transactionId, amount , type } = data ;
+
+    const doctorDetails = await DoctorModel.findById({ _id : doctorId}) ;
+
+    if (!doctorDetails){
+      throw new Error("No doctor details not found");
+    }
+
+    const transactions = doctorDetails?.wallet.transactions ?? [];
+
+    const description = `Cancelled Appointment Id : ${appointmentId}`;
+    const refundAmount = type === "credit" ? amount * 0.1 : amount; 
+
+    // transaction object
+    const newTransaction = {
+      amount: refundAmount,
+      description,
+      transactionId,
+      type,
+      date: new Date(), 
+  };
+
+
+   // Update wallet balance
+   const newBalance = type === "debit"
+   ? doctorDetails.wallet.balance - amount
+   : doctorDetails.wallet.balance + refundAmount;
+
+
+
+   const walletDetails = {
+      balance: newBalance,
+      transactions: [...transactions, newTransaction],
+  };
+   
+  console.log("Updated Wallet Data:", walletDetails);
+
+
+
+  const response = await this.doctorService.updateWallet(doctorId, walletDetails);
+    return response
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 
 

@@ -40,7 +40,10 @@ export const IsDoctor = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+
     const Token = req.cookies.accessToken2;
+
+    console.log("Token" , Token)
 
     if (!Token) {
       res.status(StatusCode.UNAUTHORIZED).send(ResponseError.ACCESS_FORBIDDEN);
@@ -49,6 +52,7 @@ export const IsDoctor = async (
 
     const JWT = new JwtService();
     const decode = await JWT.verifyToken(Token);
+    console.log("decode****",  decode)
     if (decode) {
       if (decode.role !== "Doctor") {
         res

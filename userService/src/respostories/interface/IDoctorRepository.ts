@@ -1,8 +1,7 @@
 
 import { DoctorInterface } from "../../models/doctorModel";
+import { BannerInterface } from "../../models/bannerModel";
 
-import { Request, Response } from "express";
-import { AppointmentInterface } from "../../models/appointmentModel";
 
 export interface IDoctorRepository{
 
@@ -11,10 +10,10 @@ export interface IDoctorRepository{
     updateProfile(email:string,data:object): Promise<DoctorInterface | null | undefined> ;
     updatePassword(email:string,password:string): Promise<DoctorInterface | null | undefined> ;
     VerificationRequest(emailID:string,status:string ,medicalLicenseUrl: string , degreeCertificateUrl : string ): Promise<DoctorInterface | null | undefined>
-
+    updateWallet(doctorId : string , wallet : any) : Promise <DoctorInterface | null | undefined>;
+    findAllBanners(): Promise <BannerInterface[] | null | undefined> ;
     getDoctors() : Promise<DoctorInterface[] | null | undefined>
 
-    getAllAppointmentDetails(email: string, skip: number, limit: number  , activeTab : string): Promise<AppointmentInterface[] | null | undefined>
-    getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined>
+   
 
 }

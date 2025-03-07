@@ -1,8 +1,7 @@
-import UserModel , { UserInterface } from "../../models/userModel"
+import UserModel , { ITransaction, UserInterface } from "../../models/userModel"
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
 import DepartmentModel, { DepartmentInterface } from "../../models/departmentModel";
-import { AppointmentInterface } from "../../models/appointmentModel";
-import AppointmentModel from "../../models/appointmentModel";
+
 import BannerModel, { BannerInterface } from "../../models/bannerModel";
 
 import { IUserBaseRepository } from "./interface/IUserBaseRepository";
@@ -84,6 +83,30 @@ export default class UserBaseRepository implements IUserBaseRepository {
           throw error;
         }
       }
+
+      async updateWallet(userId: string, wallet: { balance: number; transactions: ITransaction[] }): Promise<UserInterface | null> {
+        try {
+            console.log("Final wallet data:", wallet);
+    
+            // Use correct $set format for nested fields
+            const userData = await UserModel.findByIdAndUpdate(
+                userId,
+                {
+                    $set: {
+                        "wallet.balance": wallet.balance,
+                        "wallet.transactions": wallet.transactions,
+                    },
+                },
+                { new: true }
+            );
+    
+            return userData;
+        } catch (error) {
+            console.error("Error updating user wallet:", error);
+            throw error;
+        }
+    }
+    
     
       async findAllUsers(): Promise <UserInterface[] | null | undefined>{
         try {
@@ -98,7 +121,16 @@ export default class UserBaseRepository implements IUserBaseRepository {
 
       async findAllBanners(): Promise <BannerInterface[] | null | undefined>{
         try {
-            const response=await BannerModel.find({isListed: true , role : "Patient"})
+
+          const currentDate = new Date();
+
+          const response = await BannerModel.find({
+            isListed: true,
+            role: "Patient",
+            startDate: { $lte: currentDate }, 
+            endDate: { $gte: currentDate }    
+          });
+          
             return response
             
         } catch (error) {
@@ -129,52 +161,7 @@ export default class UserBaseRepository implements IUserBaseRepository {
       }
 
 
-      public async getAllAppointmentDetails(email: string, skip: number, limit: number, activeTab: string): Promise<AppointmentInterface[] | null | undefined> {
-        try {
-            let query: any = { patientEmail: email };
-    
-            const today = new Date();
-            switch (activeTab) {
-                case 'upcoming':
-                    query.appointmentDate = { $gte: today };
-                    query.status = { $ne: 'cancelled' };
-                    break;
-                case 'past':
-                    query.appointmentDate = { $lt: today };
-                    query.status = { $ne: 'cancelled' };
-                    break;
-                case 'cancelled':
-                    query.status = 'cancelled';
-                    break;
-                default:
-                    
-                    break;
-            }
-    
-            const response = await AppointmentModel.find(query)
-                .sort({appointmentDate : -1})
-                .skip(skip)  
-                .limit(limit)  
-                .exec();
-    
-            return response;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
-    
-
-      public async  getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined> {
-        try {
-            const response = await AppointmentModel.find({patientEmail : email })
-                
-            return response;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
+   
 
 
 }

@@ -22,11 +22,22 @@ interface AuthenticatedRequest extends Request {
 const authenticateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<any> => {
     console.log('Auth middleware entered');
 
-    const accessToken = req.cookies['accessToken'];
-    const refreshToken = req.cookies['refreshToken'];
+    // Fetch tokens from cookies
+    const userAccessToken = req.cookies['accessToken'];
+    const userRefreshToken = req.cookies['refreshToken'];
+    const doctorAccessToken = req.cookies['accessToken2'];
+    const doctorRefreshToken = req.cookies['refreshToken2'];
+    const adminAccessToken = req.cookies['accessToken3'];
+    const adminRefreshToken = req.cookies['refreshToken3'];
 
     console.log('Cookies received:', req.cookies);
-    console.log('accessToken:', accessToken);
+    console.log('User accessToken:', userAccessToken);
+    console.log('Doctor accessToken:', doctorAccessToken);
+    console.log('Admin accessToken:', adminAccessToken);
+
+    // Determine which token to use based on priority (Admin > Doctor > User)
+    const accessToken = adminAccessToken || doctorAccessToken || userAccessToken;
+    const refreshToken = adminRefreshToken || doctorRefreshToken || userRefreshToken;
 
     if (!accessToken) {
         return res.status(StatusCode.UNAUTHORIZED).json({ failToken: true, message: ResponseError.NO_ACCESS_TOKEN });
@@ -37,7 +48,7 @@ const authenticateToken = async (req: AuthenticatedRequest, res: Response, next:
         const accessPayload = jwt.verify(accessToken, JWT_SECRET) as AuthenticatedRequest['user'];
         console.log('Access token verified:', accessPayload);
 
-        // If valid, attach payload to request and proceed
+        // Attach user payload and proceed
         req.user = accessPayload;
         return next();
     } catch (err: any) {
@@ -56,8 +67,8 @@ const authenticateToken = async (req: AuthenticatedRequest, res: Response, next:
                     return res.status(StatusCode.UNAUTHORIZED).json({ message: ResponseError.INVALID_REFRESH_TOKEN });
                 }
 
-                // Check if the refresh token is expired
-                const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+                // Check if refresh token is expired
+                const currentTime = Math.floor(Date.now() / 1000);
                 if (refreshPayload.exp && refreshPayload.exp < currentTime) {
                     console.log('Refresh token expired');
                     return res.status(StatusCode.UNAUTHORIZED).json({ message: ResponseError.REFRESH_TOKEN_EXPIRED });
@@ -73,12 +84,17 @@ const authenticateToken = async (req: AuthenticatedRequest, res: Response, next:
                 });
                 console.log(ResponseError.NEW_ACCESS_TOKEN_GENERATED, newAccessToken);
 
-                // Set new Access Token in cookies
-                res.cookie('accessToken', newAccessToken, {
-                    httpOnly: true,
-                });
-
-                req.cookies['accessToken'] = newAccessToken;
+                // Set the new Access Token in cookies based on role
+                if (refreshPayload.role === 'Admin') {
+                    res.cookie('accessToken3', newAccessToken, { httpOnly: true });
+                    req.cookies['accessToken3'] = newAccessToken;
+                } else if (refreshPayload.role === 'Doctor') {
+                    res.cookie('accessToken2', newAccessToken, { httpOnly: true });
+                    req.cookies['accessToken2'] = newAccessToken;
+                } else {
+                    res.cookie('accessToken', newAccessToken, { httpOnly: true });
+                    req.cookies['accessToken'] = newAccessToken;
+                }
 
                 req.user = refreshPayload;
                 return next();

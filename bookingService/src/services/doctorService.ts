@@ -26,9 +26,9 @@ export class DoctorServices implements IDoctorService{
         }
     }
 
-    public async updateProfile(email: string, profilePicture: string): Promise<void> {
+    public async updateProfile(email: string, profilePicture: string , location : string ): Promise<void> {
         try {
-          const response = await this.doctorRepository.updateProfile(email, profilePicture);
+          const response = await this.doctorRepository.updateProfile(email, profilePicture , location);
         
         } catch (error) {
           throw error;

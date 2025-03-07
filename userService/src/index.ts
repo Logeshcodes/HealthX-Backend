@@ -14,7 +14,7 @@ config();
 let app: Application = express();
 const PORT: number = Number(process.env.PORT) || 5002;
 
-// ✅ CORS Fix
+
 const corsOptions = {
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Improved Logging
+
 const morganFormat = ':method :url :status :response-time ms - :res[content-length]';
 app.use(morgan(morganFormat));
 
@@ -39,7 +39,7 @@ app.use("/admin", adminRoutes);
 
 consume();
 
-// ✅ Improved Error Handling
+
 process.on("uncaughtException", (err) => {
     console.error("Uncaught Exception:", err);
 });
@@ -48,7 +48,7 @@ process.on("unhandledRejection", (reason) => {
     console.error("Unhandled Rejection:", reason);
 });
 
-// ✅ Ensure DB Connection Before Starting
+
 const userStart = async () => {
     try {
         await connectDB();

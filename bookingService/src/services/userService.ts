@@ -71,5 +71,15 @@ export class UserServices implements IUserService{
             
         }
     }
+
+    public async cancelAppointment(id: string): Promise<AppointmentInterface | null | undefined>{
+        try {
+            const response=await this.userRepository.cancelAppointment(id )
+            return response
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
     
 }

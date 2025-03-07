@@ -17,6 +17,7 @@ router.post(
   "/profile/updateProfile",
   IsUser,
   authenticateToken,
+
   upload.single("profilePicture"),
   userController.updateProfile.bind(userController)
 );
@@ -26,6 +27,7 @@ router.get(
   "/:email",
   IsUser,
   authenticateToken,
+  IsUserBlocked ,
   userController.getUser.bind(userController)
 );
 
@@ -42,29 +44,11 @@ router.put(
   "/profile/change-password",
   IsUser,
   authenticateToken,
+  IsUserBlocked ,
   userController.updatePassword.bind(userController)
 );
 
-// edit- profile
 
-// payment :
-
-
-
-// router.get(
-//   "/appointments/:email",
-//   IsUser,
-//   authenticateToken,
-//   IsUserBlocked ,
-//   userController.getAllAppointmentDetails.bind(userController)
-// );
-// router.get(
-//   "/appointmentData/:email",
-//   IsUser,
-//   authenticateToken,
-//   IsUserBlocked ,
-//   userController.getAppointment.bind(userController)
-// );
 
 const userRoutes = router;
 export default userRoutes;

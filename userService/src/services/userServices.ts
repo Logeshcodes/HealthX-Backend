@@ -5,7 +5,7 @@ import { BannerInterface } from "../models/bannerModel"
 import { IUserService } from "./interface/IUserService"
 import { IUserRepository } from "../respostories/interface/IUserRepository"
 
-import { AppointmentInterface } from "../models/appointmentModel"
+
 
 export default class UserServices implements IUserService{
 
@@ -63,6 +63,14 @@ export default class UserServices implements IUserService{
             console.log(error)
         }
     }
+    public async updateWallet(userId : string , wallet : any): Promise <UserInterface | null | undefined>{
+        try {
+            const response=await this.userRepository.updateWallet( userId , wallet);
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
     public async getUsers(): Promise <UserInterface[] | null | undefined>{
         try {
             const response=await this.userRepository.getUsers()
@@ -74,7 +82,7 @@ export default class UserServices implements IUserService{
     public async findAllBanners() : Promise <BannerInterface[] | null | undefined>{
         try {
             const response=await this.userRepository.findAllBanners()
-            console.log("Banners ", response)
+           
             return response
         } catch (error) {
             console.log(error)
@@ -83,7 +91,7 @@ export default class UserServices implements IUserService{
     public async findAllDoctors() : Promise <DoctorInterface[] | null | undefined>{
         try {
             const response=await this.userRepository.findAllDoctors()
-            console.log("doctor ", response)
+         
             return response
         } catch (error) {
             console.log(error)
@@ -100,24 +108,6 @@ export default class UserServices implements IUserService{
         }
     }
 
-    public async getAllAppointmentDetails(email: string , skip: number, limit: number , activeTab : string ): Promise<AppointmentInterface[] | null | undefined>{
-        try {
-            const response=await this.userRepository.getAllAppointmentDetails(email , skip , limit ,activeTab)
-            return response
-        } catch (error) {
-            console.log(error)
-            
-        }
-    }
-
-    public async getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined>{
-        try {
-            const response=await this.userRepository.getAppointment(email )
-            return response
-        } catch (error) {
-            console.log(error)
-            
-        }
-    }
+    
     
 }

@@ -20,7 +20,7 @@ const AppointmentSchema: Schema<AppointmentInterface> = new Schema(
     doctorId: { type: Schema.Types.ObjectId, required: true },
     paymentId: { type: String, required: true },
     amount: { type: Number, required: true },
-    status: { type: String, required: true, default: "Booked" },
+    status: { type: String, required: true, default: "booked" },
     paymentStatus: { type: String, required: true },
     appointmentDate: { type: Date, required: true },
   },

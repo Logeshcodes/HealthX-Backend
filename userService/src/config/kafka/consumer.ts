@@ -22,6 +22,9 @@ async function consume() {
         "verification-request",
         "add-slot",
         "remove-slot",
+        "wallet-payment-user",
+        "update-cancelAppointment-user-wallet",
+        "update-cancelAppointment-doctor-wallet",
       ],
       fromBeginning: true,
     });
@@ -50,11 +53,21 @@ async function consume() {
               console.log("Processing add-user event:", messageValue);
               break;
 
-              //doctor
-            case "add-doctor":
-              await doctorController.addDoctor(messageValue);
-              console.log("Processed add-user event:", messageValue);
+            case "wallet-payment-user":
+              await userController.updateWallet(messageValue);
+              console.log("Processing wallet-payment-user-appointment event:", messageValue);
               break;
+              
+            case "update-cancelAppointment-user-wallet":
+              await userController.updateWallet(messageValue);
+              console.log("Processing update-user-wallet event:", messageValue);
+              break;
+
+              //doctor
+              case "add-doctor":
+                await doctorController.addDoctor(messageValue);
+                console.log("Processed add-doctor event:", messageValue);
+                break;
 
             case "password-reset-doctor":
               await doctorController.passwordReset(messageValue);
@@ -72,6 +85,10 @@ async function consume() {
             case "remove-slot":
               await doctorController.removeSlot(messageValue);
               console.log("Processing remove-slot event:", messageValue);
+              break;
+            case "update-cancelAppointment-doctor-wallet":
+              await doctorController.updateWallet(messageValue);
+              console.log("Processing update-doctor-wallet event:", messageValue);
               break;
 
             default:

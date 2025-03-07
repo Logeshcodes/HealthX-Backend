@@ -6,7 +6,7 @@ export interface IDoctorBaseRepository{
 
 
     createDoctor(payload: DoctorInterface): Promise<DoctorInterface | null> ;
-    updateProfile( email: string, profilePicture: string): Promise<  void>
+    updateProfile( email: string, profilePicture: string , location : string): Promise<  void>
 
     createSlot(data : object): Promise<SlotInterface | null | undefined>;
 

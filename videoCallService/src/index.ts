@@ -8,8 +8,11 @@ import { Server } from "socket.io";
 import { initializeSocketIO } from "./socket/app";
 import morgan from "morgan";
 import videoCallRoutes from "./routers/videoCallRoutes";
+import consume from "./config/kafka/consumer";
 
 config();
+
+consume();
 
 const app: Application = express();
 const httpServer = createServer(app);

@@ -64,6 +64,19 @@ export default class UserBaseRepository implements IUserBaseRepository {
         }
     }
 
+    public async  cancelAppointment( id : string ) : Promise <AppointmentInterface | null | undefined> {
+        try {
+            const response = await AppointmentModel.findByIdAndUpdate (
+              {_id : id},
+              {$set : {status : "cancelled"}}
+            )  
+            return response;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
     public async  getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined> {
         try {
             const response = await AppointmentModel.find({patientId : id })

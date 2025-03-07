@@ -8,6 +8,8 @@ import AppointmentModel from "../models/appointmentModel";
 import { UserInterface } from "../models/userModel";
 import mongoose from "mongoose";
 
+import produce from "../config/kafka/producer";
+
 export class UserController implements IUserController {
   private userService: IUserService;
   constructor(userService: IUserService) {
@@ -140,6 +142,65 @@ export class UserController implements IUserController {
     }
   }
 
+  async walletPayment(req: Request, res: Response): Promise<any>{
+
+      try {
+
+        const {slotId , doctorId , patientId , paymentId , amount  } = req.body.appointmentData ;
+
+        const slot = await SlotModel.findById(slotId);
+        if (!slot) {
+          return res.status(404).json({ error: "Slot not found" });
+        }
+
+        const updateResponse = await SlotModel.findByIdAndUpdate(
+          slotId,
+          { $set: { avaliable: false } },
+          { new: true }
+        );
+
+
+        const appointment = new AppointmentModel({
+          slotId: slotId,
+          patientId: patientId,
+          doctorId: doctorId,
+          paymentId: paymentId,
+          amount: amount,
+          paymentStatus: "success",
+          appointmentDate: slot.date,
+        
+        });
+
+        const response = await appointment.save();
+
+
+
+        if (response) {
+          res.json({
+            success: true,
+            message: "Appointment Booked Successfully...",
+            data: response,
+          });
+          await produce("wallet-payment-user",{appointmentId : appointment._id , transactionId : appointment?.paymentId  , amount : appointment?.amount , userId : patientId , type : "debit" })
+          return;
+        } else {
+          res.status(404).json({
+            success: false,
+            message: "Appointment Not Booked",
+          });
+        }
+
+        
+      } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+          success: false,
+          message: "Internal server error",
+        });
+      }
+
+  }
+
   async paymentSuccess(req: Request, res: Response): Promise<any> {
     try {
       console.log("Received Request Body:", req.body);
@@ -156,19 +217,6 @@ export class UserController implements IUserController {
         status,
       } = req.body;
 
-      console.log(
-        txnid,
-        amount,
-        productinfo,
-        firstname,
-        email,
-        udf1,
-        udf2,
-        phone,
-        status,
-        "details"
-      );
-
       const slot = await SlotModel.findById(productinfo);
       if (!slot) {
         return res.status(404).json({ error: "Slot not found" });
@@ -180,14 +228,6 @@ export class UserController implements IUserController {
         { new: true }
       );
 
-      console.log("Updated slot:", updateResponse);
-
-      //   const doctorEmail = slot.email;
-
-      //   const doctor = await DoctorModel.findOne({ email: doctorEmail });
-      //   if (!doctor) {
-      //     return res.status(404).json({ error: "Doctor not found" });
-      //   }
 
       const appointment = new AppointmentModel({
         slotId: productinfo,
@@ -197,17 +237,12 @@ export class UserController implements IUserController {
         amount: amount,
         paymentStatus: status,
         appointmentDate: slot.date,
-        // appointmentDay: slot.day,
-        // appointmentTime: slot.timeSlot,
+       
       });
 
-      const savedAppointment = await appointment.save();
+      await appointment.save();
 
-      // res.status(200).json({
-      //   success:true,
-      //   message: "Payment successful and appointment booked!",
-      //   appointment: savedAppointment,
-      // });
+    
 
       res.redirect(
         `http://localhost:3000/user/patient/payment-success/${txnid}`
@@ -401,5 +436,44 @@ export class UserController implements IUserController {
         message: "Internal server error",
       });
     }
+  }
+
+
+
+  public async cancelAppointment( req : Request , res : Response) : Promise <void> {
+
+      try {
+
+        const { id } = req.params;
+
+        const response = await this.userService.cancelAppointment(id) ;
+
+        const appointment = await AppointmentModel.findOne({ _id: id });
+
+
+        const userId = appointment?.patientId.toString() ;
+        const doctorId = appointment?.doctorId.toString() ;
+ 
+
+        await produce("update-cancelAppointment-user-wallet",{appointmentId : id , transactionId : appointment?.paymentId  , amount : appointment?.amount , userId , doctorId , type : "credit" })
+
+        await produce("update-cancelAppointment-doctor-wallet",{appointmentId : id , transactionId : appointment?.paymentId  , amount : appointment?.amount , userId , doctorId , type : "credit" })
+
+        if (response) {
+          
+          res.status(200).json({
+            success: true,
+            message: "Appointment Cancel Requested..",
+          });
+        } else {
+          res.json({
+            success: false,
+            message: "Not Appointment Cancel Requested",
+          });
+        }
+        
+      } catch (error) {
+        
+      }
   }
 }

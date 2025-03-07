@@ -5,7 +5,7 @@ import { BannerInterface } from "../models/bannerModel";
 
 import { IUserRepository } from "./interface/IUserRepository";
 import { IUserBaseRepository } from "./baseRepository/interface/IUserBaseRepository";
-import { AppointmentInterface } from "../models/appointmentModel";
+
 
 export class UserRepository implements IUserRepository{
 
@@ -67,6 +67,16 @@ export class UserRepository implements IUserRepository{
             
         }
     }
+    async updateWallet(userId : string , wallet : any ): Promise <UserInterface | null | undefined>{
+        try {
+            const response=await this.userBaseRepository.updateWallet( userId ,  wallet)
+            return response
+            
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
     async getUsers(): Promise <UserInterface[] | null | undefined>{
         try {
             const response=await this.userBaseRepository.findAllUsers()
@@ -111,22 +121,7 @@ export class UserRepository implements IUserRepository{
         }
     }
 
-    async getAllAppointmentDetails(email: string, skip: number, limit: number , activeTab : string  ): Promise<AppointmentInterface[] | null | undefined> {
-        try {
-            const response=await this.userBaseRepository.getAllAppointmentDetails(email, skip , limit ,activeTab )
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    async getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined> {
-        try {
-            const response=await this.userBaseRepository.getAppointment(email)
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
-    }
+  
     
     
     

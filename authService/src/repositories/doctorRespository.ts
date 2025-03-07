@@ -21,12 +21,7 @@ export default class DoctorRepository implements IDoctorRepository{
         return response
     }
 
-    // dept - signup
-
-    async getAllDepartments() {
-        const response = await this.baseRepository.getAllDepartments();
-        return response;
-      }
+    
    
 
     async createUser(userData:any) {

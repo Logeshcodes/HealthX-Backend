@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { SlotInterface } from "../../models/slotModel";
 import { UserInterface } from "../../models/userModel";
-import { DoctorInterface } from "../../models/doctorModel";
+
 
 export interface IUserController {
 
@@ -19,6 +19,8 @@ export interface IUserController {
     updateSlot( payload : SlotInterface ) : Promise <void>;
 
     getAppointmentDetails(req :Request , res : Response ) : Promise < any>;
+    cancelAppointment(req : Request , res : Response): Promise <any> ;
+    walletPayment(req : Request , res : Response): Promise <any> ;
     paymentSuccess(req : Request , res : Response): Promise <any> ;
     paymentFailure(req : Request , res : Response): Promise <any> ;
 

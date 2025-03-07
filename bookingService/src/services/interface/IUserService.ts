@@ -10,6 +10,8 @@ export interface IUserService {
     // kafka update from user
     updateProfile( email: string,data:any): Promise<UserInterface | null>;
 
+    cancelAppointment( id: string): Promise<AppointmentInterface | null | undefined>;
+
    
     getSlotBooking(email: string, skip: number, limit: number): Promise<SlotInterface[] | null | undefined>
 

@@ -1,5 +1,3 @@
-
-import DoctorModel from "@/models/doctorModel";
 import { Request, Response } from "express";
 
 export default interface IDoctorControllers {
@@ -12,13 +10,12 @@ export default interface IDoctorControllers {
     verifyResetOtp(req: Request, res: Response): Promise<void>;
     forgotResendOtp(req: Request, res: Response): Promise<void>;
     resetPassword(req: Request, res: Response): Promise<void>;
-    getAllDepartments(req: Request, res: Response): Promise<void>;
-
-    blockDoctor(data:{email : string, isBlocked : boolean  , status : string } ) : Promise<void>
-    updatePassword(data: { email: string; password: string }): Promise<void>;
-
-    updateProfile(data:{ email: string; profilePicture: string } ): Promise<void>;
-
     doGoogleLogin(req: Request, res: Response): Promise<void>;
+
+    // - Kafka Consume
+
+    updatePassword(data: { email: string; password: string }): Promise<void>;
+    updateProfile(data:{ email: string; profilePicture: string } ): Promise<void>;
+    blockDoctor(data:{email : string, isBlocked : boolean  , status : string } ) : Promise<void>
    
 }

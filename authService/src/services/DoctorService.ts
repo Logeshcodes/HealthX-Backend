@@ -19,12 +19,6 @@ export default class DoctorService implements IDoctorServices{
         return response
     }
   
-    // show dept -signup
-
-    async getAllDepartments() {
-        const response = await this.doctorRepository.getAllDepartments();
-        return response;
-      }
 
 
     public async createUser(userData:any){

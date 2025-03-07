@@ -55,8 +55,6 @@ const services = [
     },
 ];
 
-
-// Setup proxies
 services.forEach(({ context, path }) => {
     if (!path || !context) {
         console.error("Invalid service configuration:", { context, path });
@@ -70,14 +68,6 @@ services.forEach(({ context, path }) => {
         })
     );
 });
-
-
-
-// app.use('/auth',proxy('http://localhost:5001' ));
-// app.use('/user',proxy('http://localhost:5002' ));
-// app.use('/notification',proxy('http://localhost:5003' ));
-
-// Error 
 
 app.use((err: Error, req:Request, res:Response, next:NextFunction) => {
     console.error("Error:", err.message);

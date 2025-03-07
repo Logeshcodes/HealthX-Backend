@@ -31,35 +31,6 @@ export default class DoctorController implements IDoctorControllers {
       }
 
 
-
-      async getAllDepartments(req: Request, res: Response): Promise<any> {
-        try {
-          // Fetch all departments from the service
-          const departments = await this.doctorService.getAllDepartments();
-      
-          if (departments && departments.length > 0) {
-            return res.status(200).json({
-              success: true,
-              message: "Departments retrieved successfully",
-              departments,
-            });
-          } else {
-            return res.status(404).json({
-              success: false,
-              message: "No departments found",
-            });
-          }
-        } catch (error: any) {
-          console.error(error);
-          return res.status(500).json({
-            success: false,
-            message: "Internal Server Error",
-            error: error.message,
-          });
-        }
-      }
-
-
       public async doctorSignUp(req: Request, res: Response): Promise<any> {
         try {
 
@@ -459,18 +430,14 @@ export default class DoctorController implements IDoctorControllers {
         }
 
 
+        // - Kafka Consume
 
 
         async updatePassword(data: { email: string; password: string }): Promise< void > {
           try {
             console.log(data.email, data.password, "consumeeeeee");
-            const passwordReset = await this.doctorService.resetPassword(
-              data.email,
-              data.password
-            );
-           
-          } catch (error) {
-            console.log(error);
+            await this.doctorService.resetPassword(data.email,data.password);  
+          } catch (error) {console.log(error);
             throw error
           }
         }
@@ -480,7 +447,7 @@ export default class DoctorController implements IDoctorControllers {
           try {
             const { email , profilePicture } = data;
             console.log(data , "consumeeee....");
-            const response=await this.doctorService.updateProfile(email, profilePicture)
+            await this.doctorService.updateProfile(email, profilePicture)
           } catch (error) {
             console.log(error);
           }
@@ -491,7 +458,7 @@ export default class DoctorController implements IDoctorControllers {
           try {
             const { email, isBlocked  , status } = data;
             console.log(data , "consumeeee....");
-            const response=await this.doctorService.blockDoctor(email, isBlocked  , status)
+            await this.doctorService.blockDoctor(email, isBlocked  , status)
           } catch (error) {
             console.log(error);
           }

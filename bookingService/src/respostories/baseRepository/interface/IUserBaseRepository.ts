@@ -6,6 +6,7 @@ export interface IUserBaseRepository{
 
    createUser(payload: UserInterface): Promise<void>
    updateProfile( email: string,data:any): Promise<UserInterface | null>;
+   cancelAppointment( id: string): Promise< AppointmentInterface | null  | undefined>;
 
    getSlotBooking(email: string, skip: number, limit: number): Promise<SlotInterface[] | null | undefined>
    getSlotDetailsById( id : string ) : Promise <SlotInterface | null | undefined>

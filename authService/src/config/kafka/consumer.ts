@@ -23,8 +23,7 @@ async function consume() {
         "update-profile-doctor",
         "block-doctor",
         
-        "add-department",
-        "update-department",
+       
       ],
       fromBeginning: true,
     });
@@ -74,16 +73,9 @@ async function consume() {
                     console.log("Processing block-user event:", messageValue);
                     break;
 
-                //admin
+           
   
-            case "add-department":
-              await adminController.addDepartment(messageValue);
-              console.log("Processing add-department event:", messageValue);
-              break;
-            case "update-department":
-              await adminController.updateDepartment(messageValue);
-              console.log("Processing add-department event:", messageValue);
-              break;
+           
 
             default:
               console.warn(`No handler for topic: ${topic}`);

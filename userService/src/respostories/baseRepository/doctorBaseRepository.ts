@@ -1,20 +1,20 @@
-import { Document, Model } from "mongoose";
-import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
+import BannerModel, { BannerInterface } from "../../models/bannerModel";
+import DoctorModel , {DoctorInterface, ITransaction} from "../../models/doctorModel"
 
 import { IDoctorBaseRepository } from "./interface/IDoctorBaseRepository";
 
-import { AppointmentInterface } from "../../models/appointmentModel";
-import AppointmentModel from "../../models/appointmentModel";
+
 
 export class DoctorBaseRepository implements IDoctorBaseRepository {
 
 
   async createDoctor(payload: DoctorInterface): Promise<DoctorInterface | null> {
     try {
-
       console.log("Kafka payload___________***" , payload)
-      const doctor = await DoctorModel.create(payload);
+      const doctor = await new DoctorModel(payload);
       await doctor.save();
+
+      console.log("doctor detials saved...." , doctor)
       return doctor;
     } catch (error) {
       throw error;
@@ -60,6 +60,26 @@ export class DoctorBaseRepository implements IDoctorBaseRepository {
     }
   }
 
+  async findAllBanners(): Promise <BannerInterface[] | null | undefined>{
+          try {
+  
+            const currentDate = new Date();
+
+            const response = await BannerModel.find({
+              isListed: true,
+              role: "Doctor",
+              startDate: { $lte: currentDate }, 
+              endDate: { $gte: currentDate }    
+            });
+            
+              return response
+              
+          } catch (error) {
+              console.log(error);
+              
+          }
+        }
+
 
   async VerificationRequest(emailID: string, status: string ,medicalLicenseUrl: string , degreeCertificateUrl : string):  Promise<DoctorInterface | null | undefined> {
     try {
@@ -95,50 +115,27 @@ export class DoctorBaseRepository implements IDoctorBaseRepository {
   }
 
 
-  public async  getAllAppointmentDetails(email: string, skip: number, limit: number  , activeTab : string): Promise<AppointmentInterface[] | null | undefined> {
-
-    try {
-
-      let query: any = { doctorEmail: email };
-    
-      const today = new Date();
-      switch (activeTab) {
-          case 'upcoming':
-              query.appointmentDate = { $gte: today };
-              query.status = { $ne: 'cancelled' };
-              break;
-          case 'past':
-              query.appointmentDate = { $lt: today };
-              query.status = { $ne: 'cancelled' };
-              break;
-          case 'cancelled':
-              query.status = 'cancelled';
-              break;
-          default:
-              
-              break;
-      }
-
-        const response = await AppointmentModel.find(query)
-            .sort({appointmentDate : -1})
-            .skip(skip)  
-            .limit(limit)  
-            .exec();
-        return response;
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 
-public async  getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined> {
+async updateWallet(doctorId: string, wallet: { balance: number; transactions: ITransaction[] }): Promise<DoctorInterface | null> {
   try {
-      const response = await AppointmentModel.find({doctorEmail : email })
-          
-      return response;
+      console.log("Final doctor wallet data:", wallet);
+
+     
+      const userData = await DoctorModel.findByIdAndUpdate(
+        doctorId,
+          {
+              $set: {
+                  "wallet.balance": wallet.balance,
+                  "wallet.transactions": wallet.transactions,
+              },
+          },
+          { new: true }
+      );
+
+      return userData;
   } catch (error) {
-      console.log(error);
+      console.error("Error updating user wallet:", error);
       throw error;
   }
 }

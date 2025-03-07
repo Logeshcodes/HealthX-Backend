@@ -38,6 +38,15 @@ export class UserRepository implements IUserRepository{
             }
         }
 
+        public async cancelAppointment(id: string): Promise<any> {
+            try {
+                const response = await this.userBaseRepository.cancelAppointment(id);
+                return response;
+            } catch (error) {
+                throw error;
+            }
+        }
+
 
         async getSlotBooking(email: string, skip: number, limit: number): Promise<SlotInterface[] | null | undefined> {
             try {

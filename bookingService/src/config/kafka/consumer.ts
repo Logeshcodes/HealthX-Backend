@@ -60,7 +60,7 @@ async function consume() {
               break;
        case "add-doctor":
               await doctorController.addDoctor(messageValue);
-              console.log("Processed add-user event:", messageValue);
+              console.log("Processed add-doctor event:", messageValue);
               break;
        case "update-profile-doctor":
               await doctorController.updateProfile(messageValue);

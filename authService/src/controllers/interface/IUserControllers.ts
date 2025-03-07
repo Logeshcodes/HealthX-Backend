@@ -12,12 +12,11 @@ export default interface IUserControllers {
     verifyResetOtp(req: Request, res: Response):Promise<void>;
     forgotResendOtp(req: Request, res: Response):Promise<void>;
     resetPassword(req: Request, res: Response):Promise<void>;
-
     doGoogleLogin(req: Request, res: Response):Promise<void>;
 
-    // below not implements - Google & Kafka Consume
+    // - Kafka Consume
 
-    updatePassword(data:{ email: string; password: string }): Promise<UserInterface | null | undefined>;
+    updatePassword(data:{ email: string; password: string }): Promise<void>;
     updateProfile(data:{ email: string; profilePicture: string }): Promise<void>;
     blockUser(data :{email:string,isBlocked:boolean}): Promise <void>
   

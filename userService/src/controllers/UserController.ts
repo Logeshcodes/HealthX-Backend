@@ -1,4 +1,4 @@
-import { UserInterface } from "../models/userModel";
+import UserModel, { UserInterface } from "../models/userModel";
 import { Request, response, Response } from "express";
 
 
@@ -14,11 +14,6 @@ import { config } from 'dotenv';
 
 config()
 
-
-import AppointmentModel from "../models/appointmentModel";
-import { AppointmentInterface } from "../models/appointmentModel";
-import DoctorModel from "../models/doctorModel";
-import SlotModel from "../models/slotModel";
 
 
 export default class UserController implements IUserController  {
@@ -191,9 +186,9 @@ export default class UserController implements IUserController  {
   
   public async findAllBanners(req:Request,res:Response): Promise<void>{
     try {
-    console.log('lissssssssst')
+    
       const banners=await this.userService.findAllBanners()
-      console.log(banners,"findAllBanner allll")
+     
        res.status(200).json({
         banners:banners
       })
@@ -204,9 +199,9 @@ export default class UserController implements IUserController  {
   }
   public async findAllDoctors(req:Request,res:Response): Promise<void>{
     try {
-    console.log('lissssssssst')
+    
       const users=await this.userService.findAllDoctors()
-      console.log(users,"findAllDoctors allll")
+     
        res.status(200).json({
         users:users
       })
@@ -279,119 +274,59 @@ export default class UserController implements IUserController  {
     }
   }
 
+  async updateWallet( data:{userId : string ,appointmentId : string , transactionId : string , amount : number , type : string}): Promise<UserInterface | undefined | null>{
+    try {
 
 
-  // // get All appointments by email to user :
-  // public async getAllAppointmentDetails(req: Request, res: Response): Promise<void> {
-  //   try {
-  //     const { email } = req.params;
-  //     const { page, limit, activeTab } = req.query;
-  
-  //     console.log(`Fetching appointments for email: ${email} - Page: ${page}, Limit: ${limit}, activeTab: ${activeTab}`);
-  
-  //     const pageNum = Math.max(Number(page) || 1, 1);
-  //     const limitNum = Math.max(Number(limit) || 10); 
-  //     const skip = (pageNum - 1) * limitNum;
-  
-      
-  //     const baseQuery: any = { patientEmail: email };
-  
-      
-  //     const today = new Date();
-  //     today.setHours(0, 0, 0, 0); 
-  
-  //     switch (activeTab) {
-  //       case 'upcoming':
-  //         baseQuery.appointmentDate = { $gte: today }; 
-  //         baseQuery.status = { $ne: 'cancelled' }; 
-  //         break;
-  //       case 'past':
-  //         baseQuery.appointmentDate = { $lt: today }; 
-  //         baseQuery.status = { $ne: 'cancelled' }; 
-  //         break;
-  //       case 'cancelled':
-  //         baseQuery.status = 'cancelled'; 
-  //         break;
-  //       default:
-          
-  //         break;
-  //     }
-  
-  //     // Fetch ALL filtered appointments
-  //     const allAppointments = await AppointmentModel.find(baseQuery).exec();
-  
-  //     // Apply pagination manually
-  //     const totalAppointments = allAppointments.length;
-  //     const paginatedAppointments = allAppointments.slice(skip, skip + limitNum);
-  
-  //     console.log("Response:", paginatedAppointments, "Total Appointments:", totalAppointments, "Page:", pageNum);
-  
-  //     if (paginatedAppointments.length > 0) {
-  //       res.json({
-  //         success: true,
-  //         message: "Appointments fetched successfully",
-  //         data: paginatedAppointments,
-  //         total: totalAppointments,
-  //         page: pageNum,
-  //         totalPages: Math.ceil(totalAppointments / limitNum),
-  //       });
-  //     } else {
-  //       res.status(404).json({
-  //         success: false,
-  //         message: "No appointments found!",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     res.status(500).json({
-  //       success: false,
-  //       message: "Internal server error",
-  //     });
-  //   }
-  // }
-  
+      console.log("update wallet data" , data)
+      const { userId , appointmentId , transactionId, amount , type } = data ;
 
-  // public async getAppointment(req: Request, res: Response): Promise<void> {
+      const userDetails = await UserModel.findById({ _id : userId}) ;
 
-  //   try {
+      if (!userDetails){
+        throw new Error("No user details not found");
+      }
+
+      const transactions = userDetails?.wallet.transactions ?? [];
+
+      const description = `Cancelled Appointment Id : ${appointmentId}`;
+      const refundAmount = type === "credit" ? amount * 0.9 : amount; 
+
+      // transaction object
+      const newTransaction = {
+        amount: refundAmount,
+        description,
+        transactionId,
+        type,
+        date: new Date(), 
+    };
 
 
-  //     const { email } = req.params;
-      
-
-  //     console.log(`Fetching appointments for email: ${email}`);
+     // Update wallet balance
+     const newBalance = type === "debit"
+     ? userDetails.wallet.balance - amount
+     : userDetails.wallet.balance + refundAmount;
 
 
 
-  //     const response = await this.userService.getAppointment(email);
-
-
-  //     if (response) {
-        
-  //       res.json({
-  //           success: true,
-  //           message: "totalAppointments fetched successfully",
-  //           data: response,
-            
-  //       });
-  //   } else {
-  //       res.status(404).json({
-  //           success: false,
-  //           message: "No slots found!",
-  //       });
-  //   }
-      
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     res.status(500).json({
-  //         success: false,
-  //         message: "Internal server error",
-  //     });
-  //   }
+     const walletDetails = {
+        balance: newBalance,
+        transactions: [...transactions, newTransaction],
+    };
+     
+    console.log("Updated Wallet Data:", walletDetails);
 
 
 
-  // }
+    const response = await this.userService.updateWallet(userId, walletDetails);
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
 
 
 

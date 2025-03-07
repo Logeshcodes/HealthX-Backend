@@ -21,13 +21,13 @@ export class DoctorBaseRepository implements IDoctorBaseRepository {
     }
   }
 
-  async updateProfile( email: string, profilePicture: string): Promise<  void> {
+  async updateProfile( email: string, profilePicture: string , location : string): Promise<  void> {
     try {
       console.log("data..!",profilePicture)
       
       const userData = await DoctorModel.findOneAndUpdate( 
       {email : email},
-      { $set: { profilePicture : profilePicture} }, 
+      { $set: { profilePicture : profilePicture , location : location} }, 
       { new: true });
       console.log("update-auth-base-repo",userData)
     

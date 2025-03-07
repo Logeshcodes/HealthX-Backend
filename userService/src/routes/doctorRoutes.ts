@@ -6,6 +6,9 @@ import { doctorController } from "../config/dependencyInjector";
 import { IsDoctorBlocked } from "../middleware/blockedUsers";
 const router = Router();
 
+
+router.get("/banner_list", doctorController.findAllBanners.bind(doctorController));
+
 router.put(
   "/profile/edit-profile",
   IsDoctor,

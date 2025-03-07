@@ -1,5 +1,5 @@
 import { UserInterface } from "../../models/userModel";
-import { AppointmentInterface } from "../../models/appointmentModel";
+
 
 import { Request, Response } from "express";
 
@@ -15,12 +15,11 @@ export interface IUserController{
     findAllDepartment( req : Request , res : Response) : Promise <void> ;
     blockUser( req : Request , res : Response) : Promise <void> ;
     passwordReset( data:any): Promise<UserInterface | undefined | null>;
+    updateWallet( data:{userId : string ,appointmentId : string ,transactionId : string ,  amount : number , type : string}): Promise<UserInterface | undefined | null>;
 
 
     getDoctorDetails( req : Request , res : Response) : Promise <void> ;
     
-    // getAllAppointmentDetails(req: Request, res: Response): Promise<void> 
-    // // stats
-    // getAppointment(req: Request, res: Response): Promise<void> 
+
 
 }

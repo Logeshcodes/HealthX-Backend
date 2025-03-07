@@ -442,24 +442,20 @@ export class UserController implements IUserControllers{
   // consumed kafka codes
 
 
-  async updatePassword(data: { email: string; password: string }) {
+  async updatePassword(data: { email: string; password: string }) : Promise <void>{
     try {
       console.log(data.email, data.password, "consumeeeeee");
-      const passwordReset = await this.userService.resetPassword(
-        data.email,
-        data.password
-      );
-      return passwordReset;
+      await this.userService.resetPassword(data.email,data.password);
     } catch (error) {
       console.log(error);
     }
   }
 
-  async updateProfile(data:{ email: string; profilePicture: string } ) {
+  async updateProfile(data:{ email: string; profilePicture: string } ): Promise <void> {
     try {
       const { email , profilePicture } = data;
       console.log(data , "consumeeee....");
-      const response=await this.userService.updateProfile(email, profilePicture)
+      await this.userService.updateProfile(email, profilePicture)
     } catch (error) {
       console.log(error);
     }
@@ -467,11 +463,8 @@ export class UserController implements IUserControllers{
 
   async blockUser(data :{email:string,isBlocked:boolean}): Promise <void>{
     try {
-
       const {email , isBlocked} = data ;
-     
-      const response=await this.userService.blockUser(email,isBlocked )
-      console.log(response)
+      await this.userService.blockUser(email,isBlocked )
     } catch (error) {
       console.log(error)
     }

@@ -1,11 +1,10 @@
 
-import { DoctorRepository } from "../respostories/doctorRepository"
 import { DoctorInterface } from "../models/doctorModel"
 
 import { IDoctorService } from "./interface/IDoctorService"
 import { IDoctorRepository } from "../respostories/interface/IDoctorRepository"
+import { BannerInterface } from "../models/bannerModel"
 
-import { AppointmentInterface } from "../models/appointmentModel"
 
 export class DoctorServices implements IDoctorService{
 
@@ -14,6 +13,7 @@ export class DoctorServices implements IDoctorService{
         this.doctorRepository= doctorRepository
 
     }
+    
     public async createDoctor(payload:DoctorInterface){
         try {
             const response=await this.doctorRepository.createDoctor(payload)
@@ -52,6 +52,16 @@ export class DoctorServices implements IDoctorService{
         }
     }
 
+  public async findAllBanners() : Promise <BannerInterface[] | null | undefined>{
+        try {
+            const response=await this.doctorRepository.findAllBanners()
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
     public async VerificationRequest(emailID:string,status:string ,medicalLicenseUrl : string , degreeCertificateUrl : string): Promise<DoctorInterface | null | undefined>{
         try {
             const response=await this.doctorRepository.VerificationRequest(emailID,status ,medicalLicenseUrl , degreeCertificateUrl)
@@ -70,24 +80,16 @@ export class DoctorServices implements IDoctorService{
     }
 
 
-    public async getAllAppointmentDetails(email: string , skip: number, limit: number , activeTab : string): Promise<AppointmentInterface[] | null | undefined>{
-            try {
-                const response=await this.doctorRepository.getAllAppointmentDetails(email , skip , limit , activeTab)
-                return response
-            } catch (error) {
-                console.log(error)
-                
-            }
-        }
 
-        public async getAppointment(email: string): Promise<AppointmentInterface[] | null | undefined>{
-            try {
-                const response=await this.doctorRepository.getAppointment(email )
-                return response
-            } catch (error) {
-                console.log(error)
-                
+    
+
+        public async updateWallet(doctorId : string , wallet : any): Promise <DoctorInterface | null | undefined>{
+                try {
+                    const response=await this.doctorRepository.updateWallet( doctorId , wallet);
+                    return response
+                } catch (error) {
+                    console.log(error)
+                }
             }
-        }
     
 }

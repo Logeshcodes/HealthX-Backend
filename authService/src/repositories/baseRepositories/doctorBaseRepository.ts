@@ -1,6 +1,6 @@
 
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
-import DepartmentModel , { DepartmentInterface } from "../../models/departmentModel";
+
 
 import bcrypt from "bcrypt";
 
@@ -13,17 +13,7 @@ export default class DoctorBaseRepository implements IDoctorBaseRepository{
         return await DoctorModel.findOne({email:email})
     }
 
-    // show dept - signup
-
-    async getAllDepartments(): Promise<DepartmentInterface[] > {
-        try {
-          const departments = await DepartmentModel.find();
-          console.log("All departments: ", departments);
-          return departments;
-        } catch (error) {
-          throw error;
-        }
-      }
+  
    
     async createDoctor(userData:any):Promise<DoctorInterface |null>{
         try {

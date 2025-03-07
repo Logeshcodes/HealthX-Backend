@@ -28,11 +28,11 @@ export class DoctorController implements IDoctorController {
       }
     }
     
-    async updateProfile(data:{ email: string; profilePicture: string } ) {
+    async updateProfile(data:{ email: string; profilePicture: string , location : string } ) {
       try {
-        const { email , profilePicture } = data;
+        const { email , profilePicture , location } = data;
         console.log(data , "consumeeee....");
-        const response=await this.doctorService.updateProfile(email, profilePicture)
+        const response=await this.doctorService.updateProfile(email, profilePicture , location)
       } catch (error) {
         console.log(error);
       }
@@ -45,7 +45,7 @@ export class DoctorController implements IDoctorController {
           const { name, email, date, day, timeSlot, mode } = req.body;
   
           
-          const existingSlot = await SlotModel.findOne({ date, timeSlot, mode });
+          const existingSlot = await SlotModel.findOne({ date, timeSlot });
   
           if (existingSlot) {
               return res.json({
@@ -168,16 +168,16 @@ export class DoctorController implements IDoctorController {
     
             switch (activeTab) {
                 case "upcoming":
-                    baseQuery.appointmentDate = { $gte: today };
-                    baseQuery.status = { $ne: "cancelled" };
-                    break;
+                  baseQuery.appointmentDate = { $gte: today };
+                  baseQuery.status = { $ne: "cancelled" };
+                  break;
                 case "past":
-                    baseQuery.appointmentDate = { $lt: today };
-                    baseQuery.status = { $ne: "cancelled" };
-                    break;
+                  baseQuery.appointmentDate = { $lt: today };
+                  baseQuery.status = { $ne: "cancelled" };
+                  break;
                 case "cancelled":
-                    baseQuery.status = "cancelled";
-                    break;
+                  baseQuery.status = "cancelled";
+                  break;
             }
     
             console.log("baseQuery", baseQuery, id);
