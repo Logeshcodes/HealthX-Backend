@@ -1,12 +1,8 @@
 import kafka from "./kafkaConfig";
-
-
 import { userController , doctorController  } from "../dependencyInjector";
-import { AdminController } from "../../controllers/AdminController";
 
 async function consume() {
   
-  const adminController=new AdminController()
   const consumer = kafka.consumer({ groupId: "auth-service" });
 
   try {
@@ -22,20 +18,17 @@ async function consume() {
         "update-password-doctor",
         "update-profile-doctor",
         "block-doctor",
-        
-       
       ],
       fromBeginning: true,
     });
 
-    console.log("User-Service Consumer is running...");
+    console.log("User-Service Consumer is running...\n");
     await consumer.run({
       eachMessage: async ({ topic, message }) => {
         try {
           const messageValue = message.value
             ? JSON.parse(message.value.toString())
             : null;
-
           if (!messageValue) {
             console.warn(`Empty message received on topic: ${topic}`);
             return;
@@ -44,13 +37,14 @@ async function consume() {
           switch (topic) {
             case "update-password-user":
               await userController.updatePassword(messageValue);
-              console.log("Processed add-user event:", messageValue);
+              console.log("Processed update-password-user event:", messageValue);
               break;
 
             case "update-profile-user":
               await userController.updateProfile(messageValue);
-              console.log("Processing update - user event:", messageValue);
+              console.log("Processing update-profile-user event:", messageValue);
               break;
+
             case "block-user":
               await userController.blockUser(messageValue);
               console.log("Processing block-user event:", messageValue);
@@ -58,24 +52,20 @@ async function consume() {
 
               //doctor
 
-              case "update-password-doctor":
-                await doctorController.updatePassword(messageValue);
-                console.log("Processed add-password doctor event:", messageValue);
-                break;
+            case "update-password-doctor":
+              await doctorController.updatePassword(messageValue);
+              console.log("Processed update-password-doctor event:", messageValue);
+              break;
               
-                case "update-profile-doctor":
-                  await doctorController.updateProfile(messageValue);
-                  console.log("Processed updateProfile doctor event:", messageValue);
-                  break;
+            case "update-profile-doctor":
+              await doctorController.updateProfile(messageValue);
+              console.log("Processed update-profile-doctor event:", messageValue);
+              break;
 
-                case "block-doctor":
-                    await doctorController.blockDoctor(messageValue);
-                    console.log("Processing block-user event:", messageValue);
-                    break;
-
-           
-  
-           
+            case "block-doctor":
+              await doctorController.blockDoctor(messageValue);
+              console.log("Processing block-doctor event:", messageValue);
+              break;
 
             default:
               console.warn(`No handler for topic: ${topic}`);

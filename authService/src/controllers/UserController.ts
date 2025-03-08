@@ -3,17 +3,14 @@ import bcrypt from "bcrypt";
 
 import { OtpGenerate } from "../utils/otpGenerator";
 import JwtService from "../utils/jwt";
-
-
-
-
 import produce from "../config/kafka/producer";
 
-import { StatusCode } from "../utils/enum";
-import { ResponseError } from "../utils/constants";
 import IUserControllers from "./interface/IUserControllers";
 import IUserServices from "../services/interfaces/IUserServices";
 import IOtpServices from "../services/interfaces/IOtpService";
+
+import { StatusCode } from "../utils/enum";
+import { ResponseError } from "../utils/constants";
 
 export class UserController implements IUserControllers{
 
@@ -23,14 +20,11 @@ export class UserController implements IUserControllers{
   private otpGenerator: OtpGenerate;
   private JWT: JwtService;
  
-
-
   constructor(userService : IUserServices , otpService : IOtpServices) {
     this.userService = userService
     this.otpService = otpService ;
     this.otpGenerator = new OtpGenerate();
     this.JWT = new JwtService();
-
   }
 
 
@@ -38,7 +32,7 @@ export class UserController implements IUserControllers{
     try {
 
       let { username , email, password  , mobileNumber} = req.body;
-      console.log(email, password);
+      console.log("User Signup Data : " ,username , email, password , mobileNumber);
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -49,32 +43,23 @@ export class UserController implements IUserControllers{
       if (ExistingUser) {
         return res.json({
           success: false,
-          message: "Existing user",
-          user: ExistingUser,
+          message: ResponseError.EXISTING_USER,
         });
        
       } else {
         const otp = await this.otpGenerator.createOtpDigit();
         await Promise.all(
           [
-             this.otpService.createOtp(email, otp),
-            //  this.sendEmail.SendEmailVerification(email , otp)
+            this.otpService.createOtp(email, otp),
             produce('send-otp-email',{email,otp})
           ]
         )
     
-        const token = await this.JWT.createToken({
-          username ,
-          email,
-          hashedPassword,
-          mobileNumber ,
-          role: "User",
-        });
+        const token = await this.JWT.createToken({username ,email,hashedPassword,mobileNumber , role: "User"});
 
-      
         return res.status(StatusCode.CREATED).json({
           success: true,
-          message: "Signup successful, OTP sent to email",
+          message: ResponseError.SIGNUP_SUCCESS,
           token,
         });
       
@@ -97,16 +82,14 @@ export class UserController implements IUserControllers{
       const otp = await this.otpGenerator.createOtpDigit();
       await Promise.all(
         [
-           this.otpService.createOtp(email, otp),
-
-          //  this.sendEmail.SendEmailVerification(email, otp)
+          this.otpService.createOtp(email, otp),
           produce('send-otp-email',{email,otp})
         ]
       )
 
       res.status(StatusCode.OK).json({
         success: true,
-        message: "Otp Sent to Email Succesfully!",
+        message: ResponseError.OTP_RESENDED,
       });
     } catch (error: any) {
       throw error
@@ -132,31 +115,28 @@ export class UserController implements IUserControllers{
       const resultOtp = await this.otpService.findOtp(decode.email);
       console.log(resultOtp?.otp, "<>", otp);
       if (resultOtp?.otp === otp) {
-        // console.log("matched");
-
         const user = await this.userService.createUser(decode);
-        
         if (user) {
          await produce('add-user',user)
-          await this.otpService.deleteOtp(user.email);
+         await this.otpService.deleteOtp(user.email);
 
-          return res.status(201).json({
+          return res.status(StatusCode.CREATED).json({
             success: true,
-            message: "User account successfully created!",
+            message: ResponseError.ACCOUNT_CREATED,
             user,
           });
         }
       } else {
         return res.json({
           success: false,
-          message: "Wrong Otp",
+          message: ResponseError.WRONG_OTP,
         });
       }
     } catch (error: any) {
       console.error(error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal Server Error",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
         error: error.message,
       });
     }
@@ -166,16 +146,14 @@ export class UserController implements IUserControllers{
   public async login(req: Request, res: Response): Promise<any> {
     try {
       const { email, password } = req.body;
-
-      console.log("email , password :", email , password )
-
+      console.log("login Data :", email , password )
       const User = await this.userService.findByEmail(email);
       console.log(User, "User");
 
       if (!User) {
         return res.json({
           success: false,
-          message: "invalid email id",
+          message: ResponseError.INVAILD_EMAIL,
         });
       }
 
@@ -188,7 +166,7 @@ export class UserController implements IUserControllers{
         console.log(" blocked...")
         return res.json({
           success: false,
-          message: "User Blocked !",
+          message:  ResponseError.USER_BLOCKED,
         });
     
       }
@@ -196,7 +174,7 @@ export class UserController implements IUserControllers{
       if (!isPasswordValid) {
         return res.json({
           success: false,
-          message: "Invalid Password",
+          message: ResponseError.INVAILD_PASSWORD,
         });
       }
       let role = User.role;
@@ -204,23 +182,22 @@ export class UserController implements IUserControllers{
       const accesstoken = await this.JWT.accessToken({ email, role });
       const refreshToken = await this.JWT.refreshToken({ email, role });
 
-      // Return the token 
       return (
         res
-          .status(200)
+          .status(StatusCode.OK)
           .cookie("accessToken", accesstoken,{ httpOnly: true })
           .cookie("refreshToken", refreshToken,{ httpOnly: true })
           .send({
             success: true,
-            message: "User Login Successfully",
+            message: ResponseError.USER_LOGIN_SUCCESS,
             user: User,
           })
       );
     } catch (error: any) {
       console.error(error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal Server Error",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
         error: error.message,
       });
     }
@@ -252,12 +229,12 @@ export class UserController implements IUserControllers{
           console.log(accesstoken, "-----", refreshToken);
 
           res
-            .status(200)
+            .status(StatusCode.OK)
             .cookie("accessToken", accesstoken, { httpOnly: true })
             .cookie("refreshToken", refreshToken, { httpOnly: true })
             .json({
               success: true,
-              message: "Logging in with GOOGLE Account",
+              message: ResponseError.GOOGLE_LOGIN,
               user: user,
             });
         }
@@ -272,21 +249,21 @@ export class UserController implements IUserControllers{
         console.log(accesstoken, "-----", refreshToken);
 
         res
-          .status(200)
+          .status(StatusCode.OK)
           .cookie("accessToken", accesstoken, { httpOnly: true })
           .cookie("refreshToken", refreshToken, { httpOnly: true })
           .json({
             success: true,
-            message: "Logging in with GOOGLE Account",
+            message: ResponseError.GOOGLE_LOGIN,
             user: existingStudent,
           });
         }else{
           res
-          .status(200)
+          .status(StatusCode.OK)
           
           .json({
             success: false,
-            message: "User Blocked",
+            message: ResponseError.USER_BLOCKED,
             user: existingStudent,
           });
         }
@@ -303,10 +280,10 @@ export class UserController implements IUserControllers{
       console.log("User logged out");
       res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
-      res.status(200).send({ success: true, message: "logout success" });
+      res.status(StatusCode.OK).send({ success: true, message: ResponseError.USER_LOGOUT });
     } catch (error) {
       console.error("Error during logout:", error);
-      res.status(500).send({ success: false, message: "Logout failed. Please try again." });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).send({ success: false, message: ResponseError.INTERNAL_SERVER_ERROR });
     }
   }
   

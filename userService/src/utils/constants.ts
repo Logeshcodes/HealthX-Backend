@@ -8,5 +8,10 @@ export const ResponseError = {
     NO_ACCESS_TOKEN: "No access token provided.",
     INVALID_REFRESH_TOKEN: "Invalid refresh token. Please log in.",
     REFRESH_TOKEN_EXPIRED: "Session expired. Please log in again.",
-    NEW_ACCESS_TOKEN_GENERATED: "New access token generated."
+    NEW_ACCESS_TOKEN_GENERATED: "New access token generated.",
+
+    DEPARTMENT_EXIST : "Department already exists" ,
+    DEPARTMENT_CREATED : "Department registration successful!",
+    DEPARTMENT_NOTFOUND : "Department registration failed!" ,
+    DEPARTMENT_FETCHED : "Departments retrieved successfully"
 };

@@ -1,20 +1,19 @@
 import express, { Application , Request ,Response , NextFunction } from 'express'
-import cors from 'cors'                                                
-import { config } from 'dotenv'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import proxy = require('express-http-proxy')
+import { config } from 'dotenv'
 import morgan from "morgan" ;
+import cors from 'cors'   
 
+import { ResponseError } from './utils/constants';
+import { StatusCode } from './utils/enum';
 
 config();
 
-const {PORT ,  FRONTEND_URL , AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL , BOOKING_URL, VIDEO_CALL_URL  } = process.env
+const {PORT, FRONTEND_URL, AUTH_URL, USER_URL ,NOTIFICATION_URL, VERIFICATION_URL , BOOKING_URL, VIDEO_CALL_URL } = process.env ;
+
+console.log("Environment Variables:",{ PORT, FRONTEND_URL, AUTH_URL, USER_URL, NOTIFICATION_URL, VERIFICATION_URL, BOOKING_URL, VIDEO_CALL_URL});
 
 const app : Application = express()
-
-console.log("Environment Variables:", { PORT, FRONTEND_URL, AUTH_URL , USER_URL ,NOTIFICATION_URL , VERIFICATION_URL , BOOKING_URL , VIDEO_CALL_URL  });
-
-// cors
 
 const corsOptions = {
     origin: FRONTEND_URL,
@@ -27,7 +26,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
 
-// services 
 const services = [
     {
         path: AUTH_URL,
@@ -71,12 +69,12 @@ services.forEach(({ context, path }) => {
 
 app.use((err: Error, req:Request, res:Response, next:NextFunction) => {
     console.error("Error:", err.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: ResponseError.INTERNAL_SERVER_ERROR });
 });
 
 app.use((err: Error, req:Request, res:Response, next:NextFunction) => {
     console.error("Error:", err.message);
-    res.status(401).json({ error: "authentication credentials were invalid" });
+    res.status(StatusCode.UNAUTHORIZED).json({ error: ResponseError.ACCESS_FORBIDDEN });
 });
 
 app.listen(PORT , ()=>{

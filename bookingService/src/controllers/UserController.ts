@@ -8,6 +8,9 @@ import AppointmentModel from "../models/appointmentModel";
 import { UserInterface } from "../models/userModel";
 import mongoose from "mongoose";
 
+import { StatusCode } from '../utils/enum';
+import { ResponseError } from '../utils/constants';
+
 import produce from "../config/kafka/producer";
 
 export class UserController implements IUserController {
@@ -73,23 +76,23 @@ export class UserController implements IUserController {
 
         res.json({
           success: true,
-          message: "Slots fetched successfully",
+          message:  ResponseError.SLOT_DATA_FETCHED,
           data: response,
           total: totalSlots,
           page: pageNum,
           totalPages: Math.ceil(totalSlots / limitNum),
         });
       } else {
-        res.status(404).json({
+        res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "No slots found!",
+          message: ResponseError.SLOT_NOTFOUND,
         });
       }
     } catch (error) {
       console.error("Error:", error);
-      res.status(500).json({
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal server error",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -105,21 +108,21 @@ export class UserController implements IUserController {
       if (response) {
         res.json({
           success: true,
-          message: "Slots fetched successfully",
+          message: ResponseError.SLOT_DATA_FETCHED,
           data: response,
         });
         return;
       } else {
-        res.status(404).json({
+        res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "No slots found!",
+          message: ResponseError.SLOT_NOTFOUND,
         });
       }
     } catch (error) {
       console.error("Error:", error);
-      res.status(500).json({
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal server error",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
       });
     }
   }

@@ -8,5 +8,18 @@ export const ResponseError = {
     NO_ACCESS_TOKEN: "No access token provided.",
     INVALID_REFRESH_TOKEN: "Invalid refresh token. Please log in.",
     REFRESH_TOKEN_EXPIRED: "Session expired. Please log in again.",
-    NEW_ACCESS_TOKEN_GENERATED: "New access token generated."
+    NEW_ACCESS_TOKEN_GENERATED: "New access token generated.",
+
+    EXISTING_USER : "User already exists." ,
+    SIGNUP_SUCCESS : "Signup successful, OTP sent to email",
+    OTP_RESENDED : "OTP has been successfully sent to your email.",
+    ACCOUNT_CREATED : "Your account has been created successfully!",
+    WRONG_OTP : "Entered Wrong OTP",
+
+    INVAILD_EMAIL : "Invalid Email Id" ,
+    INVAILD_PASSWORD : "Incorrect password. Please try again." ,
+    USER_BLOCKED : "Your account has been blocked !" ,
+    USER_LOGIN_SUCCESS : "Login successful. Welcome back!",
+    GOOGLE_LOGIN : "Logging in with your Google account...",
+    USER_LOGOUT : "Logout successful. See you again!"
 };

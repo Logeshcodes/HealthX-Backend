@@ -10,9 +10,13 @@ import produce from "../config/kafka/producer";
 import { IUserController } from "./interface/IUserController";
 import { IUserService } from "../services/interface/IUserService";
 
+
+import { StatusCode } from '../utils/enum';
+import { ResponseError } from '../utils/constants';
 import { config } from 'dotenv';
 
 config()
+
 
 
 
@@ -102,7 +106,7 @@ export default class UserController implements IUserController  {
       // Send response to client
       if (response) {
         await produce("update-profile-user", {email ,profilePicture : profilePicture });
-        res.status(200).json({
+        res.status(StatusCode.OK).json({
           success: true,
           message: "Profile Updated!",
           user: response,
@@ -115,9 +119,9 @@ export default class UserController implements IUserController  {
       }
     } catch (error) {
       console.log(error);
-      res.status(500).json({
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "An error occurred while updating the profile.",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -149,7 +153,7 @@ export default class UserController implements IUserController  {
         );
         if (response) {
           await produce("update-password-user",{email,password:hashedPassword})
-          res.status(200).json({
+          res.status(StatusCode.OK).json({
             success: true,
             message: "Password Updated",
           });
@@ -175,7 +179,7 @@ export default class UserController implements IUserController  {
     
       const users=await this.userService.getUsers()
       console.log(users,"users allll")
-       res.status(200).json({
+       res.status(StatusCode.OK).json({
         users:users
       })
     } catch (error) {
@@ -189,7 +193,7 @@ export default class UserController implements IUserController  {
     
       const banners=await this.userService.findAllBanners()
      
-       res.status(200).json({
+       res.status(StatusCode.OK).json({
         banners:banners
       })
     } catch (error) {
@@ -202,7 +206,7 @@ export default class UserController implements IUserController  {
     
       const users=await this.userService.findAllDoctors()
      
-       res.status(200).json({
+       res.status(StatusCode.OK).json({
         users:users
       })
     } catch (error) {
@@ -215,7 +219,7 @@ export default class UserController implements IUserController  {
     console.log('findAllDepartment')
       const departments=await this.userService.findAllDepartment()
       console.log(departments,"findAllDoctors allll")
-       res.status(200).json({
+       res.status(StatusCode.OK).json({
         departments:departments
       })
     } catch (error) {
@@ -241,12 +245,12 @@ export default class UserController implements IUserController  {
       await produce("block-user",{email,isBlocked})
 
       if(userStatus?.isBlocked){
-        res.status(200).json({
+        res.status(StatusCode.OK).json({
           success:true,
           message:"User Blocked"
         })
       }else{
-        res.status(200).json({
+        res.status(StatusCode.OK).json({
           success:true,
           message:"User UnBlocked"
         })

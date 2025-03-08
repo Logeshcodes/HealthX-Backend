@@ -1,4 +1,3 @@
-
 import OtpService from "../services/otpService"
 import IOtpServices from "../services/interfaces/IOtpService"
 import { OtpRespository } from "../repositories/otpRespository"
@@ -39,18 +38,12 @@ const userService:IUserServices= new UserServices( userRepository )
 const userController: IUserControllers=new UserController(userService ,otpService )
 
 
-
 const doctorBaseRepository:IDoctorBaseRepository=new DoctorBaseRepository()
 const doctorRepository:IDoctorRepository=new DoctorRepository(doctorBaseRepository)
 const doctorService:IDoctorServices=new DoctorService(doctorRepository)
 const doctorController: IDoctorControllers=new DoctorController(doctorService ,otpService )
 
 
-
-
-
-
 const adminController:IAdminControllers=new AdminController()
-
 
 export {userController ,  doctorController , adminController};

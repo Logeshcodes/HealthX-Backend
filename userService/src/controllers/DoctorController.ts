@@ -11,6 +11,9 @@ import { IDoctorController } from "./interface/IDoctorController";
 import { IDoctorService } from "../services/interface/IDoctorService";
 
 
+import { StatusCode } from '../utils/enum';
+import { ResponseError } from '../utils/constants';
+
 
 export class DoctorController implements IDoctorController {
 
@@ -69,7 +72,7 @@ export class DoctorController implements IDoctorController {
 
       if (response) {
         await produce("update-profile-doctor",{email ,profilePicture : profilePicture , location});
-        res.status(200).json({
+        res.status(StatusCode.OK).json({
           success: true,
           message: "Profile Updated!",
           user: response,
@@ -113,7 +116,7 @@ export class DoctorController implements IDoctorController {
         );
         if (response) {
           await produce("update-password-doctor",{email,password:hashedPassword})
-          res.status(200).json({
+          res.status(StatusCode.OK).json({
             success: true,
             message: "Password Updated",
           });
@@ -139,7 +142,7 @@ export class DoctorController implements IDoctorController {
     
       const Doctors=await this.doctorService.getDoctors()
       console.log(Doctors,"Doctors allll")
-       res.status(200).json({
+       res.status(StatusCode.OK).json({
         users:Doctors
       })
     } catch (error) {
@@ -164,12 +167,12 @@ export class DoctorController implements IDoctorController {
       await produce("block-doctor",{email,isBlocked})
 
       if(DoctorStatus?.isBlocked){
-        res.status(200).json({
+        res.status(StatusCode.OK).json({
           success:true,
           message:"Doctor Blocked"
         })
       }else{
-        res.status(200).json({
+        res.status(StatusCode.OK).json({
           success:true,
           message:"Doctor UnBlocked"
         })
@@ -188,7 +191,7 @@ export class DoctorController implements IDoctorController {
       
         const banners=await this.doctorService.findAllBanners()
        
-         res.status(200).json({
+         res.status(StatusCode.OK).json({
           banners:banners
         })
       } catch (error) {

@@ -7,7 +7,9 @@ import DepartmentModel, { DepartmentInterface } from "../models/departmentModel"
 
 import { IAdminController } from "./interface/IAdminController";
 import { IAdminService } from "../services/interface/IAdminservice";
-import BannerModel, { BannerInterface } from "@/models/bannerModel";
+
+import { StatusCode } from '../utils/enum';
+import { ResponseError } from '../utils/constants';
 
 
 export default class AdminController implements IAdminController {
@@ -30,7 +32,7 @@ export default class AdminController implements IAdminController {
       if (existingDept) {
          res.json({
           success: false,
-          message: "Department already exists",
+          message: ResponseError.DEPARTMENT_EXIST ,
           user: existingDept,
         });
         return ;
@@ -40,25 +42,25 @@ export default class AdminController implements IAdminController {
 
         if (dept) {
           await produce("add-department", dept);
-          res.status(201).json({
+          res.status(StatusCode.CREATED).json({
             success: true,
-            message: "Department registration successful!",
+            message: ResponseError.DEPARTMENT_CREATED,
             dept,
           });
           return ;
         } else {
-         res.status(400).json({
+         res.status(StatusCode.BAD_REQUEST).json({
             success: false,
-            message: "Department registration failed!",
+            message: ResponseError.DEPARTMENT_NOTFOUND,
           });
           return ;
         }
       }
     } catch (error: any) {
       console.error(error);
-       res.status(500).json({
+       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal Server Error",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
         error: error.message,
       });
       return ;
@@ -71,22 +73,22 @@ export default class AdminController implements IAdminController {
       const departments = await this.adminService.getAllDepartments();
 
       if (departments && departments.length > 0) {
-        return res.status(200).json({
+        return res.status(StatusCode.OK).json({
           success: true,
-          message: "Departments retrieved successfully",
+          message: ResponseError.DEPARTMENT_FETCHED,
           departments,
         });
       } else {
-        return res.status(404).json({
+        return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "No departments found",
+          message: ResponseError.DEPARTMENT_NOTFOUND,
         });
       }
     } catch (error: any) {
       console.error(error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal Server Error",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
         error: error.message,
       });
     }
@@ -99,7 +101,7 @@ export default class AdminController implements IAdminController {
 
       if (users && users.length > 0) {
         return res
-          .status(200)
+          .status(StatusCode.OK)
           .json({
             success: true,
             message: "Users retrieved successfully",
@@ -129,22 +131,22 @@ export default class AdminController implements IAdminController {
       const doctors = await this.adminService.getAllDoctors();
 
       if (doctors && doctors.length > 0) {
-        return res.status(200).json({
+        return res.status(StatusCode.OK).json({
           success: true,
           message: "Users retrieved successfully",
           doctors,
         });
       } else {
-        return res.status(404).json({
+        return res.status(StatusCode.NOT_FOUND).json({
           success: false,
           message: "No doctors found",
         });
       }
     } catch (error: any) {
       console.error(error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal Server Error",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
         error: error.message,
       });
     }
@@ -158,7 +160,7 @@ export default class AdminController implements IAdminController {
       const userData = await this.adminService.getUserData(email);
 
       if (!userData) {
-        return res.status(404).json({
+        return res.status(StatusCode.NOT_FOUND).json({
           success: false,
           message: "User not found",
         });
@@ -174,15 +176,15 @@ export default class AdminController implements IAdminController {
 
       await produce("block-user", { email, isBlocked });
 
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         success: true,
         message: userStatus?.isBlocked ? "User Blocked" : "User Unblocked",
       });
     } catch (error) {
       console.error("Error blocking/unblocking user:", error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Error blocking/unblocking user",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -196,7 +198,7 @@ export default class AdminController implements IAdminController {
       const bannerData = await this.adminService.getBannerById(id)
 
       if (!bannerData) {
-        return res.status(404).json({
+        return res.status(StatusCode.NOT_FOUND).json({
           success: false,
           message: "banner not found",
         });
@@ -213,15 +215,15 @@ export default class AdminController implements IAdminController {
       const bannerStatus = await this.adminService.updateBanner(id , {isListed})
 
 
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         success: true,
         message: bannerStatus?.isListed ? "Banner Listed" : "Banner Unlisted",
       });
     } catch (error) {
       console.error("Error listed/unlisted banner:", error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Error listed/unlisted banner",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
       });
     }
   }

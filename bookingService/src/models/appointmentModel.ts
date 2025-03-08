@@ -22,7 +22,7 @@ const AppointmentSchema: Schema<AppointmentInterface> = new Schema(
     amount: { type: Number, required: true },
     status: { type: String, required: true, default: "booked" },
     paymentStatus: { type: String, required: true },
-    appointmentDate: { type: Date, required: true },
+    appointmentDate: { type: Date, required: true }, // remove 
   },
   {
     timestamps: true,

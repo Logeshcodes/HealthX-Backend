@@ -7,9 +7,7 @@ async function produce(topic: string, value: object): Promise<void> {
     createPartitioner: Partitioners.LegacyPartitioner,
   });
 
-
   try {
-
     console.log("Connecting to Auth-Service Producer...");
     await producer.connect();
 

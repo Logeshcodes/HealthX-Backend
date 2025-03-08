@@ -11,6 +11,8 @@ import { IDoctorService } from "../services/interface/IDoctorService";
 import produce from "../config/kafka/producer";
 import mongoose from "mongoose";
 
+import { StatusCode } from '../utils/enum';
+import { ResponseError } from '../utils/constants';
 
 export class DoctorController implements IDoctorController {
 
@@ -50,7 +52,7 @@ export class DoctorController implements IDoctorController {
           if (existingSlot) {
               return res.json({
                   success: false,
-                  message: "Slot already allocated!",
+                  message: ResponseError.SLOT_EXIST,
               });
           }
   
@@ -64,19 +66,19 @@ export class DoctorController implements IDoctorController {
   
               return res.json({
                   success: true,
-                  message: "Slot Updated...",
+                  message: ResponseError.SLOT_UPDATED,
                   data: response
               });
           } else {
               return res.json({
                   success: false,
-                  message: "Slot Not Updated!",
+                  message: ResponseError.SLOT_NOTFOUND,
               });
           }
   
       } catch (error) {
           console.log(error);
-          return res.status(500).json({ success: false, message: "Internal Server Error" });
+          return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: ResponseError.INTERNAL_SERVER_ERROR });
       }
   }
   
@@ -96,13 +98,13 @@ export class DoctorController implements IDoctorController {
             await produce('remove-slot',response)
              return res.json({
                success: true,
-               message: "Slot deleted Successfully...",
+               message: ResponseError.SLOT_DELETED,
                data : response
              });
            } else {
              return res.json({
                success: false,
-               message: "Slot Not deleted!",
+               message: ResponseError.SLOT_NOTFOUND,
              });
            }
         } catch (error) {
@@ -130,16 +132,16 @@ export class DoctorController implements IDoctorController {
               data: response,
             });
           } else {
-            res.status(404).json({
+            res.status(StatusCode.NOT_FOUND).json({
               success: false,
               message: "Slot Not getting!",
             });
           }
         } catch (error) {
           console.error("Error:", error);
-          res.status(500).json({
+          res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "Internal server error",
+            message: ResponseError.INTERNAL_SERVER_ERROR ,
           });
         }
       }
@@ -250,7 +252,7 @@ export class DoctorController implements IDoctorController {
     
             res.json({
                 success: true,
-                message: "Appointments fetched successfully",
+                message: ResponseError.APPOINTMENT_FETCHED_SUCCESS,
                 data: allAppointments,
                 total: totalAppointments,
                 page: pageNum,
@@ -262,9 +264,9 @@ export class DoctorController implements IDoctorController {
     
         } catch (error) {
             console.error("Error:", error);
-            res.status(500).json({
+            res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
-                message: "Internal server error",
+                message: ResponseError.INTERNAL_SERVER_ERROR,
             });
         }
     }

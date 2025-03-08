@@ -1,5 +1,3 @@
-
-import { UserInterface } from "../../models/userModel";
 import { Request, Response } from "express";
 
 export default interface IUserControllers {
