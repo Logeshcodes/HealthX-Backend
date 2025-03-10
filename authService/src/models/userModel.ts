@@ -13,11 +13,6 @@ export interface UserInterface extends Document{
     createdAt?: Date ,
     updatedAt? : Date ,
 
-    age? : number ,
-    gender? : string ,
-    height? : number ,
-    weight? : number ,
-    bloodGroup? : string ,
 }
 
 const UserSchema : Schema<UserInterface> = new Schema({
@@ -29,12 +24,6 @@ const UserSchema : Schema<UserInterface> = new Schema({
     profilePicture : { type : String , required : false  },
     authenticationMethod : { type : String , required : false , default : 'Password' },
     isBlocked : { type : Boolean , required : true , default : false },
-
-    age : { type : Number , required : false  },
-    gender : { type : String , required : false  },
-    height : { type : Number , required : false  },
-    weight : { type : Number , required : false  },
-    bloodGroup : { type : String , required : false  },
 
 },{
     timestamps : true 

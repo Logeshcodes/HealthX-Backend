@@ -1,59 +1,36 @@
-import { NextFunction } from "express"
-
-
 import IUserRepository from "./interfaces/IUserRepository"
-import { UserInterface } from "@/models/userModel"
+import UserModel , { UserInterface } from "../models/userModel"
+import { GenericRespository } from "./GenericRepository.ts/GenericRepository"
 
-export class UserRepository implements IUserRepository{
 
-    private baseRepository : IUserRepository
+export class UserRepository extends GenericRespository<UserInterface> implements IUserRepository{
 
-    constructor(baseRepository : IUserRepository){
-        this.baseRepository= baseRepository
-
+    constructor(){
+        super(UserModel)
     }
 
-    async findByEmail(email:string){
-        const response = await this.baseRepository.findByEmail(email)
-        return response
+    async findByEmail(email:string) : Promise <UserInterface | null> {
+        return await this.findOne(email);
     }
 
-    async createUser(userData:any) {
-        const response= await this.baseRepository.createUser(userData)
-        return response
+    async createUser(userData:UserInterface) : Promise <UserInterface | null>{
+        return await this.create(userData)
     }
 
-    async resetPassword(email:string,password:string) {
-        const response= await this.baseRepository.resetPassword(email,password)
-        return response
+    public async googleLogin(userData: UserInterface): Promise<UserInterface | null > {
+        return await this.createUser(userData);   
     }
 
-
-    public async googleLogin(name: string, email: string, password: string, profilePicture : string): Promise<UserInterface | null> {
-        try {
-            const response = await this.baseRepository.googleLogin(name, email, password , profilePicture);
-            return response;
-        } catch (error) {
-            throw error;
-        }
+    public async updateProfile(email: string, profilePicture : string ): Promise< void> {
+        await this.update( email , {profilePicture : profilePicture} )
     }
 
+    public async resetPassword(email: string, password : string ): Promise<UserInterface | null> {
+        return await this.update( email , {hashedPassword : password} )
+    }
 
-    public async updateProfile(email: string, profilePicture: string): Promise<any> {
-        try {
-            const response = await this.baseRepository.updateProfile(email,profilePicture);
-            return response;
-        } catch (error) {
-            throw error;
-        }
+    public async blockUser(email: string, isBlocked : boolean ): Promise<void> {
+        await this.update( email , {isBlocked : isBlocked} )
     }
-    public async blockUser(email:string,isBlocked:boolean): Promise<any> {
-        try {
-            const response = await this.baseRepository.blockUser(email,isBlocked);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
-    
+   
 }

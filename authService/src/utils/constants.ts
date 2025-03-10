@@ -13,13 +13,20 @@ export const ResponseError = {
     EXISTING_USER : "User already exists." ,
     SIGNUP_SUCCESS : "Signup successful, OTP sent to email",
     OTP_RESENDED : "OTP has been successfully sent to your email.",
+    WRONG_OTP : "Invalid OTP !",
     ACCOUNT_CREATED : "Your account has been created successfully!",
-    WRONG_OTP : "Entered Wrong OTP",
 
     INVAILD_EMAIL : "Invalid Email Id" ,
     INVAILD_PASSWORD : "Incorrect password. Please try again." ,
-    USER_BLOCKED : "Your account has been blocked !" ,
-    USER_LOGIN_SUCCESS : "Login successful. Welcome back!",
-    GOOGLE_LOGIN : "Logging in with your Google account...",
-    USER_LOGOUT : "Logout successful. See you again!"
+    ACCOUNT_BLOCKED : "Your account has been blocked !" ,
+    ACCOUNT_LOGIN_SUCCESS : "Login successful. Welcome back!",
+    GOOGLE_LOGIN : "Logging in with your Google account !",
+    ACCOUNT_LOGOUT : "Logout successful. See you again!",
+
+    OTP_REDIRECT : "Redirecting To OTP Page",
+    USER_NOT_FOUND : "No User Found",
+    RESET_PASSWORD : "Redirecting to Reset Password Page",
+    RESET_PASSWORD_SUCCESS : "Password reset successfully",
+
+    CREATE_ACCOUNT : "Create your account before Login" ,
 };

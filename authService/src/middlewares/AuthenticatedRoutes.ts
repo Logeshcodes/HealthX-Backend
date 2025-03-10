@@ -22,7 +22,6 @@ interface AuthenticatedRequest extends Request {
 const authenticateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<any> => {
     console.log('Auth middleware entered');
 
-    // Fetch tokens from cookies
     const userAccessToken = req.cookies['accessToken'];
     const userRefreshToken = req.cookies['refreshToken'];
     const doctorAccessToken = req.cookies['accessToken2'];
@@ -35,7 +34,6 @@ const authenticateToken = async (req: AuthenticatedRequest, res: Response, next:
     console.log('Doctor accessToken:', doctorAccessToken);
     console.log('Admin accessToken:', adminAccessToken);
 
-    // Determine which token to use based on priority (Admin > Doctor > User)
     const accessToken = adminAccessToken || doctorAccessToken || userAccessToken;
     const refreshToken = adminRefreshToken || doctorRefreshToken || userRefreshToken;
 
@@ -44,11 +42,9 @@ const authenticateToken = async (req: AuthenticatedRequest, res: Response, next:
     }
 
     try {
-        // Verify Access Token
+
         const accessPayload = jwt.verify(accessToken, JWT_SECRET) as AuthenticatedRequest['user'];
         console.log('Access token verified:', accessPayload);
-
-        // Attach user payload and proceed
         req.user = accessPayload;
         return next();
     } catch (err: any) {

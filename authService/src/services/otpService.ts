@@ -5,21 +5,17 @@ export default class OtpService implements IOtpServices{
     private otpRespository:IOtpRepository
     constructor(otpRespository:IOtpRepository){
         this.otpRespository=otpRespository
-
     }
+    
     public async createOtp(email:string,otp:string){
-        const response= await this.otpRespository.createOtp(email,otp)
-        console.log('SecondResponseOtp : ' , response)
-        return response
+        return await this.otpRespository.createOtp(email,otp)
     }
 
     public async findOtp(email:string){
-        const response=await this.otpRespository.findOtp(email)
-        return response
+        return await this.otpRespository.findOtp(email)
     }
 
-    public async deleteOtp(email:string){
-        const response=await this.otpRespository.deleteOtp(email)
-        return response
+    public async deleteOtp(email:string): Promise<void>{
+        await this.otpRespository.deleteOtp(email)   
     }
 }

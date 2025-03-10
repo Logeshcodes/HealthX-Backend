@@ -1,35 +1,35 @@
-import { OtpInterface } from "../models/otpModel"
-import OtpBaseRespository from "./baseRepositories/otpBaseRepository"
-import otpModel from "../models/otpModel"
+import { GenericRespository } from "./GenericRepository.ts/GenericRepository"
+import IOtpRepository from "./interfaces/IOtpRepository"
+import OtpModel, { OtpInterface } from "../models/otpModel"
 
-import IOtpBaseRepository from "./baseRepositories/interfaces/IOtpBaseRepository"
+export class OtpRespository extends GenericRespository<OtpInterface> implements IOtpRepository {
 
-export class OtpRespository implements IOtpBaseRepository {
-
-
-    private baseOtpRepository:IOtpBaseRepository
-    constructor(baseOtpRepository:IOtpBaseRepository){
-        this.baseOtpRepository=baseOtpRepository
-
+    constructor(){
+        super(OtpModel)
     }
     
-
     public async createOtp(email:string,otp:string){
-        const response = await this.baseOtpRepository.createOtp(email,otp)
+        const response = await this.update(email,{otp : otp})
         console.log("responseOTP : " , response)
+        setTimeout(async () => {
+            if (response?._id) {
+            await OtpModel.findByIdAndDelete(response._id);
+            }
+        }, 1200000);
         return response
     }
 
 
     public async findOtp(email:string){
-        const response=await this.baseOtpRepository.findOtp(email)
+        const response=await this.findOne(email)
         console.log(response,"otp-repositry")
         return response
     }
 
 
-    public async deleteOtp(email:string){
-        const response=await this.baseOtpRepository.deleteOtp(email)
-        return response
+    public async deleteOtp(email:string): Promise<void>{
+        console.log("email id , repo", email)
+        await this.delete({email : email});
+
     }
 }

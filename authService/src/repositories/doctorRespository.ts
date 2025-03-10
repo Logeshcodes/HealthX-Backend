@@ -1,65 +1,31 @@
-
 import DoctorModel , {DoctorInterface} from "../models/doctorModel"
-
-
-import IDoctorBaseRepository from "./baseRepositories/interfaces/IDoctorBaseRepository";
 import IDoctorRepository from "./interfaces/IDoctorRepository";
+import { GenericRespository } from "./GenericRepository.ts/GenericRepository"
 
+export default class DoctorRepository extends GenericRespository<DoctorInterface> implements IDoctorRepository{
 
-export default class DoctorRepository implements IDoctorRepository{
-
-
-    private baseRepository:IDoctorBaseRepository
-    constructor(baseRepository:IDoctorBaseRepository){
-        this.baseRepository=baseRepository
-
+    constructor(){
+        super(DoctorModel)
     }
-
 
     async findByEmail(email:string){
-        const response = await this.baseRepository.findByEmail(email)
-        return response
+        return await this.findOne(email);
     }
 
-    
-   
-
-    async createUser(userData:any) {
-        const response= await this.baseRepository.createDoctor(userData)
-        return response
+    async createUser(userData:DoctorInterface) {
+        return await this.create(userData);
     }
     
     async resetPassword(email:string,password:string) {
-        const response= await this.baseRepository.resetPassword(email,password)
-        return response
-    }
-
-
-    public async googleLogin(name: string, email: string, password: string): Promise<DoctorInterface | null> {
-        try {
-            const response = await this.baseRepository.googleLogin(name, email, password);
-            return response;
-        } catch (error) {
-            throw error;
-        }
+        return await this.update( email , {password : password} )
     }
 
     public async updateProfile(email: string, profilePicture: string): Promise<void> {
-        try {
-            const response = await this.baseRepository.updateProfile(email,profilePicture);
-            return response;
-        } catch (error) {
-            throw error;
-        }
+        await this.update(email,{profilePicture : profilePicture});
     }
 
-    public async blockDoctor(email : string, isBlocked : boolean  , status : string  ) : Promise<void>{
-        try {
-            const response = await this.baseRepository.blockDoctor(email, isBlocked  , status);
-            return response;
-        } catch (error) {
-            throw error;
-        }
+    public async blockDoctor(email : string, isBlocked : boolean   ) : Promise<void>{
+         await this.update(email, {isBlocked : isBlocked} );
     }
    
 }

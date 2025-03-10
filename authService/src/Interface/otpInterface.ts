@@ -1,6 +1,5 @@
-import mongoose, { Schema, Document, model, } from "mongoose";
+import {  Document } from "mongoose";
 export interface Iotp extends Document {
-    
     email: string,
     otp: string,
     createdAt: Date,
