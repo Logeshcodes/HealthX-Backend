@@ -23,4 +23,6 @@ export const ResponseError = {
     CANCEL_APPOINTMENT : "Appointment Cancelled Successfully !",
     FAILED_APPOINTMENT : "Appointment Cancelled Failed !",
     PAYMENT_ERROR : "Error processing payment success" ,
+
+    PRESCRIPTION_ADDED : "Patient Prescription added"
 };

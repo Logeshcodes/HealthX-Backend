@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 
 import { StatusCode } from '../utils/enum';
 import { ResponseError } from '../utils/constants';
+import PrescriptionModel from "../models/prescriptionModel";
 
 export class DoctorController implements IDoctorController {
 
@@ -119,12 +120,87 @@ export class DoctorController implements IDoctorController {
         }
       }
 
+      public async getAppointmentById(req: Request, res: Response): Promise<void>{
+
+          try {
+
+            const { appointmentId } = req.params;
+
+          const response = await AppointmentModel.findById({_id: appointmentId});
+
+          if (response) {
+            res.json({
+              success: true,
+              message: ResponseError.RESOURCE_FOUND,
+              data: response,
+            });
+          } else {
+            res.status(StatusCode.NOT_FOUND).json({
+              success: false,
+              message: ResponseError.NOT_FOUND,
+            });
+          }
+            
+          } catch (error) {
+
+            res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+              success: false,
+              message: ResponseError.INTERNAL_SERVER_ERROR ,
+            });
+          }
+
+      }
+
+
+
+      public async addPrescription(req: Request, res: Response): Promise<void> {
+        try {
+          const { doctorId, patientId, appointmentId, prescriptionDate, medications, diagnosis, notes } = req.body;
+
+
+          console.log("addPrescription : ",doctorId, patientId, appointmentId, prescriptionDate, medications, diagnosis, notes )
+    
+          // Validate required fields
+          if (!doctorId || !patientId || !appointmentId || !prescriptionDate || !medications.length) {
+            res.status(StatusCode.BAD_REQUEST).json({
+              success: false,
+              message: "Missing required fields.",
+            });
+            return;
+          }
+    
+  
+          const newPrescription = await PrescriptionModel.create({
+            doctorId,
+            patientId,
+            appointmentId,
+            prescriptionDate,
+            medications,
+            diagnosis,
+            notes,
+          });
+    
+          res.status(StatusCode.CREATED).json({
+            success: true,
+            message: ResponseError.PRESCRIPTION_ADDED,
+            data: newPrescription,
+          });
+        } catch (error) {
+          console.error("Error adding prescription:", error);
+    
+          res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: ResponseError.INTERNAL_SERVER_ERROR,
+          });
+        }
+      }
+    
+
       public async getAllAppointmentDetails(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
             const { page, limit, activeTab } = req.query;
     
-            // Validate doctor ID
             if (!mongoose.Types.ObjectId.isValid(id)) {
                 res.status(StatusCode.NOT_FOUND).json({ success: false, message: ResponseError.NOT_FOUND });
                 return;
