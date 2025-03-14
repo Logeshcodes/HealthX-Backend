@@ -1,22 +1,13 @@
 import { IDoctorRepository } from "./interface/IDoctorRepository";
-import { IDoctorBaseRepository } from "./baseRepository/interface/IDoctorBaseRepository";
-import { DoctorInterface } from "../models/doctorModel";
+import DoctorModel ,{ DoctorInterface } from "../models/doctorModel";
+import { GenericRespository } from "./GenericRepository.ts/GenericRepository";
 
-export class DoctorRepository implements IDoctorRepository{
+export class DoctorRepository extends GenericRespository<DoctorInterface> implements IDoctorRepository{
 
-    private doctorBaseRepository: IDoctorBaseRepository
-    constructor( doctorBaseRepository : IDoctorBaseRepository){
-        
-        this.doctorBaseRepository= doctorBaseRepository
-
+    constructor(){
+        super(DoctorModel)
     }
     async createDoctor(payload: DoctorInterface){
-        try {
-            const response=await this.doctorBaseRepository.createDoctor(payload)
-            
-            
-        } catch (error) {
-            
-        }
+        await this.create(payload);
     }
 }

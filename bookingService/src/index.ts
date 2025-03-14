@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 const start = async() => {
     await connectDB()
     app.listen(PORT, () => {
-        console.log(`The ${process.env.SERVICE} is listening on port ${PORT}`);
+        console.log(`\nThe ${process.env.SERVICE} is listening on port ${PORT}`);
     });
 };
 start()

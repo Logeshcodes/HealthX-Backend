@@ -11,8 +11,6 @@ export interface IDoctorService {
     createSlot( data : object): Promise<SlotInterface | null | undefined> ;
     getSlotBooking(email: string): Promise<SlotInterface[] | null | undefined>
     deleteSlot(_id: string ): Promise<SlotInterface  | null | undefined>
-
-
     getAllAppointmentDetails(id: string, skip: number, limit: number , activeTab : string): Promise<AppointmentInterface[] | null | undefined>
-    getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined>
+
 }

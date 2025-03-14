@@ -1,11 +1,13 @@
 import { UserInterface } from "../../models/userModel";
-
-
+import { WalletData } from "../../types/walletType";
 import { Request, Response } from "express";
 
 export interface IUserController{
 
     addUser( payload : UserInterface) : Promise<void>;
+    passwordReset( data:{ email : string , hashedPassword : string }): Promise<void>;
+    updateWallet( data: WalletData): Promise<void>;
+
     getUser( req : Request , res : Response) : Promise <void> ;
     updateProfile( req : Request , res : Response) : Promise <void> ;
     updatePassword( req : Request , res : Response) : Promise <void> ;
@@ -14,10 +16,6 @@ export interface IUserController{
     findAllDoctors( req : Request , res : Response) : Promise <void> ;
     findAllDepartment( req : Request , res : Response) : Promise <void> ;
     blockUser( req : Request , res : Response) : Promise <void> ;
-    passwordReset( data:any): Promise<UserInterface | undefined | null>;
-    updateWallet( data:{userId : string ,appointmentId : string ,transactionId : string ,  amount : number , type : string}): Promise<UserInterface | undefined | null>;
-
-
     getDoctorDetails( req : Request , res : Response) : Promise <void> ;
     
 

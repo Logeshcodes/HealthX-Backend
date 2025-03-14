@@ -11,10 +11,10 @@ export const ResponseError = {
     NEW_ACCESS_TOKEN_GENERATED: "New access token generated.",
 
     EXISTING_USER : "User already exists." ,
-    SIGNUP_SUCCESS : "Signup successful, OTP sent to email",
-    OTP_RESENDED : "OTP has been successfully sent to your email.",
-    WRONG_OTP : "Invalid OTP !",
-    ACCOUNT_CREATED : "Your account has been created successfully!",
+    SIGNUP_SUCCESS : "OTP sent to email Account",
+    OTP_RESENDED : "OTP has been resend to your email.",
+    WRONG_OTP : "Invalid OTP. Please try again.",
+    ACCOUNT_CREATED : "Your account created successfully!",
 
     INVAILD_EMAIL : "Invalid Email Id" ,
     INVAILD_PASSWORD : "Incorrect password. Please try again." ,

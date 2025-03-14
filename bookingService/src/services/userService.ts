@@ -18,29 +18,14 @@ export class UserServices implements IUserService{
     }
 
     // kafka - user from auth
-    public async createUser(payload: UserInterface){
-        try {
-            const response=await this.userRepository.createUser(payload)
-            return response
-        } catch (error) {
-            console.log(error)
-            
-        }
+    public async createUser(payload: UserInterface): Promise<void>{
+        const response=await this.userRepository.createUser(payload);
+    }
+    
+    public async updateProfile(email: string, profilePicture: string): Promise<void> {
+          await this.userRepository.updateProfile(email, profilePicture);
     }
 
-    // kafka update from user
-    
-    public async updateProfile(email: string, profilePicture: string): Promise<UserInterface | null> {
-        try {
-          const response = await this.userRepository.updateProfile(email, profilePicture);
-          return response || null;
-        } catch (error) {
-          throw error;
-        }
-      }
-
-
-   
     public async getSlotBooking(email: string , skip: number, limit: number): Promise<SlotInterface[] | null | undefined>{
         try {
             const response=await this.userRepository.getSlotBooking(email , skip , limit)
@@ -62,19 +47,11 @@ export class UserServices implements IUserService{
     }
 
 
-    public async getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined>{
-        try {
-            const response=await this.userRepository.getAppointment(id )
-            return response
-        } catch (error) {
-            console.log(error)
-            
-        }
-    }
+  
 
-    public async cancelAppointment(id: string): Promise<AppointmentInterface | null | undefined>{
+    public async cancelAppointment(id: string , status : string): Promise<AppointmentInterface | null | undefined>{
         try {
-            const response=await this.userRepository.cancelAppointment(id )
+            const response=await this.userRepository.cancelAppointment(id , status)
             return response
         } catch (error) {
             console.log(error)

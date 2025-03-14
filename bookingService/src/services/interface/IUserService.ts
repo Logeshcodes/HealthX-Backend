@@ -4,18 +4,11 @@ import { UserInterface } from "../../models/userModel";
 
 export interface IUserService {
 
-    // kafka - user from auth
     createUser( payload : UserInterface) : Promise<void>;
+    updateProfile( email: string,data:any): Promise<void>;
 
-    // kafka update from user
-    updateProfile( email: string,data:any): Promise<UserInterface | null>;
-
-    cancelAppointment( id: string): Promise<AppointmentInterface | null | undefined>;
-
-   
+    cancelAppointment( id: string , status : string): Promise<AppointmentInterface | null | undefined>;
     getSlotBooking(email: string, skip: number, limit: number): Promise<SlotInterface[] | null | undefined>
-
     getSlotDetailsById( id : string ) : Promise <SlotInterface | null | undefined>
 
-    getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined>
 }

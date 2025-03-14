@@ -5,11 +5,12 @@ import { BannerInterface } from "../../models/bannerModel";
 
 export interface IUserService{
 
-    createUser( payload : UserInterface) : Promise<void>;
-    getUserData( email : string ) :Promise<UserInterface | undefined | null> ;
-    updateProfile(email: string,data:object) : Promise <UserInterface | null | undefined> ;
+    createUser( payload : UserInterface) :Promise<UserInterface | null | undefined>;
     updatePassword(email:string,password:string) : Promise <UserInterface | null | undefined> ;
     updateWallet(userId : string , wallet : any) : Promise <UserInterface | null | undefined> ;
+
+    getUserData( email : string ) :Promise<UserInterface | undefined | null> ;
+    updateProfile(email: string,data:object) : Promise <UserInterface | null | undefined> ;
     getUsers() : Promise <UserInterface[] | null | undefined> ;
     findAllBanners() : Promise <BannerInterface[] | null | undefined> ;
     findAllDoctors() : Promise <DoctorInterface[] | null | undefined> ;

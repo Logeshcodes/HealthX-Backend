@@ -9,6 +9,8 @@ export const ResponseError = {
     INVALID_REFRESH_TOKEN: "Invalid refresh token. Please log in.",
     REFRESH_TOKEN_EXPIRED: "Session expired. Please log in again.",
     NEW_ACCESS_TOKEN_GENERATED: "New access token generated.",
+    RESOURCE_FOUND : "Found Resource",
+    NOT_FOUND : "Resource Not Found",
 
     SLOT_DATA_FETCHED : "Slots fetched successfully" ,
     SLOT_NOTFOUND : "No slots found!" ,
@@ -17,5 +19,8 @@ export const ResponseError = {
     SLOT_DELETED : "Slot deleted Successfully..." ,
 
 
-    APPOINTMENT_FETCHED_SUCCESS : "Appointments fetched successfully"
+    APPOINTMENT_FETCHED_SUCCESS : "Appointments fetched successfully",
+    CANCEL_APPOINTMENT : "Appointment Cancelled Successfully !",
+    FAILED_APPOINTMENT : "Appointment Cancelled Failed !",
+    PAYMENT_ERROR : "Error processing payment success" ,
 };

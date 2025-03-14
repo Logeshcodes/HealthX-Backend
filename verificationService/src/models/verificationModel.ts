@@ -7,7 +7,6 @@ export interface IVerificationModel extends Document{
     degreeCertificateUrl: string, 
     status: string,
     reviewedAt: Date,
-    rejectedReason: string,
 }
 
 
@@ -19,7 +18,6 @@ const verificationRequestSchema = new mongoose.Schema(
     degreeCertificateUrl: { type: String, required: true }, 
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
     reviewedAt: { type: Date, default: Date.now },
-    rejectedReason: { type: String, required: false },
   },
   { timestamps: true }
 );

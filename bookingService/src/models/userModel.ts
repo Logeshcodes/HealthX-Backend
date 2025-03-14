@@ -9,16 +9,10 @@ export interface UserInterface extends Document{
     role: string ,
     profilePicture? : string ,
     authenticationMethod : string , 
-    isVerified : boolean ,
     isBlocked : boolean ,
     createdAt?: Date ,
     updatedAt? : Date ,
 
-    age? : number ,
-    gender? : string ,
-    height? : number ,
-    weight? : number ,
-    bloodGroup? : string ,
 }
 
 const UserSchema : Schema<UserInterface> = new Schema({
@@ -27,16 +21,10 @@ const UserSchema : Schema<UserInterface> = new Schema({
     mobileNumber : { type : Number , required : false , unique : true },
     hashedPassword : { type : String , required : true },
     role : { type : String , required : false , default : 'User' },
-    profilePicture : { type : String , required : false , default : 'No Picture' },
+    profilePicture : { type : String , required : false  },
     authenticationMethod : { type : String , required : false , default : 'Password' },
-    isVerified : { type : Boolean , required : true , default : false },
     isBlocked : { type : Boolean , required : true , default : false },
 
-    age : { type : Number , required : false  },
-    gender : { type : String , required : false  },
-    height : { type : Number , required : false  },
-    weight : { type : Number , required : false  },
-    bloodGroup : { type : String , required : false  },
 
 },{
     timestamps : true 

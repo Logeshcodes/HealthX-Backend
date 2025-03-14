@@ -1,23 +1,14 @@
 import { IUserRepository } from "./interface/IUserRepository";
-import { IUserBaseRepository } from "./baseRepository/interface/IUserBaseRepository";
-import { UserInterface } from "../models/userModel";
+import UserModel, { UserInterface } from "../models/userModel";
+import { GenericRespository } from "./GenericRepository.ts/GenericRepository";
 
-export class UserRepository implements IUserRepository{
+export class UserRepository extends GenericRespository<UserInterface> implements IUserRepository{
 
-    private userBaseRepository: IUserBaseRepository
-    constructor(userBaseRepository : IUserBaseRepository){
-        this.userBaseRepository= userBaseRepository
-
+    constructor(){
+        super(UserModel);
     }
-    async createUser(payload:UserInterface): Promise<void>{
-        try {
 
-            console.log('in the repository ', payload)
-            const response=await this.userBaseRepository.createUser(payload)
-            return response
-            
-        } catch (error) {
-            
-        }
+    async createUser(payload:UserInterface): Promise<void>{
+        await this.create(payload);
     }
 }

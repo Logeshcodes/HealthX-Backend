@@ -1,79 +1,48 @@
-import { SlotInterface } from "../models/slotModel";
-import { AppointmentInterface } from "../models/appointmentModel";
-import { UserInterface } from "../models/userModel";
-
+import SlotModel, { SlotInterface } from "../models/slotModel";
+import UserModel, { UserInterface } from "../models/userModel";
 import { IUserRepository } from "./interface/IUserRepository";
-import { IUserBaseRepository } from "./baseRepository/interface/IUserBaseRepository";
+import { GenericRespository } from "./GenericRepository.ts/GenericRepository"
 
-export class UserRepository implements IUserRepository{
+export class UserRepository extends GenericRespository<UserInterface> implements IUserRepository{
 
-    
-     private userBaseRepository: IUserBaseRepository
-        constructor( userBaseRepository : IUserBaseRepository){
-            
-            this.userBaseRepository= userBaseRepository
-    
-        }
+    constructor(){
+        super(UserModel);
+    }
 
-        // kafka user from auth
+        // kafka 
         async createUser(payload:UserInterface): Promise<void>{
-            try {
-    
-                console.log('in the repository ', payload)
-                const response=await this.userBaseRepository.createUser(payload)
-                return response
-                
-            } catch (error) {
-                
-            }
+            await this.create(payload); 
         }
 
-        // kafka update from user
-        public async updateProfile(email: string, profilePicture: string): Promise<any> {
+        public async updateProfile(email: string, profilePicture: string): Promise<void> {
+            await this.update(email,{profilePicture : profilePicture});
+        }
+
+        public async cancelAppointment(id: string , status : string): Promise<any> {
             try {
-                const response = await this.userBaseRepository.updateProfile(email,profilePicture);
-                return response;
+                return await this.findIdAndUpdate(id , {status : status});
             } catch (error) {
                 throw error;
             }
         }
-
-        public async cancelAppointment(id: string): Promise<any> {
-            try {
-                const response = await this.userBaseRepository.cancelAppointment(id);
-                return response;
-            } catch (error) {
-                throw error;
-            }
-        }
-
 
         async getSlotBooking(email: string, skip: number, limit: number): Promise<SlotInterface[] | null | undefined> {
             try {
-                const response=await this.userBaseRepository.getSlotBooking(email, skip , limit)
-                return response;
+                return await SlotModel.find({ email }).skip(skip).limit(limit).exec();
             } catch (error) {
-                console.log(error);
+                throw error;
             }
         }
         async getSlotDetailsById( id : string ) : Promise <SlotInterface | null | undefined> {
             try {
-                const response=await this.userBaseRepository.getSlotDetailsById(id)
-                return response;
+                return await SlotModel.findById({_id : id})
             } catch (error) {
-                console.log(error);
+                throw error;
             }
         }
         
         
-        async getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined> {
-            try {
-                const response=await this.userBaseRepository.getAppointment(id)
-                return response;
-            } catch (error) {
-                console.log(error);
-            }
-        }
+
     
     
 }

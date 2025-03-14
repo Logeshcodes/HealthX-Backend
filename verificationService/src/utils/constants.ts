@@ -8,5 +8,12 @@ export const ResponseError = {
     NO_ACCESS_TOKEN: "No access token provided.",
     INVALID_REFRESH_TOKEN: "Invalid refresh token. Please log in.",
     REFRESH_TOKEN_EXPIRED: "Session expired. Please log in again.",
-    NEW_ACCESS_TOKEN_GENERATED: "New access token generated."
+    NEW_ACCESS_TOKEN_GENERATED: "New access token generated.",
+
+    DOCUMENT_NOT_FOUND :"No Documents found",
+    VERIFY_REQUEST : "Verification Request Sended...",
+    APPROVED : "Doctor Documents verified" ,
+    REJECTED : "Doctor Documents Rejected" ,
+
+
 };

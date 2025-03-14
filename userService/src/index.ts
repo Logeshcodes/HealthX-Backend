@@ -7,6 +7,7 @@ import consume from "./config/kafka/consumer";
 import doctorRoutes from "./routes/doctorRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
+import reviewRoutes from "./routes/reviewRoutes";
 import morgan from "morgan";
 
 config();
@@ -22,7 +23,7 @@ const corsOptions = {
     credentials: true,
 };
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // Preflight fix
+app.options("*", cors(corsOptions)); 
 
 app.use(cookieParser());
 app.use(express.json());
@@ -32,13 +33,12 @@ app.use(express.urlencoded({ extended: true }));
 const morganFormat = ':method :url :status :response-time ms - :res[content-length]';
 app.use(morgan(morganFormat));
 
-// Routes
 app.use("/patient", userRoutes); 
 app.use("/doctor", doctorRoutes);
 app.use("/admin", adminRoutes);
+app.use("/review", reviewRoutes);
 
 consume();
-
 
 process.on("uncaughtException", (err) => {
     console.error("Uncaught Exception:", err);

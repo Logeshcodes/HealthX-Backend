@@ -1,16 +1,11 @@
 import kafka from "./kafkaConfig";
-
-
 import { userController , doctorController } from "../dependencyInjector";
 
-
 async function consume() {
-  
-  
   const consumer = kafka.consumer({ groupId: "videoCall-service" });
 
   try {
-    console.log("Connecting to videoCall-Service Consumer...");
+    console.log("Connecting to videoCall-Service Consumer...\n");
     await consumer.connect();
 
     await consumer.subscribe({
@@ -21,13 +16,11 @@ async function consume() {
       fromBeginning: true,
     });
 
-    console.log("videoCall-Service Consumer is running...");
+    console.log("videoCall-Service Consumer is running...\n");
     await consumer.run({
       eachMessage: async ({ topic, message }) => {
         try {
-          const messageValue = message.value
-            ? JSON.parse(message.value.toString())
-            : null;
+          const messageValue = message.value? JSON.parse(message.value.toString()): null;
 
           if (!messageValue) {
             console.warn(`Empty message received on topic: ${topic}`);
@@ -40,13 +33,10 @@ async function consume() {
               console.log("Processed add-user event:", messageValue);
               break;
 
-              //doctor
             case "add-doctor":
               await doctorController.addDoctor(messageValue);
               console.log("Processed add-user event:", messageValue);
               break;
-
-           
 
             default:
               console.warn(`No handler for topic: ${topic}`);
@@ -59,12 +49,8 @@ async function consume() {
         }
       },
     });
-  } catch (error: any) {
-    console.error(
-      "Error in videoCall-Service Consumer:",
-      error.message,
-      error.stack
-    );
+  } catch (error) {
+    console.error("Error in videoCall-Service Consumer:");
   }
 }
 

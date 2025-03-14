@@ -1,7 +1,8 @@
 import { IVerificationRepository } from "../respository/IVerificationRepository"
 import {IVerificationService} from './IVerificationService'
-import { IVerificationModel } from '../models/verificationModel'
+import VerificationModel, { IVerificationModel } from '../models/verificationModel'
 import { updateRequestType } from '../types/updateRequestType'
+import { String } from "aws-sdk/clients/acm"
 
 export class VerificationService implements IVerificationService{
     
@@ -9,61 +10,40 @@ export class VerificationService implements IVerificationService{
     constructor(verificationRepository:IVerificationRepository){
         this.verificationRepository=verificationRepository
     }
-    async sendVerifyRequest(name:string,email:string, department: string , education: string,medicalLicenseUrl:string,degreeCertificateUrl:string):Promise<IVerificationModel>{
+
+    async sendVerifyRequest(name:string,email:string,medicalLicenseUrl:string,degreeCertificateUrl:string , status : String):Promise<IVerificationModel>{
         try {
-            console.log(name,email,medicalLicenseUrl,degreeCertificateUrl,"verificationnnn serviceee")
-            const response=await this.verificationRepository.sendVerifyRequest(name,email, department , education,medicalLicenseUrl,degreeCertificateUrl)
-            console.log("verification...serviceeee")
-            return response
+            const data = new VerificationModel({ name,email,medicalLicenseUrl,degreeCertificateUrl,status});
+            return await this.verificationRepository.sendVerifyRequest(data);
         } catch (error) {
             throw new Error("Verify Request Document failed Creation")
-            
-            
         }
     }
+
     async getRequestData(email:string):Promise<IVerificationModel | null>{
         try {
-            console.log(email,"verificationnnn serviceee")
-            const response=await this.verificationRepository.getRequestDataByEmail(email)
-            return response
+            return await this.verificationRepository.getRequestDataByEmail(email)
         } catch (error) {
-            throw new Error("Verify Request Document failed Creation")
-            
-            
+            throw new Error("get data  failed Creation");  
         }
     }
-    async updateRequest(email:string,data:updateRequestType):Promise<IVerificationModel | null>{
-        try {
-            console.log(email,"updateRequest serviceee")
-            const response=await this.verificationRepository.updateRequest(email,data)
-            return response
-        } catch (error) {
-            throw new Error("Verify Request Document failed Creation")
-            
-            
-        }
-    }
+
+
     async getAllRequests():Promise<IVerificationModel[] | null>{
         try {
-            console.log("getAllRequests verificationnnn serviceee")
-            const response=await this.verificationRepository.getAllRequests()
-            return response
+            return await this.verificationRepository.getAllRequests()
         } catch (error) {
-            throw new Error("Verify Request Document failed Creation")
-            
-            
+            throw new Error("get all requests failed Creation"); 
         }
     }
+
+
     async approveRequest(email:string,status:string):Promise<IVerificationModel | null>{
         try {
-            console.log(email,"verificationnnn serviceee")
-            const response=await this.verificationRepository.approveRequest(email,status)
-            return response
+            return await this.verificationRepository.approveRequest(email,status);
         } catch (error) {
             console.log(error)
-            throw new Error("Verify Request Document failed Creation")
-            
-            
+            throw new Error("approve Document failed Creation");
         }
     }
 

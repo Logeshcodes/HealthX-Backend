@@ -1,13 +1,8 @@
 import { Request, Response } from "express";
-
-
 import { uploadToS3Bucket } from "../utils/s3Bucket";
 import produce from "../config/kafka/producer";
-import DepartmentModel, { DepartmentInterface } from "../models/departmentModel";
-
 import { IAdminController } from "./interface/IAdminController";
 import { IAdminService } from "../services/interface/IAdminservice";
-
 import { StatusCode } from '../utils/enum';
 import { ResponseError } from '../utils/constants';
 
@@ -24,10 +19,7 @@ export default class AdminController implements IAdminController {
     try {
       const { departmentName, isListed } = req.body;
 
-      // Check if the department already exists
-      const existingDept = await this.adminService.findDepartmentByName(
-        departmentName
-      );
+      const existingDept = await this.adminService.findDepartmentByName(departmentName);
 
       if (existingDept) {
          res.json({
@@ -37,7 +29,6 @@ export default class AdminController implements IAdminController {
         });
         return ;
       } else {
-        const deptData = { departmentName, isListed };
         const dept = await this.adminService.createDepartment(departmentName );
 
         if (dept) {
@@ -96,7 +87,6 @@ export default class AdminController implements IAdminController {
 
   async getAllUsers(req: Request, res: Response): Promise<any> {
     try {
-      // Fetch all users from the service
       const users = await this.adminService.getAllUsers();
 
       if (users && users.length > 0) {
@@ -104,50 +94,45 @@ export default class AdminController implements IAdminController {
           .status(StatusCode.OK)
           .json({
             success: true,
-            message: "Users retrieved successfully",
+            message: ResponseError.FETCH_USER,
             users,
           });
       } else {
-        return res.status(404).json({
+        return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "No users found",
+          message: ResponseError.USER_NOT_FOUND,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal Server Error",
-        error: error.message,
+        message: ResponseError.INTERNAL_SERVER_ERROR,
       });
     }
   }
 
-  // admin - doctor data
-
   async getAllDoctors(req: Request, res: Response): Promise<any> {
     try {
-      // Fetch all doctors from the service
       const doctors = await this.adminService.getAllDoctors();
 
       if (doctors && doctors.length > 0) {
         return res.status(StatusCode.OK).json({
           success: true,
-          message: "Users retrieved successfully",
+          message: ResponseError.FETCH_DOCTOR,
           doctors,
         });
       } else {
         return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "No doctors found",
+          message: ResponseError.FETCH_NOT_DOCTOR,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: ResponseError.INTERNAL_SERVER_ERROR,
-        error: error.message,
       });
     }
   }
@@ -155,21 +140,16 @@ export default class AdminController implements IAdminController {
   async blockUser(req: any, res: any) {
     try {
       const { email } = req.params;
-
-      // Fetch user data by email
       const userData = await this.adminService.getUserData(email);
-
       if (!userData) {
         return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "User not found",
+          message: ResponseError.USER_NOT_FOUND,
         });
       }
-
       const emailId = userData.email;
       const isBlocked = !userData?.isBlocked;
 
-      // Update the user profile
       const userStatus = await this.adminService.updateProfile(emailId, {
         isBlocked,
       });
@@ -178,10 +158,9 @@ export default class AdminController implements IAdminController {
 
       return res.status(StatusCode.OK).json({
         success: true,
-        message: userStatus?.isBlocked ? "User Blocked" : "User Unblocked",
+        message: userStatus?.isBlocked ? ResponseError.ACCOUNT_BLOCKED : ResponseError.ACCOUNT_UNBLOCKED,
       });
     } catch (error) {
-      console.error("Error blocking/unblocking user:", error);
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: ResponseError.INTERNAL_SERVER_ERROR,
@@ -193,34 +172,23 @@ export default class AdminController implements IAdminController {
   async listBanner(req: any, res: any) {
     try {
       const { id  } = req.params;
-
-      
       const bannerData = await this.adminService.getBannerById(id)
 
       if (!bannerData) {
         return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "banner not found",
+          message: ResponseError.NOT_FOUND,
         });
       }
-
-      console.log(bannerData ,'dtaaa')
-
-     
       const isListed = !bannerData?.isListed;
 
-      console.log("status updated*** __________====" , isListed)
-    
-
       const bannerStatus = await this.adminService.updateBanner(id , {isListed})
-
 
       return res.status(StatusCode.OK).json({
         success: true,
         message: bannerStatus?.isListed ? "Banner Listed" : "Banner Unlisted",
       });
     } catch (error) {
-      console.error("Error listed/unlisted banner:", error);
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: ResponseError.INTERNAL_SERVER_ERROR,
@@ -228,372 +196,265 @@ export default class AdminController implements IAdminController {
     }
   }
 
-
- 
-
   async rejectDocuments(req: any, res: any) {
     try {
       const { email , } = req.params;
       const rejectedReason = req.body.rejectReason ;
-
-
-      console.log(req.body.rejectReason);
-      
-
       const doctorData = await this.adminService.getDoctorData(email);
 
       if (!doctorData) {
-        return res.status(404).json({
+        return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "User not found",
+          message: ResponseError.USER_NOT_FOUND,
         });
       }
-
       const emailId = doctorData.email;
       const status = "rejected";
-      
 
-      const response = await this.adminService.updateDoctorProfile(emailId, {
-        status,rejectedReason
-      });
-
-
+      const response = await this.adminService.updateDoctorProfile(emailId, {status,rejectedReason});
       if(response){
 
-        
           await produce("document-rejection-mail", { email , rejectedReason});
 
-          return res.status(200).json({
+          return res.status(StatusCode.OK).json({
             success: true,
-            message: "Doctor Records Rejected ",
+            message: ResponseError.REJECT_DOCTOR,
           });
       }
 
     } catch (error) {
-
-      console.error("Error Doctor Records Rejected:", error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Error Doctor Records Rejected",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
       });
     }
   }
   async approveDocuments(req: any, res: any) {
     try {
       const { email , } = req.params;
-      
-
       const doctorData = await this.adminService.getDoctorData(email);
-
       if (!doctorData) {
-        return res.status(404).json({
+        return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "User not found",
+          message: ResponseError.NOT_FOUND,
         });
       }
 
       const emailId = doctorData.email;
       const status = "approved";
-      
-
-      const response = await this.adminService.updateDoctorProfile(emailId, {
-        status
-      });
-
-
+      const response = await this.adminService.updateDoctorProfile(emailId, {status});
       if(response){
 
-        
           await produce("document-approval-mail", { email });
 
-          return res.status(200).json({
+          return res.status(StatusCode.OK).json({
             success: true,
-            message: "Doctor Records Approved ",
+            message: ResponseError.APPROVE_DOCTOR,
           });
       }
-
     } catch (error) {
-
-      console.error("Error Doctor Records Approved:", error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Error Doctor Records Approved",
+        message: ResponseError.INTERNAL_SERVER_ERROR
       });
     }
   }
-
 
 
 
   async blockDoctor(req: any, res: any) {
     try {
       const { email } = req.params;
-
-      // Fetch user data by email
       const userData = await this.adminService.getDoctorData(email);
-
       if (!userData) {
-        return res.status(404).json({
+        return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "User not found",
+          message: ResponseError.NOT_FOUND,
         });
       }
-
       const emailId = userData.email;
       const isBlocked = !userData?.isBlocked;
       const status = userData?.status === "blocked" ? "approved" : "blocked";
 
-      // Update the user profile
       const userStatus = await this.adminService.updateDoctorProfile(emailId, {
         isBlocked,
         status,
       });
-
-      // await produce("block-doctor", { email, isBlocked , status });
       await produce("block-doctor", { email, isBlocked  , status});
 
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         success: true,
-        message: userStatus?.isBlocked ? "Doctor Blocked" : "Doctor Unblocked",
+        message: userStatus?.isBlocked ? ResponseError.ACCOUNT_BLOCKED : ResponseError.ACCOUNT_UNBLOCKED,
       });
     } catch (error) {
-      console.error("Error blocking/unblocking Doctor:", error);
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Error blocking/unblocking Doctor",
+        message: ResponseError.INTERNAL_SERVER_ERROR,
       });
     }
   }
 
-  // Get Department by Name
   async getDepartmentByName(req: Request, res: Response):  Promise< void>{
     try {
-      console.log("oooooo", req.params);
 
       const { departmentName } = req.params;
-      console.log("dept name ???????:", decodeURIComponent(departmentName));
-      const deptData = await this.adminService.getDepartmentByName(
-        decodeURIComponent(departmentName)
-      );
+      const deptData = await this.adminService.getDepartmentByName( decodeURIComponent(departmentName));
 
       if (!deptData) {
          res
-          .status(404)
-          .json({ success: false, message: "Department not found" });
+          .status(StatusCode.NOT_FOUND)
+          .json({ success: false, message: ResponseError.NOT_FOUND });
           return;
       }
 
       res.json({ success: true, data: deptData });
     } catch (error) {
       console.error("Error fetching department by name:", error);
-      res.status(500).json({ success: false, message: "Server Error." });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: ResponseError.INTERNAL_SERVER_ERROR });
     }
   }
 
-
-  // Get getBannerById 
   async getBannerById(req: Request, res: Response):  Promise< void>{
     try {
-      console.log("idd", req.params);
 
       const { id } = req.params;
-      console.log("banner Id ???????:", decodeURIComponent(id));
-      const bannerData = await this.adminService.getBannerById(
-        decodeURIComponent(id)
-      );
+      const bannerData = await this.adminService.getBannerById(decodeURIComponent(id));
 
       if (!bannerData) {
          res
-          .status(404)
-          .json({ success: false, message: "banner not found" });
+          .status(StatusCode.NOT_FOUND)
+          .json({ success: false, message: ResponseError.NOT_FOUND });
           return;
       }
-
       res.json({ success: true, data: bannerData });
     } catch (error) {
-      console.error("Error fetching banner by id:", error);
-      res.status(500).json({ success: false, message: "Server Error." });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: ResponseError.INTERNAL_SERVER_ERROR });
     }
   }
 
-
-
-  // Get Doctor by email
   async getDoctorByEmail(req: Request, res: Response): Promise<any> {
     try {
-      console.log("oooooo", req.params);
 
       const { email } = req.params;
-      console.log("dept name ???????:", decodeURIComponent(email));
-      const doctorData = await this.adminService.getDoctorByEmail(
-        decodeURIComponent(email)
-      );
+      const doctorData = await this.adminService.getDoctorByEmail(decodeURIComponent(email) );
 
       if (!doctorData) {
         return res
-          .status(404)
-          .json({ success: false, message: "Department not found" });
+          .status(StatusCode.NOT_FOUND)
+          .json({ success: false, message: ResponseError.NOT_FOUND });
       }
-
       res.json({ success: true, data: doctorData });
     } catch (error) {
-      console.error("Error fetching department by name:", error);
-      res.status(500).json({ success: false, message: "Server Error." });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: ResponseError.INTERNAL_SERVER_ERROR });
     }
   }
 
-  // Update Department by Name
   async updateDepartment(req: Request, res: Response): Promise<void> {
     try {
-      console.log("iiiii", req.params);
-
       const { departmentName } = req.params;
-
       const updateData = req.body;
 
-      console.log(departmentName, "dept");
-      console.log(updateData.deptData.departmentName, "deptup");
-
-      const existingDept = await this.adminService.findDepartmentByName(
-        updateData.deptData.departmentName
-      );
+      const existingDept = await this.adminService.findDepartmentByName(updateData.deptData.departmentName);
       if (existingDept) {
         res.json({
           success: false,
-          message: "Department already exists",
+          message: ResponseError.DEPARTMENT_EXIST,
           user: existingDept,
-
         });
         return ;
       }
-      const deptData = await this.adminService.updateDepartment(
-        departmentName,
-        updateData.deptData
-      );
-      console.log("existingDept", existingDept);
+      const deptData = await this.adminService.updateDepartment(departmentName,updateData.deptData);
 
       await produce("update-department", { departmentName, updateData });
 
       res.json({
         success: true,
-        message: "Department updated successfully",
+        message: ResponseError.DEPARTMENT_UPDATED ,
         data: deptData,
       });
     } catch (error) {
-      console.error("Error updating department:", error);
-      res.status(500).json({ success: false, message: "Server Error." });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: ResponseError.INTERNAL_SERVER_ERROR });
     }
   }
 
-
-  // Update updateBanner by id
   async updateBanner(req: Request, res: Response): Promise<void> {
     try {
-      console.log("Request params:", req.params);
 
-  
       const { id } = req.params; 
       let updateData = req.body; 
       let bannerImage = updateData.bannerImage || "No image"; 
   
-      console.log("Banner ID:", id);
-      console.log("Received File:", req.file);
-  
-      
       if (req.file) {
-        console.log("Uploading new banner image...");
         bannerImage = await uploadToS3Bucket(req.file, "banners");
       }
   
-      
       updateData = { ...updateData, bannerImage };
   
-     
       const bannerData = await this.adminService.updateBanner(id, updateData);
-  
       res.json({
         success: true,
-        message: "Banner updated successfully",
+        message: ResponseError.BANNER_UPDATED,
         data: bannerData,
       });
     } catch (error) {
-      console.error("Error updating banner:", error);
-      res.status(500).json({ success: false, message: "Server Error." });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: ResponseError.INTERNAL_SERVER_ERROR });
     }
   }
-  
-
 
 public async addBanner(req: Request, res: Response): Promise<any> {
   try {
     const { bannerTitle, description, startDate, endDate, link, role } = req.body;
 
-    console.log(req.body, "Adding Banner Data");
-    console.log(req.file, "bannerImage - Adding Banner Data");
-
     let bannerImage = "No image";
 
     if (req.file) {
-      console.log("Uploading banner image...");
       bannerImage = await uploadToS3Bucket(req.file, "banners");
     }
 
-    const response = await this.adminService.addBanner({
-      bannerTitle,
-      description,
-      bannerImage,
-      startDate,
-      endDate,
-      link,
-      role
-    });
+    const response = await this.adminService.addBanner({ bannerTitle, description,bannerImage,startDate,endDate,link,role});
 
     if (response) {
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         success: true,
-        message: "Banner added successfully!",
+        message: ResponseError.BANNER_CREATED,
         data : response,
       });
     } else {
-      return res.status(400).json({
+      return res.status(StatusCode.NOT_FOUND).json({
         success: false,
-        message: "Failed to add banner!",
+        message: ResponseError.NOT_FOUND,
       });
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
+    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "An error occurred while adding the banner.",
+      message: ResponseError.INTERNAL_SERVER_ERROR,
     });
   }
 }
 
-  
-  
 async getAllBanner(req: Request, res: Response): Promise<any> {
   try {
-    // Fetch all departments from the service
     const banners = await this.adminService.getAllBanner();
 
     if (banners && banners.length > 0) {
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         success: true,
-        message: "banners retrieved successfully",
+        message: ResponseError.FETCH_BANNER,
         data : banners,
       });
     } else {
-      return res.status(404).json({
+      return res.status(StatusCode.NOT_FOUND).json({
         success: false,
-        message: "No banners found",
+        message: ResponseError.NOT_FOUND,
       });
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
-    return res.status(500).json({
+    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: "Internal Server Error",
-      error: error.message,
+      message: ResponseError.INTERNAL_SERVER_ERROR,
     });
   }
 }

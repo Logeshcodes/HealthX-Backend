@@ -66,6 +66,7 @@ export class DoctorServices implements IDoctorService{
             
         }
     }
+   
 
 
     
@@ -79,14 +80,6 @@ export class DoctorServices implements IDoctorService{
         }
     }
 
-    public async getAppointment(id: string): Promise<AppointmentInterface[] | null | undefined>{
-        try {
-            const response=await this.doctorRepository.getAppointment(id )
-            return response
-        } catch (error) {
-            console.log(error)
-            
-        }
-    }
+   
     
 }

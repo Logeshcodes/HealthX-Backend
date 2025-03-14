@@ -10,18 +10,14 @@ async function produce(topic: string, value: object): Promise<void> {
     console.log("Connecting to User-Service Producer...");
     await producer.connect();
 
-    const messageValue =
-      typeof value === "object" ? JSON.stringify(value) : value;
+    const messageValue = typeof value === "object" ? JSON.stringify(value) : value;
     console.log(`Sending message to topic: ${topic} => ${messageValue}`);
 
-    await producer.send({
-      topic,
-      messages: [{ value: messageValue }],
-    });
+    await producer.send({topic, messages: [{ value: messageValue }],});
 
     console.log("Message sent successfully from User-Producer.");
-  } catch (error:any) {
-    console.error("Error in User-Producer:", error.message, error.stack);
+  } catch (error) {
+    console.error("Error in User-Producer:");
   } finally {
     await producer.disconnect();
     console.log("User-Producer disconnected.");

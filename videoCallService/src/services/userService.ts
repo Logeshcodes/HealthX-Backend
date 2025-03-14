@@ -5,18 +5,11 @@ import { IUserRepository } from "../respostories/interface/IUserRepository"
 
 export default class UserServices implements IUserService{
 
-    private userRepository:IUserRepository
+    private userRepository:IUserRepository;
     constructor(userRepository :IUserRepository){
-        this.userRepository= userRepository
-
+        this.userRepository= userRepository;
     }
-    public async createUser(payload: UserInterface){
-        try {
-            const response=await this.userRepository.createUser(payload)
-            return response
-        } catch (error) {
-            console.log(error)
-            
-        }
+    public async createUser(payload: UserInterface): Promise<void>{
+        await this.userRepository.createUser(payload);
     }
 }

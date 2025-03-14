@@ -14,85 +14,63 @@ export default class UserServices implements IUserService{
         this.userRepository= userRepository
 
     }
-    public async createUser(payload: UserInterface){
-        try {
-            const response=await this.userRepository.createUser(payload)
-            return response
-        } catch (error) {
-            console.log(error)
-            
-        }
+
+    public async createUser(payload: UserInterface):Promise<UserInterface | null | undefined>{
+        return await this.userRepository.createUser(payload);
     }
+
+    public async updatePassword(email:string,password:string): Promise <UserInterface | null | undefined>{
+        return await this.userRepository.updatePassword(email,password);
+    }
+
+    public async updateWallet(userId : string , wallet : any): Promise <UserInterface | null | undefined>{
+        return await this.userRepository.updateWallet( userId , wallet);
+    }
+
     public async getUserData(email:string): Promise<UserInterface | undefined | null> {
         try {
-            const response=await this.userRepository.getUserData(email)
-            console.log(response , 'getuserdata -service')
-            return response
+            return await this.userRepository.getUserData(email);
         } catch (error) {
             console.log(error)
             
         }
     }
+
     public async getDoctorDetails(email:string): Promise <DoctorInterface | null | undefined>{
         try {
-            const response=await this.userRepository.getDoctorDetails(email)
-            console.log(response , 'getDoctorDetails -service')
-            return response
+            return await this.userRepository.getDoctorDetails(email);
         } catch (error) {
-            console.log(error)
-            
+            console.log(error);
         }
     }
+
     public async updateProfile(email: string,data:object): Promise<UserInterface | null | undefined>{
         try {
-            console.log("update-service")
-            const response=await this.userRepository.updateProfile(email ,data)
-            console.log("update-service",response)
-            return response
-            
+            return await this.userRepository.updateProfile(email ,data);
         } catch (error) {
-            console.log(error)
-            
+            console.log(error);
         }
     }
-    public async updatePassword(email:string,password:string): Promise <UserInterface | null | undefined>{
-        try {
-            const response=await this.userRepository.updatePassword(email,password)
-            return response
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    public async updateWallet(userId : string , wallet : any): Promise <UserInterface | null | undefined>{
-        try {
-            const response=await this.userRepository.updateWallet( userId , wallet);
-            return response
-        } catch (error) {
-            console.log(error)
-        }
-    }
+   
     public async getUsers(): Promise <UserInterface[] | null | undefined>{
         try {
-            const response=await this.userRepository.getUsers()
-            return response
+            return await this.userRepository.getUsers();
         } catch (error) {
             console.log(error)
         }
     }
+
     public async findAllBanners() : Promise <BannerInterface[] | null | undefined>{
         try {
-            const response=await this.userRepository.findAllBanners()
-           
-            return response
+            return await this.userRepository.findAllBanners();
         } catch (error) {
             console.log(error)
         }
     }
+
     public async findAllDoctors() : Promise <DoctorInterface[] | null | undefined>{
         try {
-            const response=await this.userRepository.findAllDoctors()
-         
-            return response
+            return await this.userRepository.findAllDoctors();
         } catch (error) {
             console.log(error)
         }
@@ -100,9 +78,7 @@ export default class UserServices implements IUserService{
     
     public async findAllDepartment(){
         try {
-            const response=await this.userRepository.findAllDepartment()
-            console.log("doctor ", response)
-            return response
+            return await this.userRepository.findAllDepartment();
         } catch (error) {
             console.log(error)
         }

@@ -12,15 +12,10 @@ export interface DoctorInterface extends Document{
     experience : number ,
     description : string ,
     profilePicture? : string ,
-    medicalLicense? : string , 
-    experienceCertificate? : string , 
-    degreeCertificate? : string , 
     isBlocked? : boolean ,
     status? : string ,
     location? : string ,
-    rejectedReason? : string ,
     consultationType : string ,
-    consultationFee? : string ,
     createdAt?: Date ,
     updateAt? : Date 
 }
@@ -38,15 +33,10 @@ const doctorSchema : Schema<DoctorInterface> = new Schema({
     experience : { type : Number , required : true},
     description : {type : String , required : true },
     profilePicture : { type : String , required : false  },
-    medicalLicense : { type : String , required : false },
-    experienceCertificate : { type : String , required : false  },
-    degreeCertificate : { type : String , required : false  },
     location : { type : String , required : false  },
     isBlocked : { type : Boolean , required : true , default: false },
     status : { type : String , required : true  , default : 'pending'},
-    rejectedReason : { type : String , required : false },
     consultationType : { type : String , required : true },
-    consultationFee : { type : String , required : false },
 },{
     timestamps : true 
 })

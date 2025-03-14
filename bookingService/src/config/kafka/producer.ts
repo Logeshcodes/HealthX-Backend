@@ -2,15 +2,12 @@ import kafka from "./kafkaConfig";
 import { Partitioners } from "kafkajs";
 
 async function produce(topic: string, value: object): Promise<void> {
-
   const producer = kafka.producer({
     createPartitioner: Partitioners.LegacyPartitioner,
   });
 
-
   try {
-
-    console.log("Connecting to Auth-Service Producer...");
+    console.log("Connecting to booking-service Producer...");
     await producer.connect();
 
     const messageValue =
@@ -22,16 +19,12 @@ async function produce(topic: string, value: object): Promise<void> {
       messages: [{ value: messageValue }],
     });
 
-    console.log("Message sent successfully from Auth-Producer.");
-
-  } catch (error:any) {
-
-    console.error("Error in Auth-Producer:", error.message, error.stack);
-
+    console.log("Message sent successfully from booking-Producer.");
+  } catch (error: any) {
+    console.error("Error in booking-Producer:", error.message, error.stack);
   } finally {
-    
     await producer.disconnect();
-    console.log("Auth-Producer disconnected.");
+    console.log("booking-Producer disconnected.");
   }
 }
 

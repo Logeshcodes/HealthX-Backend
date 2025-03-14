@@ -8,7 +8,7 @@ export interface AppointmentInterface extends Document {
   amount: number;
   status: string;
   paymentStatus: string;
-  appointmentDate: Date;
+  paymentMethod: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -22,7 +22,7 @@ const AppointmentSchema: Schema<AppointmentInterface> = new Schema(
     amount: { type: Number, required: true },
     status: { type: String, required: true, default: "booked" },
     paymentStatus: { type: String, required: true },
-    appointmentDate: { type: Date, required: true }, // remove 
+    paymentMethod: { type: String, required: true , default: "Pay-U"},
   },
   {
     timestamps: true,

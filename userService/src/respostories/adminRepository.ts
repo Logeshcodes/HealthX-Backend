@@ -1,6 +1,3 @@
-import { AdminBaseRepository } from "./baseRepository/adminBaseRepository";
-
-import DepartmentModel , {DepartmentInterface} from "../models/departmentModel";
 import { BannerInterface } from "../models/bannerModel";
 import { IAdminRepository } from "./interface/IAdminRepository";
 
@@ -15,11 +12,8 @@ export default class AdminRepository implements IAdminRepository{
     }
 
 
-
-
     async createDepartment(departmentName : string) {
-        const response =  await this.adminBaseRepository.createDepartment(departmentName)
-        return response ;
+        return await this.adminBaseRepository.createDepartment(departmentName);
     }
 
     async findDepartmentByName(departmentName : string) {

@@ -11,10 +11,6 @@ export class DoctorController implements IDoctorController {
   }
 
   public async addDoctor(payload: DoctorInterface): Promise<void> {
-    try {
-      let response = await this.doctorService.createDoctor(payload);
-    } catch (error) {
-      console.log(error);
-    }
+       await this.doctorService.createDoctor(payload);
   }
 }

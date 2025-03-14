@@ -26,7 +26,6 @@ export interface UserInterface extends Document{
     role: string ,
     profilePicture? : string ,
     authenticationMethod : string , 
-    isVerified : boolean ,
     isBlocked : boolean ,
     createdAt?: Date ,
     updatedAt? : Date ,
@@ -47,9 +46,8 @@ const UserSchema : Schema<UserInterface> = new Schema({
     mobileNumber : { type : Number , required : false , unique : true },
     hashedPassword : { type : String , required : true },
     role : { type : String , required : false , default : 'User' },
-    profilePicture : { type : String , required : false , default : 'No Picture' },
+    profilePicture : { type : String , required : false  },
     authenticationMethod : { type : String , required : false , default : 'Password' },
-    isVerified : { type : Boolean , required : true , default : false },
     isBlocked : { type : Boolean , required : true , default : false },
     wallet: {
         balance: { type: Number, required: true, default: 0 },

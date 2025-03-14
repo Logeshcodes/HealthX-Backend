@@ -1,23 +1,16 @@
-import express,{Application , Request ,Response} from "express"
+import express,{Application} from "express"
 import cookieParser from 'cookie-parser';
 import { config } from 'dotenv';
 import connectDB from "./config/db";
 import cors from 'cors'
-
 import morgan from 'morgan'
-
 
 import verificationRoutes from "./routes/verificationRoutes";
 
-
-config()
-
-
-
+config();
 
 let app:Application=express()
 const PORT:number=Number(process.env.port)||5004
-
 
 const corsOptions = {
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
@@ -34,16 +27,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan('dev'))
 
-
 app.use('/doctor',verificationRoutes)
-
-
 
 app.use((req, res, next) => {
     console.log(`LOGGING 📝 : ${req.method} request to: ${req.originalUrl}`);
     next(); 
 });
-
 
 const start = async() => {
     await connectDB()
