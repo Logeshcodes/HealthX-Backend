@@ -81,7 +81,7 @@ export default class UserController implements IUserController  {
       const transactions = userDetails?.wallet.transactions ?? [];
 
       const description = `Cancelled Appointment Id : ${appointmentId}`;
-      const refundAmount = type === "credit" ? amount * 0.9 : amount; 
+      const refundAmount = type === "credit" ? amount * 0.8 : amount; 
 
       const newTransaction = {amount: refundAmount,description,transactionId,type,date: new Date()};
       const newBalance = type === "debit"? userDetails.wallet.balance - amount: userDetails.wallet.balance + refundAmount;
@@ -98,23 +98,28 @@ export default class UserController implements IUserController  {
   async updateWalletBookAppointment( data: WalletData): Promise <void>{
     try {
       const { userId , appointmentId , transactionId, amount , type } = data ;
+
+      console.log("user side update agala : " ,  userId , appointmentId , transactionId, amount , type)
       if (!userId) {
         throw new Error("User ID is required");
       }
       const userDetails = await UserModel.findById({ _id : userId}) ;
+      console.log("user irukaru : " ,  userDetails)
       if (!userDetails){
         throw new Error(ResponseError.USER_NOT_FOUND);
       }
       const transactions = userDetails?.wallet.transactions ?? [];
 
       const description = `Booked Appointment Id : ${appointmentId}`;
-      const refundAmount = type === "credit" ? amount * 0.9 : amount; 
+      const refundAmount =  amount; 
 
       const newTransaction = {amount: refundAmount,description,transactionId,type,date: new Date()};
-      const newBalance = type === "debit"? userDetails.wallet.balance - amount: userDetails.wallet.balance + refundAmount;
+      const newBalance = userDetails.wallet.balance - amount
       const walletDetails = {balance: newBalance,transactions: [...transactions, newTransaction],
     };
-    await this.userService.updateWallet( userId, walletDetails);
+    let response = await this.userService.updateWallet( userId, walletDetails);
+
+    console.log("update agitucha solu : " , response)
 
     } catch (error) {
       console.log(error);

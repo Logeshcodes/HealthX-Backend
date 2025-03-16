@@ -44,13 +44,13 @@ export class DoctorController implements IDoctorController {
       }
       const transactions = doctorDetails?.wallet.transactions ?? [];
       const description = `Cancelled Appointment Id : ${appointmentId}`;
-      const refundAmount = type === "credit" ? amount * 0.1 : amount;
+      const refundAmount = type === "credit" ? amount * 0.1 : amount * 0.8;
 
       const newTransaction = {amount: refundAmount,description,transactionId, type, date: new Date()};
 
       const newBalance =
         type === "debit"
-          ? doctorDetails.wallet.balance - amount
+          ? doctorDetails.wallet.balance - refundAmount
           : doctorDetails.wallet.balance + refundAmount;
 
       const walletDetails = {
@@ -82,13 +82,13 @@ export class DoctorController implements IDoctorController {
       }
       const transactions = doctorDetails?.wallet.transactions ?? [];
       const description = `Booked Appointment Id : ${appointmentId}`;
-      const Amount = type === "credit" ? amount  : amount* 0.1;
+      const Amount = type === "credit" ? amount* 0.9  : amount* 0.8;
 
       const newTransaction = {amount: Amount,description,transactionId, type, date: new Date()};
 
       const newBalance =
         type === "debit"
-          ? doctorDetails.wallet.balance - amount
+          ? doctorDetails.wallet.balance - Amount
           : doctorDetails.wallet.balance + Amount;
 
       const walletDetails = {

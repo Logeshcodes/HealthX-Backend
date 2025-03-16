@@ -64,7 +64,6 @@ router.get(
 
 router.get(
   "/doctor/:doctorId",
-
   userController.getDoctorDetails.bind(userController)
 );
 

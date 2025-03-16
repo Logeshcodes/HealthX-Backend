@@ -329,7 +329,7 @@ export class DoctorController implements IDoctorController {
                         },
                         totalEarnings: {
                             $sum: {
-                                $cond: [{ $lt: ["$appointmentDate", today] }, "$amount", 0],
+                                $cond: [{$or : [{ $lt: ["$appointmentDate", today] },{$eq: ["$status", "completed"]}]}, "$amount", 0],
                             },
                         },
                     },

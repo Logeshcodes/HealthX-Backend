@@ -27,4 +27,6 @@ export interface IAdminBaseRepository{
     getAllBanner(): Promise<BannerInterface[] | null | undefined>
     getAllReport(page: number, limit: number, search: string): Promise<ReportResponse>
 
+    updateWallet( wallet : any) : Promise <void>;
+
 }

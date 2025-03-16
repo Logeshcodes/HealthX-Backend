@@ -5,6 +5,8 @@ import { IAdminController } from "./interface/IAdminController";
 import { IAdminService } from "../services/interface/IAdminservice";
 import { StatusCode } from '../utils/enum';
 import { ResponseError } from '../utils/constants';
+import { WalletData } from "../types/walletType";
+import AdminModel from "../models/adminModel";
 
 
 export default class AdminController implements IAdminController {
@@ -485,6 +487,41 @@ async getAllReport(req: Request, res: Response): Promise<any> {
   }
 }
 
+
+
+  async updateWalletBookAppointment(data: WalletData): Promise<void> {
+    try {
+      console.log("update- admin wallet data", data);
+      const { doctorId , userId , appointmentId, transactionId, amount, type } = data;
+
+      if (!doctorId) {
+        throw new Error("Doctor ID is required");
+      }
+
+      const adminDetails = await AdminModel.findOne({email : "admin@gmail.com"})
+
+      if (!adminDetails) {
+        throw new Error("No admin details not found");
+      }
+      const transactions = adminDetails?.wallet.transactions ?? [];
+      const description = `Booked Appointment Id : ${appointmentId}`;
+      const Amount = amount* 0.1 ;
+
+      const newTransaction = {amount: Amount,description,transactionId, type, date: new Date()};
+
+      const newBalance = adminDetails.wallet.balance + Amount;
+      const walletDetails = {
+        balance: newBalance,
+        transactions: [...transactions, newTransaction],
+      };
+
+      console.log("Updated admin Wallet Data:", walletDetails);
+
+      await this.adminService.updateWallet( walletDetails);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
 

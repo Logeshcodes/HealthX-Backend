@@ -170,7 +170,6 @@ export class UserController implements IUserController {
         amount: amount,
         paymentStatus: "success",
         paymentMethod : "Wallet",
-        appointmentDate: slot.date,
       });
 
       const response = await appointment.save();
@@ -190,6 +189,15 @@ export class UserController implements IUserController {
 
 
         await produce("update-bookAppointment-doctor-wallet", {
+          appointmentId: response._id,
+          transactionId: appointment?.paymentId,
+          amount: appointment?.amount,
+          userId: patientId,
+          doctorId,
+          type: "credit",
+        });
+
+        await produce("update-bookAppointment-admin-wallet", {
           appointmentId: response._id,
           transactionId: appointment?.paymentId,
           amount: appointment?.amount,
@@ -250,7 +258,27 @@ export class UserController implements IUserController {
       const response = await appointment.save();
 
       if(response){
+
+        await produce("update-bookAppointment-user-wallet", {
+          appointmentId: response._id,
+          transactionId: appointment?.paymentId,
+          amount: appointment?.amount,
+          userId : udf1,
+          doctorId :udf2 ,
+          type: "debit",
+        });
+
+
         await produce("update-bookAppointment-doctor-wallet", {
+          appointmentId: response._id,
+          transactionId: appointment?.paymentId,
+          amount: appointment?.amount,
+          userId : udf1,
+          doctorId :udf2 ,
+          type: "credit",
+        });
+
+        await produce("update-bookAppointment-admin-wallet", {
           appointmentId: response._id,
           transactionId: appointment?.paymentId,
           amount: appointment?.amount,
@@ -417,7 +445,7 @@ export class UserController implements IUserController {
             },
             totalEarnings: {
               $sum: {
-                $cond: [{ $lt: ["$appointmentDate", today] }, "$amount", 0],
+                $cond: [{$or : [{ $lt: ["$appointmentDate", today] },{$eq: ["$status", "completed"]}]} , "$amount", 0],
               },
             },
           },
@@ -476,7 +504,7 @@ export class UserController implements IUserController {
         amount: appointment?.amount,
         userId,
         doctorId,
-        type: "credit",
+        type: "debit",
       });
 
       if (response) {

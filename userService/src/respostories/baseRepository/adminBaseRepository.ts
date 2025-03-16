@@ -7,6 +7,7 @@ import { IAdminBaseRepository } from "./interface/IAdminBaseRepository";
 import BannerModel, { BannerInterface } from "../../models/bannerModel";
 import ReportModel, { ReportInterface } from "../../models/reportModel";
 import { ReportResponse } from "../../types/reportType";
+import AdminModel from "../../models/adminModel";
 
 export class AdminBaseRepository implements IAdminBaseRepository {
 
@@ -122,6 +123,32 @@ export class AdminBaseRepository implements IAdminBaseRepository {
           throw error;
         }
       }
+
+      public async updateWallet(data: any): Promise<any> {
+        try {
+            const email = "admin@gmail.com";
+            console.log(email, data, " data details");
+    
+            const response = await AdminModel.findOneAndUpdate(
+                { email },
+                {
+                    $set: {
+                      
+                        "wallet.balance": data.balance,
+                        "wallet.transactions": data.transactions,
+                    }
+                },
+                { new: true }
+            );
+    
+            console.log('confirm response admin:', response);
+            return response;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+    
 
       public async getDepartmentByName( departmentName: string): Promise<any> {
         try {

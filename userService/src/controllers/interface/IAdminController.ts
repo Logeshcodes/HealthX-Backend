@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { DepartmentInterface } from "../../models/departmentModel";
-import { DoctorInterface } from "../../models/doctorModel";
-import { BannerInterface } from "../../models/bannerModel";
+import { WalletData } from "../../types/walletType";
 
 export interface IAdminController{
+
+
+    updateWalletBookAppointment( data: WalletData): Promise<void>;
 
     createDepartment(req : Request , res : Response) : Promise<void> ;
     getAllDepartments(req : Request , res : Response) : Promise<void> ;

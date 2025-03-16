@@ -14,6 +14,9 @@ import { DoctorController } from "../controllers/DoctorController";
 import { DoctorServices } from "../services/doctorService";
 import { DoctorRepository } from "../respostories/doctorRepository";
 
+import { AdminController } from "../controllers/AdminController";
+import { IAdminController } from "../controllers/interface/IAdminController";
+
 
 const userRepository : IUserRepository = new UserRepository() ;
 const userService : IUserService = new UserServices(userRepository) ;
@@ -23,4 +26,7 @@ const doctorRepository : IDoctorRepository = new DoctorRepository() ;
 const doctorService : IDoctorService = new DoctorServices(doctorRepository) ;
 const doctorController : IDoctorController = new DoctorController(doctorService);
 
-export {  doctorController , userController}
+
+const adminController : IAdminController = new AdminController();
+
+export {  doctorController , userController , adminController}

@@ -53,6 +53,9 @@ export default class AdminRepository implements IAdminRepository{
         }
     }
     
+    async updateWallet( wallet : any ): Promise <void>{
+        await this.adminBaseRepository.updateWallet(wallet);
+    }
       
 
     public async updateProfile(email:string,data:any): Promise<any> {

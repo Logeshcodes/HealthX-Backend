@@ -21,8 +21,11 @@ export class UserRepository extends GenericRespository<UserInterface> implements
     }
 
     async updateWallet(userId : string , wallet : any ): Promise <UserInterface | null | undefined>{
-        return await this.findIdAndUpdate( userId ,  {data : wallet });
+        console.log("Updating wallet for user:", userId, "with data:", wallet); 
+        return await this.findIdAndUpdate(userId, wallet);
     }
+    
+    
     
     async getUserData(email:string):   Promise <UserInterface | null | undefined>{
         try {

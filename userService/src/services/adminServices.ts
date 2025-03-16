@@ -37,6 +37,12 @@ export default class AdminService implements IAdminService{
 
 
 
+    public async updateWallet( wallet : any): Promise <void>{
+      await this.adminRepository.updateWallet( wallet);  
+  }
+
+
+
       
     async updateProfile(email : string, data: any): Promise<UserInterface | null | undefined > {
         try {

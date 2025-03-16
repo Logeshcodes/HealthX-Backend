@@ -1,5 +1,5 @@
 import kafka from "./kafkaConfig";
-import { userController , doctorController } from "../dependencyInjector";
+import { userController , doctorController , adminController } from "../dependencyInjector";
 
 async function consume() {
   
@@ -22,6 +22,7 @@ async function consume() {
 
         "update-bookAppointment-user-wallet",
         "update-bookAppointment-doctor-wallet",
+        "update-bookAppointment-admin-wallet",
 
         "update-cancelAppointment-user-wallet",
         "update-cancelAppointment-doctor-wallet",
@@ -64,10 +65,10 @@ async function consume() {
               break;
 
               //doctor
-              case "add-doctor":
-                await doctorController.addDoctor(messageValue);
-                console.log("Processed add-doctor event:", messageValue);
-                break;
+            case "add-doctor":
+              await doctorController.addDoctor(messageValue);
+              console.log("Processed add-doctor event:", messageValue);
+              break;
 
             case "password-reset-doctor":
               await doctorController.passwordReset(messageValue);
@@ -97,6 +98,13 @@ async function consume() {
             case "update-bookAppointment-doctor-wallet":
               await doctorController.updateWalletBookAppointment(messageValue);
               console.log("Processing update-bookAppointment-doctor-wallet event:", messageValue);
+              break;
+
+            // Admin 
+
+            case "update-bookAppointment-admin-wallet":
+              await adminController.updateWalletBookAppointment(messageValue);
+              console.log("Processing update-bookAppointment-admin-wallet event:", messageValue);
               break;
 
             default:
