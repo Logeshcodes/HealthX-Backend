@@ -4,6 +4,7 @@ import DepartmentModel, { DepartmentInterface } from "../models/departmentModel"
 import BannerModel, { BannerInterface } from "../models/bannerModel";
 import { IUserRepository } from "./interface/IUserRepository";
 import { GenericRespository } from "./GenericRepository.ts/GenericRepository"
+import ReportModel, { ReportInterface } from "../models/reportModel";
 
 export class UserRepository extends GenericRespository<UserInterface> implements IUserRepository{
 
@@ -26,6 +27,15 @@ export class UserRepository extends GenericRespository<UserInterface> implements
     async getUserData(email:string):   Promise <UserInterface | null | undefined>{
         try {
             return await this.findOne({email}); 
+        } catch (error) {
+            throw error ;
+        }
+    }
+
+    async createReport(doctorId:string , userId :string,  reportType:string , description:string):   Promise <ReportInterface | null | undefined>{
+        try {
+            return await ReportModel.create({doctorId, userId,reportType,description,
+            });
         } catch (error) {
             throw error ;
         }

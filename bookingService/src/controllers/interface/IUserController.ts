@@ -16,6 +16,8 @@ export interface IUserController {
     paymentSuccess(req : Request , res : Response): Promise <any> ;
     paymentFailure(req : Request , res : Response): Promise <any> ;
     getAllAppointmentDetails(req: Request, res: Response): Promise<void> 
+    getDoctorDetails( req : Request , res : Response) : Promise <void> ;
+    getPrescriptionById( req : Request , res : Response) : Promise <void> ;
     getAppointmentDetails(req :Request , res : Response ) : Promise < any>;
     cancelAppointment(req : Request , res : Response): Promise <any> ;
   

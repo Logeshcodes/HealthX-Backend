@@ -7,7 +7,8 @@ export interface IDoctorController {
 
     addDoctor(payload : DoctorInterface): Promise<void>;
     passwordReset(data : any ) : Promise<void> ;
-    updateWallet( data: WalletData): Promise<void>;
+    updateWalletCancelAppointmnet( data: WalletData): Promise<void>;
+    updateWalletBookAppointment( data: WalletData): Promise<void>;
 
     getDoctor( req : Request , res : Response) : Promise<void> ;
     updateProfile( req : Request , res : Response) : Promise<void> ;

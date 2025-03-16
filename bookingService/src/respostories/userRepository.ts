@@ -2,6 +2,7 @@ import SlotModel, { SlotInterface } from "../models/slotModel";
 import UserModel, { UserInterface } from "../models/userModel";
 import { IUserRepository } from "./interface/IUserRepository";
 import { GenericRespository } from "./GenericRepository.ts/GenericRepository"
+import DoctorModel, { DoctorInterface } from "../models/doctorModel";
 
 export class UserRepository extends GenericRespository<UserInterface> implements IUserRepository{
 
@@ -23,6 +24,14 @@ export class UserRepository extends GenericRespository<UserInterface> implements
                 return await this.findIdAndUpdate(id , {status : status});
             } catch (error) {
                 throw error;
+            }
+        }
+
+        async getDoctorDetails(doctorId:string) : Promise<DoctorInterface | null | undefined>{
+            try {
+                return await DoctorModel.findById({_id : doctorId});
+            } catch (error) {
+                throw error ;
             }
         }
 

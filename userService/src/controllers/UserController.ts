@@ -11,6 +11,7 @@ import { config } from 'dotenv';
 
 import { StatusCode } from '../utils/enum';
 import { ResponseError } from '../utils/constants';
+import { ReportInterface } from "../models/reportModel";
 
 config()
 
@@ -26,6 +27,40 @@ export default class UserController implements IUserController  {
   public async addUser(payload: UserInterface): Promise<void> {
     await this.userService.createUser(payload);
   }
+
+
+  public async addReport(req: Request, res: Response): Promise<void> {
+    
+    try {
+
+
+      const { doctorId , userId ,  reportType , description} = req.body;
+      // const { payload} = req.body;
+
+
+      const response = await this.userService.createReport(doctorId , userId ,  reportType , description);
+
+      if (response) {
+        
+        res.status(StatusCode.OK).json({
+          success: true,
+          message: ResponseError.REPORT_ADDED,
+        });
+      } else {
+        res.json({
+          success: false,
+          message: ResponseError.NOT_FOUND,
+        });
+      }
+      
+    } catch (error) {
+      console.log(error);
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: ResponseError.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
     
   async passwordReset(data:{email : string , hashedPassword : string}): Promise<void>{
     const { email , hashedPassword } = data ;
@@ -33,10 +68,13 @@ export default class UserController implements IUserController  {
   }
 
   
-  async updateWallet( data: WalletData): Promise <void>{
+  async updateWalletCancelAppointment( data: WalletData): Promise <void>{
     try {
-      const { id , appointmentId , transactionId, amount , type } = data ;
-      const userDetails = await UserModel.findById({ _id : id}) ;
+      const { userId , appointmentId , transactionId, amount , type } = data ;
+      if (!userId) {
+        throw new Error("User ID is required");
+      }
+      const userDetails = await UserModel.findById({ _id : userId}) ;
       if (!userDetails){
         throw new Error(ResponseError.USER_NOT_FOUND);
       }
@@ -49,7 +87,34 @@ export default class UserController implements IUserController  {
       const newBalance = type === "debit"? userDetails.wallet.balance - amount: userDetails.wallet.balance + refundAmount;
       const walletDetails = {balance: newBalance,transactions: [...transactions, newTransaction],
     };
-    await this.userService.updateWallet(id, walletDetails);
+    await this.userService.updateWallet( userId, walletDetails);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  async updateWalletBookAppointment( data: WalletData): Promise <void>{
+    try {
+      const { userId , appointmentId , transactionId, amount , type } = data ;
+      if (!userId) {
+        throw new Error("User ID is required");
+      }
+      const userDetails = await UserModel.findById({ _id : userId}) ;
+      if (!userDetails){
+        throw new Error(ResponseError.USER_NOT_FOUND);
+      }
+      const transactions = userDetails?.wallet.transactions ?? [];
+
+      const description = `Booked Appointment Id : ${appointmentId}`;
+      const refundAmount = type === "credit" ? amount * 0.9 : amount; 
+
+      const newTransaction = {amount: refundAmount,description,transactionId,type,date: new Date()};
+      const newBalance = type === "debit"? userDetails.wallet.balance - amount: userDetails.wallet.balance + refundAmount;
+      const walletDetails = {balance: newBalance,transactions: [...transactions, newTransaction],
+    };
+    await this.userService.updateWallet( userId, walletDetails);
 
     } catch (error) {
       console.log(error);

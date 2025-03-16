@@ -28,12 +28,16 @@ export class DoctorController implements IDoctorController {
     await this.doctorService.updatePassword(email, password);
   }
 
-  async updateWallet(data: WalletData): Promise<void> {
+  async updateWalletCancelAppointmnet(data: WalletData): Promise<void> {
     try {
       console.log("update- doctor wallet data", data);
-      const { id, appointmentId, transactionId, amount, type } = data;
+      const {  doctorId, appointmentId, transactionId, amount, type } = data;
 
-      const doctorDetails = await DoctorModel.findById({ _id: id });
+      if (!doctorId) {
+        throw new Error("Doctor ID is required");
+      }
+
+      const doctorDetails = await DoctorModel.findById({ _id: doctorId });
 
       if (!doctorDetails) {
         throw new Error("No doctor details not found");
@@ -56,7 +60,45 @@ export class DoctorController implements IDoctorController {
 
       console.log("Updated Wallet Data:", walletDetails);
 
-      await this.doctorService.updateWallet(id, walletDetails);
+      await this.doctorService.updateWallet( doctorId, walletDetails);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async updateWalletBookAppointment(data: WalletData): Promise<void> {
+    try {
+      console.log("update- doctor wallet data", data);
+      const { doctorId , appointmentId, transactionId, amount, type } = data;
+
+      if (!doctorId) {
+        throw new Error("Doctor ID is required");
+      }
+
+      const doctorDetails = await DoctorModel.findById({ _id: doctorId });
+
+      if (!doctorDetails) {
+        throw new Error("No doctor details not found");
+      }
+      const transactions = doctorDetails?.wallet.transactions ?? [];
+      const description = `Booked Appointment Id : ${appointmentId}`;
+      const Amount = type === "credit" ? amount  : amount* 0.1;
+
+      const newTransaction = {amount: Amount,description,transactionId, type, date: new Date()};
+
+      const newBalance =
+        type === "debit"
+          ? doctorDetails.wallet.balance - amount
+          : doctorDetails.wallet.balance + Amount;
+
+      const walletDetails = {
+        balance: newBalance,
+        transactions: [...transactions, newTransaction],
+      };
+
+      console.log("Updated Wallet Data:", walletDetails);
+
+      await this.doctorService.updateWallet( doctorId, walletDetails);
     } catch (error) {
       console.log(error);
     }

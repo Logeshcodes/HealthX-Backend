@@ -7,6 +7,7 @@ import { IUserRepository } from "../respostories/interface/IUserRepository"
 
 import { AppointmentInterface } from "../models/appointmentModel"
 import { UserInterface } from "../models/userModel"
+import { DoctorInterface } from "../models/doctorModel"
 
 
 export class UserServices implements IUserService{
@@ -47,6 +48,13 @@ export class UserServices implements IUserService{
     }
 
 
+    public async getDoctorDetails(doctorId:string): Promise <DoctorInterface | null | undefined>{
+            try {
+                return await this.userRepository.getDoctorDetails(doctorId);
+            } catch (error) {
+                console.log(error);
+            }
+    }
   
 
     public async cancelAppointment(id: string , status : string): Promise<AppointmentInterface | null | undefined>{

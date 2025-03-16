@@ -22,6 +22,14 @@ router.post(
   userController.updateProfile.bind(userController)
 );
 
+router.post(
+  "/addReport",
+  IsUser,
+  authenticateToken,
+  IsUserBlocked,
+  userController.addReport.bind(userController)
+);
+
 // profile
 router.get(
   "/:email",

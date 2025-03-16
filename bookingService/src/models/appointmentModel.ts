@@ -7,6 +7,7 @@ export interface AppointmentInterface extends Document {
   paymentId: string;
   amount: number;
   status: string;
+  prescriptionStatus : boolean;
   paymentStatus: string;
   paymentMethod: string;
   createdAt?: Date;
@@ -21,6 +22,7 @@ const AppointmentSchema: Schema<AppointmentInterface> = new Schema(
     paymentId: { type: String, required: true },
     amount: { type: Number, required: true },
     status: { type: String, required: true, default: "booked" },
+    prescriptionStatus :{type: Boolean, required: true, default: false},
     paymentStatus: { type: String, required: true },
     paymentMethod: { type: String, required: true , default: "Pay-U"},
   },

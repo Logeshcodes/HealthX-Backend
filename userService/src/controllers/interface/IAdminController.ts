@@ -23,5 +23,6 @@ export interface IAdminController{
 
     addBanner( req : Request , res : Response) : Promise <void> ;
        
-    getAllBanner (req : Request , res : Response) : Promise<void> 
+    getAllBanner (req : Request , res : Response) : Promise<void> ;
+    getAllReport (req : Request , res : Response) : Promise<void> ;
 }

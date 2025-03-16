@@ -113,5 +113,13 @@ router.put(
   );
   
 
+
+  router.get(
+    "/getAllReports",
+    IsAdmin,
+    authenticateToken,
+    adminController.getAllReport.bind(adminController)
+  );
+
 const adminRoutes = router;
 export default adminRoutes;

@@ -2,6 +2,7 @@ import { UserInterface } from "../../models/userModel";
 import { DoctorInterface } from "../../models/doctorModel";
 import { DepartmentInterface } from "../../models/departmentModel";
 import { BannerInterface } from "../../models/bannerModel";
+import { ReportInterface } from "../../models/reportModel";
 
 export interface IUserRepository{
 
@@ -16,7 +17,7 @@ export interface IUserRepository{
     findAllBanners(): Promise <BannerInterface[] | null | undefined> ;
     findAllDoctors(): Promise <DoctorInterface[] | null | undefined> ;
     findAllDepartment(): Promise <DepartmentInterface[] | null | undefined> ;
-
+    createReport(doctorId:string , userId :string,  reportType:string , description:string): Promise<ReportInterface| null | undefined>;
 
 
 }

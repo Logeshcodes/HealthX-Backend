@@ -4,6 +4,7 @@ import { DoctorInterface } from "../models/doctorModel"
 import { BannerInterface } from "../models/bannerModel"
 import { IUserService } from "./interface/IUserService"
 import { IUserRepository } from "../respostories/interface/IUserRepository"
+import { ReportInterface } from "../models/reportModel"
 
 
 
@@ -30,6 +31,16 @@ export default class UserServices implements IUserService{
     public async getUserData(email:string): Promise<UserInterface | undefined | null> {
         try {
             return await this.userRepository.getUserData(email);
+        } catch (error) {
+            console.log(error)
+            
+        }
+    }
+
+    public async createReport(doctorId:string , userId :string,  reportType:string , description:string): Promise<ReportInterface| null | undefined> {
+        try {
+
+            return await this.userRepository.createReport(doctorId , userId ,  reportType , description);
         } catch (error) {
             console.log(error)
             

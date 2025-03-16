@@ -179,6 +179,11 @@ export class DoctorController implements IDoctorController {
             diagnosis,
             notes,
           });
+
+
+          if(newPrescription){
+              await AppointmentModel.findByIdAndUpdate({_id : appointmentId}, { $set : {status : "completed" , prescriptionStatus : true}});
+          }
     
           res.status(StatusCode.CREATED).json({
             success: true,
@@ -246,11 +251,17 @@ export class DoctorController implements IDoctorController {
                 {
                   $match: {
                     ...(activeTab === "upcoming" && {
-                      appointmentDate: { $gte: today },
+                      $and: [
+                        { appointmentDate: { $gte: today } },
+                        { status: "booked" }
+                      ],
                       status: { $ne: "cancelled" },
                     }),
                     ...(activeTab === "past" && {
-                      appointmentDate: { $lt: today },
+                      $or: [
+                        { appointmentDate: { $lt: today } },
+                        { status: "completed" }
+                      ],
                       status: { $ne: "cancelled" },
                     }),
                     ...(activeTab === "cancelled" && {
@@ -258,6 +269,7 @@ export class DoctorController implements IDoctorController {
                     }),
                   },
                 },
+                {$sort : {appointmentDate : 1}},
                 { $skip: skip },
                 { $limit: limitNum },
            
@@ -280,7 +292,7 @@ export class DoctorController implements IDoctorController {
                 { $unwind: "$slotDetails" },
                 {
                     $addFields: {
-                        appointmentDate: { $toDate: "$slotDetails.date" }, // Use date from timeslots
+                        appointmentDate: { $toDate: "$slotDetails.date" }, 
                     },
                 },
                 {
@@ -292,7 +304,7 @@ export class DoctorController implements IDoctorController {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $gte: ["$appointmentDate", today] },
+                                            {$and : [{ $gte: ["$appointmentDate", today] },{$ne: ["$status", "completed"]}]},
                                             { $ne: ["$status", "cancelled"] },
                                         ],
                                     },
@@ -306,7 +318,7 @@ export class DoctorController implements IDoctorController {
                                 $cond: [
                                     {
                                         $and: [
-                                            { $lt: ["$appointmentDate", today] },
+                                            {$or : [{ $lt: ["$appointmentDate", today] },{$eq: ["$status", "completed"]}]},
                                             { $ne: ["$status", "cancelled"] },
                                         ],
                                     },

@@ -3,6 +3,8 @@ import { IAdminRepository } from "./interface/IAdminRepository";
 
 import { IAdminBaseRepository } from "./baseRepository/interface/IAdminBaseRepository";
 
+import { ReportResponse } from "../types/reportType";
+
 export default class AdminRepository implements IAdminRepository{
 
     private adminBaseRepository : IAdminBaseRepository
@@ -41,6 +43,16 @@ export default class AdminRepository implements IAdminRepository{
         const response = await this.adminBaseRepository.getAllDoctors();
         return response;
       }
+
+
+      async getAllReport(page: number, limit: number, search: string): Promise<ReportResponse> {
+        try {
+            return await this.adminBaseRepository.getAllReport(page, limit, search);
+        } catch (error) {
+            throw error;
+        }
+    }
+    
       
 
     public async updateProfile(email:string,data:any): Promise<any> {

@@ -1,5 +1,6 @@
 export interface WalletData {
-    id : string ,
+    doctorId?: string ,
+    userId?: string ,
     appointmentId : string ,
     transactionId : string ,  
     amount : number , 

@@ -44,5 +44,7 @@ export const ResponseError = {
     DOCTOR_REVIEWS_FETCHED: "Doctor reviews retrieved successfully.",
     REVIEW_EXIST :"Review Already Exists",
 
+    REPORT_ADDED : 'Report Doctor Successfully',
+    FETCH_REPORTS : "Report Fetched..."
 
 };

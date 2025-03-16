@@ -1,11 +1,10 @@
-import AdminRepository from "../respostories/adminRepository";
-
-import DepartmentModel , {DepartmentInterface} from "../models/departmentModel";
+import  {DepartmentInterface} from "../models/departmentModel";
 import { UserInterface } from "../models/userModel";
 import { DoctorInterface } from "../models/doctorModel";
 import { BannerInterface } from "../models/bannerModel";
 import { IAdminService } from "./interface/IAdminservice";
 import { IAdminRepository } from "../respostories/interface/IAdminRepository";
+import { ReportResponse } from "../types/reportType";
 
 export default class AdminService implements IAdminService{
 
@@ -187,7 +186,20 @@ export default class AdminService implements IAdminService{
           }
       }
 
+
+
+      public async getAllReport(page: number, limit: number, search: string): Promise<ReportResponse> {
+        try {
+            return await this.adminRepository.getAllReport(page, limit, search);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+    
+
      
+      
      
       
 

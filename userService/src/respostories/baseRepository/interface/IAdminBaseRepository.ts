@@ -2,6 +2,7 @@ import { UserInterface } from "../../../models/userModel";
 import { DoctorInterface } from "../../../models/doctorModel";
 import { DepartmentInterface } from "../../../models/departmentModel";
 import { BannerInterface } from "../../../models/bannerModel";
+import { ReportResponse } from "../../../types/reportType";
 
 export interface IAdminBaseRepository{
 
@@ -24,5 +25,6 @@ export interface IAdminBaseRepository{
 
     addBanner( payload : BannerInterface) : Promise <void> ;
     getAllBanner(): Promise<BannerInterface[] | null | undefined>
+    getAllReport(page: number, limit: number, search: string): Promise<ReportResponse>
 
 }

@@ -460,4 +460,33 @@ async getAllBanner(req: Request, res: Response): Promise<any> {
 }
 
 
+
+async getAllReport(req: Request, res: Response): Promise<any> {
+  try {
+      const { page = 1, limit = 10, search = "" } = req.query;
+
+      const pageNumber = parseInt(page as string);
+      const limitNumber = parseInt(limit as string);
+      
+      const { reports, totalPages } = await this.adminService.getAllReport(pageNumber, limitNumber, search as string);
+
+      return res.status(StatusCode.OK).json({
+          success: true,
+          message: ResponseError.FETCH_REPORTS,
+          data: reports,
+          totalPages,
+      });
+  } catch (error) {
+      console.error(error);
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+          success: false,
+          message: ResponseError.INTERNAL_SERVER_ERROR,
+      });
+  }
+}
+
+
+
+
+
 }

@@ -61,6 +61,16 @@ router.get(
   userController.getAllAppointmentDetails.bind(userController)
 );
 
+
+router.get(
+  "/doctor/:doctorId",
+
+  userController.getDoctorDetails.bind(userController)
+);
+
+router.get("/prescription/:appointmentId",userController.getPrescriptionById.bind(userController));
+
+
 const userRoutes = router;
 
 export default userRoutes;

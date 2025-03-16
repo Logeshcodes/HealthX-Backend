@@ -9,6 +9,7 @@ import produce from "../config/kafka/producer";
 
 import { StatusCode } from "../utils/enum";
 import { ResponseError } from "../utils/constants";
+import PrescriptionModel from "../models/prescriptionModel";
 
 
 export class UserController implements IUserController {
@@ -35,6 +36,50 @@ export class UserController implements IUserController {
     await SlotModel.findByIdAndUpdate(_id,{ $set: { avaliable: true } },{ new: true });
   }
 
+
+  public async getDoctorDetails(req: Request, res: Response): Promise<any> {
+    try {
+      const { doctorId } = req.params;
+      console.log(doctorId,"get user doctor Data ")
+      let response = await this.userService.getDoctorDetails(doctorId);
+       console.log(response , "Res")
+      res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  public async getPrescriptionById(req: Request, res: Response): Promise<void>{
+  
+            try {
+  
+              const { appointmentId } = req.params;
+  
+            const response = await PrescriptionModel.findOne({ appointmentId: appointmentId});
+  
+            if (response) {
+              res.json({
+                success: true,
+                message: ResponseError.RESOURCE_FOUND,
+                data: response,
+              });
+            } else {
+              res.status(StatusCode.NOT_FOUND).json({
+                success: false,
+                message: ResponseError.NOT_FOUND,
+              });
+            }
+              
+            } catch (error) {
+  
+              res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: ResponseError.INTERNAL_SERVER_ERROR ,
+              });
+            }
+  
+  }
 
   public async getSlotBooking(req: Request, res: Response): Promise<void> {
     try {
@@ -130,20 +175,40 @@ export class UserController implements IUserController {
 
       const response = await appointment.save();
 
+      if(response){
+
+
+
+        await produce("update-bookAppointment-user-wallet", {
+          appointmentId: response._id,
+          transactionId: appointment?.paymentId,
+          amount: appointment?.amount,
+          userId : patientId,
+          doctorId,
+          type: "debit",
+        });
+
+
+        await produce("update-bookAppointment-doctor-wallet", {
+          appointmentId: response._id,
+          transactionId: appointment?.paymentId,
+          amount: appointment?.amount,
+          userId: patientId,
+          doctorId,
+          type: "credit",
+        });
+      }
+
+     
+
       if (response) {
         res.json({
           success: true,
           message: "Appointment Booked Successfully...",
           data: response,
         });
-        await produce("wallet-payment-user", {
-          appointmentId: appointment._id,
-          transactionId: appointment?.paymentId,
-          amount: appointment?.amount,
-          userId: patientId,
-          type: "debit",
-        });
-        return;
+
+       
       } else {
         res.status(StatusCode.NOT_FOUND).json({
           success: false,
@@ -182,7 +247,18 @@ export class UserController implements IUserController {
         appointmentDate: slot.date,
       });
 
-      await appointment.save();
+      const response = await appointment.save();
+
+      if(response){
+        await produce("update-bookAppointment-doctor-wallet", {
+          appointmentId: response._id,
+          transactionId: appointment?.paymentId,
+          amount: appointment?.amount,
+          userId : udf1,
+          doctorId :udf2 ,
+          type: "credit",
+        });
+      }
 
       res.redirect(
         `http://localhost:3000/user/patient/payment-success/${txnid}`
@@ -266,11 +342,17 @@ export class UserController implements IUserController {
         {
           $match: {
             ...(activeTab === "upcoming" && {
-              appointmentDate: { $gte: today },
+              $and: [
+                { appointmentDate: { $gte: today } },
+                { status: "booked" }
+              ],
               status: { $ne: "cancelled" },
             }),
             ...(activeTab === "past" && {
-              appointmentDate: { $lt: today },
+              $or: [
+                { appointmentDate: { $lt: today } },
+                { status: "completed" }
+              ],
               status: { $ne: "cancelled" },
             }),
             ...(activeTab === "cancelled" && {
@@ -278,6 +360,7 @@ export class UserController implements IUserController {
             }),
           },
         },
+        {$sort : {appointmentDate : 1}},
         { $skip: skip },
         { $limit: limitNum },
     
@@ -309,7 +392,7 @@ export class UserController implements IUserController {
                 $cond: [
                   {
                     $and: [
-                      { $gte: ["$appointmentDate", today] },
+                      {$and : [{ $gte: ["$appointmentDate", today] },{$ne: ["$status", "completed"]}]},
                       { $ne: ["$status", "cancelled"] },
                     ],
                   },
@@ -323,7 +406,7 @@ export class UserController implements IUserController {
                 $cond: [
                   {
                     $and: [
-                      { $lt: ["$appointmentDate", today] },
+                      {$or : [{ $lt: ["$appointmentDate", today] },{$eq: ["$status", "completed"]}]},
                       { $ne: ["$status", "cancelled"] },
                     ],
                   },
@@ -409,4 +492,7 @@ export class UserController implements IUserController {
       }
     } catch (error) {throw error}
   }
+
+
+  
 }

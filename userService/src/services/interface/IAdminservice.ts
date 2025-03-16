@@ -1,10 +1,9 @@
-import {Request ,  Response } from "express";
-
 import { DepartmentInterface } from "../../models/departmentModel";
 import { UserInterface } from "../../models/userModel";
 import { DoctorInterface } from "../../models/doctorModel";
 import { BannerData } from "../../types/bannerType";
-import { BannerInterface } from "@/models/bannerModel";
+import { BannerInterface } from "../../models/bannerModel";
+import { ReportResponse } from "../../types/reportType";
 
 export interface IAdminService{
     
@@ -28,4 +27,6 @@ export interface IAdminService{
 
     addBanner(payload : BannerData) : Promise <any> ;
     getAllBanner() : Promise < BannerInterface[] | null | undefined> ;
+    getAllReport(page: number, limit: number, search: string) : Promise < ReportResponse> ;
+
 }

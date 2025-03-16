@@ -13,7 +13,6 @@ async function consume() {
       topics: [
         "add-user",
         "password-reset-user",
-        "wallet-payment-user",
 
         "add-doctor",
         "password-reset-doctor",
@@ -21,8 +20,12 @@ async function consume() {
         "add-slot",
         "remove-slot",
 
+        "update-bookAppointment-user-wallet",
+        "update-bookAppointment-doctor-wallet",
+
         "update-cancelAppointment-user-wallet",
         "update-cancelAppointment-doctor-wallet",
+        
       ],
       fromBeginning: true,
     });
@@ -48,14 +51,16 @@ async function consume() {
               console.log("Processing password-reset-user event:", messageValue);
               break;
 
-            case "wallet-payment-user":
-              await userController.updateWallet(messageValue);
-              console.log("Processing wallet-payment-user-appointment event:", messageValue);
-              break;
+           
               
             case "update-cancelAppointment-user-wallet":
-              await userController.updateWallet(messageValue);
+              await userController.updateWalletCancelAppointment(messageValue);
               console.log("Processing update-cancelAppointment-user-wallet event:", messageValue);
+              break;
+
+            case "update-bookAppointment-user-wallet":
+              await userController.updateWalletBookAppointment(messageValue);
+              console.log("Processing update-bookAppointment-user-wallet event:", messageValue);
               break;
 
               //doctor
@@ -85,8 +90,13 @@ async function consume() {
               break;
 
             case "update-cancelAppointment-doctor-wallet":
-              await doctorController.updateWallet(messageValue);
+              await doctorController.updateWalletCancelAppointmnet(messageValue);
               console.log("Processing update-cancelAppointment-doctor-wallet event:", messageValue);
+              break;
+
+            case "update-bookAppointment-doctor-wallet":
+              await doctorController.updateWalletBookAppointment(messageValue);
+              console.log("Processing update-bookAppointment-doctor-wallet event:", messageValue);
               break;
 
             default:

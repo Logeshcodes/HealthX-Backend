@@ -3,9 +3,10 @@ import { Document, Model } from "mongoose";
 import DepartmentModel , {DepartmentInterface} from "../../models/departmentModel"
 import UserModel , {UserInterface} from "../../models/userModel";
 import DoctorModel , {DoctorInterface} from "../../models/doctorModel"
-
 import { IAdminBaseRepository } from "./interface/IAdminBaseRepository";
 import BannerModel, { BannerInterface } from "../../models/bannerModel";
+import ReportModel, { ReportInterface } from "../../models/reportModel";
+import { ReportResponse } from "../../types/reportType";
 
 export class AdminBaseRepository implements IAdminBaseRepository {
 
@@ -52,6 +53,23 @@ export class AdminBaseRepository implements IAdminBaseRepository {
           throw error;
         }
       }
+
+      async getAllReport(page: number, limit: number, search: string): Promise<ReportResponse> {
+        try {
+            const query = search ? { reportType: { $regex: search, $options: "i" } } : {};
+            
+            const reports = await ReportModel.find(query)
+                .skip((page - 1) * limit)
+                .limit(limit);
+            
+            const totalReports = await ReportModel.countDocuments(query);
+            
+            return { reports, totalPages: Math.ceil(totalReports / limit) };
+        } catch (error) {
+            throw error;
+        }
+    }
+    
 
       async getAllUsers(): Promise<UserInterface[] | null> {
         try {

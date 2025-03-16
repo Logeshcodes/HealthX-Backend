@@ -17,7 +17,7 @@ router.delete("/slotBooking/:id",IsDoctor, authenticateToken, IsDoctorBlocked, d
 router.get("/appointments/:id",IsDoctor,authenticateToken,IsDoctorBlocked,doctorController.getAllAppointmentDetails.bind(doctorController)
 );
 
-router.get("/appointmentData/:appointmentId",IsDoctor,authenticateToken,IsDoctorBlocked,doctorController.getAppointmentById.bind(doctorController)
+router.get("/appointmentData/:appointmentId",doctorController.getAppointmentById.bind(doctorController)
 );
 
 const doctorRoutes = router;
