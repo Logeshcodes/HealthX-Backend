@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const dependencyInjector_1 = require("../config/dependencyInjector");
+let router = (0, express_1.Router)();
+router.post('/signup', dependencyInjector_1.userController.userSignUp.bind(dependencyInjector_1.userController));
+router.post('/verify_otp', dependencyInjector_1.userController.createUser.bind(dependencyInjector_1.userController));
+router.post('/resendOtp', dependencyInjector_1.userController.resendOtp.bind(dependencyInjector_1.userController));
+router.post('/googleLogin', dependencyInjector_1.userController.doGoogleLogin.bind(dependencyInjector_1.userController));
+router.post('/login', dependencyInjector_1.userController.login.bind(dependencyInjector_1.userController));
+router.post('/logout', dependencyInjector_1.userController.logout.bind(dependencyInjector_1.userController));
+router.post('/verifyEmail', dependencyInjector_1.userController.verifyEmail.bind(dependencyInjector_1.userController));
+router.post('/verifyResetOtp', dependencyInjector_1.userController.verifyResetOtp.bind(dependencyInjector_1.userController));
+router.post('/resetPassword', dependencyInjector_1.userController.resetPassword.bind(dependencyInjector_1.userController));
+router.post('/forgotResendOtp', dependencyInjector_1.userController.forgotResendOtp.bind(dependencyInjector_1.userController));
+const userRoutes = router;
+exports.default = userRoutes;

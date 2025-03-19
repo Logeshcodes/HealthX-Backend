@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: docker build -t logeshc12/healthx-verification-service:latest .
+      - run: docker build -t logeshc12/healthx-verification-service:latest ./verificationService
 
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
