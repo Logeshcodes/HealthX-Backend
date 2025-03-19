@@ -102,7 +102,7 @@ export class UserController implements IUserControllers {
   public async createUser(req: Request, res: Response): Promise<any> {
     try {
       const { otp } = req.body;
-      console.log("OTP?? : ", otp);
+      console.log("OTP details ? : ", otp);
       const token = req.headers["the-verify-token"] || "";
       console.log(token, "token???");
       if (typeof token != "string") {

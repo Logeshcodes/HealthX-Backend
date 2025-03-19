@@ -101,10 +101,7 @@ export class VerificationContoller implements IVerificationControllers {
 
       const approvedRequest = await this.verificationService.approveRequest(email,status);
       if (approvedRequest) {
-        produce("approve-reject-request", {
-          emailID: email,
-          status: approvedRequest.status,
-        });
+        produce("approve-reject-request", { emailID: email,status: approvedRequest.status});
         console.log("kafka-produces");
         if (approvedRequest.status == "approved") {
           let email = approvedRequest.email;

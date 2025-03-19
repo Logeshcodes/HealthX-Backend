@@ -34,9 +34,6 @@ export default class UserController implements IUserController  {
 
 
       const { doctorId , userId ,  reportType , description} = req.body;
-      // const { payload} = req.body;
-
-
       const response = await this.userService.createReport(doctorId , userId ,  reportType , description);
 
       if (response) {

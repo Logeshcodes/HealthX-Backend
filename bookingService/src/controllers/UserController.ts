@@ -53,9 +53,7 @@ export class UserController implements IUserController {
   public async getPrescriptionById(req: Request, res: Response): Promise<void>{
   
             try {
-  
-              const { appointmentId } = req.params;
-  
+            const { appointmentId } = req.params;
             const response = await PrescriptionModel.findOne({ appointmentId: appointmentId});
   
             if (response) {

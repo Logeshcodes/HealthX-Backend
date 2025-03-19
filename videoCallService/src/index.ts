@@ -11,7 +11,6 @@ import videoCallRoutes from "./routers/videoCallRoutes";
 import consume from "./config/kafka/consumer";
 
 config();
-
 consume();
 
 const app: Application = express();
@@ -37,6 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 // Initialize Socket.IO
+
 const io = new Server(httpServer, {
   cors: {
     origin: FRONTEND_URL,

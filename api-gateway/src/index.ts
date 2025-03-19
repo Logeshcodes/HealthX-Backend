@@ -55,7 +55,7 @@ const services = [
 
 services.forEach(({ context, path }) => {
     if (!path || !context) {
-        console.error("Invalid service configuration:", { context, path });
+        console.error("Invalid service configuration : ", { context, path });
         return;
     }
     app.use(

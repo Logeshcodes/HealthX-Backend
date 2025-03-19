@@ -43,7 +43,6 @@ export class NotificationControllers {
       const { email,username } = data;
       console.log(email,username,"mail>>>")
       await this.sendVerifiedEmail.sentEmailVerification(username,email);
-      console.log("Forgot OTP email has been sent");
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +65,7 @@ export class NotificationControllers {
       const { email } = data;
       console.log(email,"mail>>>")
       await this.sendApprovalEmail.sendApprovalDoctorEmail(email );
-      console.log("document-rejection email has been sent");
+      console.log("document-approval email has been sent");
     } catch (error) {
       console.log(error);
     }
