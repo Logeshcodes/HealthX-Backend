@@ -50,6 +50,13 @@ router.get(
   adminController.getAllDoctors.bind(adminController)
 );
 
+router.get(
+  "/getAdminData",
+  IsAdmin,
+  authenticateToken,
+  adminController.getAdminData.bind(adminController)
+);
+
 router.post(
   "/rejectDocuments/:email",
   IsAdmin,

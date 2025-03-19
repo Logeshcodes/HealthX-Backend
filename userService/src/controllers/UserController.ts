@@ -11,7 +11,6 @@ import { config } from 'dotenv';
 
 import { StatusCode } from '../utils/enum';
 import { ResponseError } from '../utils/constants';
-import { ReportInterface } from "../models/reportModel";
 
 config()
 

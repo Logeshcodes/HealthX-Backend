@@ -31,6 +31,7 @@ export const ResponseError = {
 
     FETCH_USER : "Users retrieved successfully" ,
     FETCH_DOCTOR : "Doctors retrieved successfully" ,
+    FETCH_ADMIN : "Admin retrieved successfully" ,
     FETCH_NOT_DOCTOR : "No Doctors retrieved successfully" ,
     APPROVE_DOCTOR : "Doctor Records Approved " ,
     REJECT_DOCTOR : "Doctor Records Rejected " ,

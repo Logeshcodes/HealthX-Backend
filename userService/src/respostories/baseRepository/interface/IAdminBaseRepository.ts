@@ -3,14 +3,17 @@ import { DoctorInterface } from "../../../models/doctorModel";
 import { DepartmentInterface } from "../../../models/departmentModel";
 import { BannerInterface } from "../../../models/bannerModel";
 import { ReportResponse } from "../../../types/reportType";
+import { AdminInterface } from "../../../models/adminModel";
 
 export interface IAdminBaseRepository{
 
+    createAdmin( payload : AdminInterface) : Promise <void> ;
     getAllUsers(): Promise<UserInterface[] | null>
     updateProfile(email: string, data: any): Promise<any>
     getUserData(email: string): Promise<UserInterface | null>
 
     getAllDoctors(): Promise<DoctorInterface[] | null>
+    getAdminData(): Promise<AdminInterface | null>
     updateDoctorProfile(email: string, data: any): Promise<any>
     getDoctorByEmail( email: string): Promise<any>
     getDoctorData(email: string): Promise<DoctorInterface | null>

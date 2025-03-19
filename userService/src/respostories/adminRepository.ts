@@ -4,6 +4,7 @@ import { IAdminRepository } from "./interface/IAdminRepository";
 import { IAdminBaseRepository } from "./baseRepository/interface/IAdminBaseRepository";
 
 import { ReportResponse } from "../types/reportType";
+import { AdminInterface } from "@/models/adminModel";
 
 export default class AdminRepository implements IAdminRepository{
 
@@ -11,6 +12,11 @@ export default class AdminRepository implements IAdminRepository{
 
     constructor( adminBaseRepository : IAdminBaseRepository){
         this.adminBaseRepository = adminBaseRepository
+    }
+
+
+    async createAdmin(payload: AdminInterface): Promise <void>{
+            await this.adminBaseRepository.createAdmin(payload);
     }
 
 
@@ -41,6 +47,11 @@ export default class AdminRepository implements IAdminRepository{
       
     async getAllDoctors() {
         const response = await this.adminBaseRepository.getAllDoctors();
+        return response;
+      }
+
+    async getAdminData() {
+        const response = await this.adminBaseRepository.getAdminData();
         return response;
       }
 

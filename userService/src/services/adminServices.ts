@@ -5,6 +5,7 @@ import { BannerInterface } from "../models/bannerModel";
 import { IAdminService } from "./interface/IAdminservice";
 import { IAdminRepository } from "../respostories/interface/IAdminRepository";
 import { ReportResponse } from "../types/reportType";
+import { AdminInterface } from "../models/adminModel";
 
 export default class AdminService implements IAdminService{
 
@@ -15,6 +16,9 @@ export default class AdminService implements IAdminService{
     }
 
 
+     public async createAdmin(payload:AdminInterface): Promise <void>{
+            await this.adminRepository.createAdmin(payload);
+        }
     
     async getAllDepartments(): Promise<DepartmentInterface[] | null | undefined > {
       const response = await this.adminRepository.getAllDepartments();
@@ -32,6 +36,10 @@ export default class AdminService implements IAdminService{
 
   async getAllDoctors(): Promise<DoctorInterface[] | null | undefined > {
       const response = await this.adminRepository.getAllDoctors();
+      return response;
+    }
+  async getAdminData(): Promise<AdminInterface | null | undefined > {
+      const response = await this.adminRepository.getAdminData();
       return response;
     }
 

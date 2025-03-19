@@ -11,7 +11,7 @@ import IOtpServices from "../services/interfaces/IOtpService";
 
 import { StatusCode } from "../utils/enum";
 import { ResponseError } from "../utils/constants";
-import { UserInterface } from "@/models/userModel";
+import { UserInterface } from "../models/userModel";
 
 export class UserController implements IUserControllers {
   private userService: IUserServices;

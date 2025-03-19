@@ -12,7 +12,6 @@ import { ResponseError } from "../utils/constants";
 import { StatusCode } from "../utils/enum";
 
 import produce from "../config/kafka/producer";
-import { errorCode } from "aws-sdk/clients/ivs";
 
 export default class DoctorController implements IDoctorControllers {
   private doctorService: IDoctorServices;

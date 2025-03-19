@@ -2,17 +2,21 @@ import JwtService from "../utils/jwt";
 import { Request, Response } from "express";
 
 import { config } from "dotenv";
-
+import produce from "../config/kafka/producer";
 import { ResponseError } from "../utils/constants";
 import { StatusCode } from "../utils/enum";
+import { IAdminControllers } from "./interface/IAdminControllers";
+import IAdminService from "../services/interfaces/IAdminService";
 
 config();
 
-export class AdminController {
-  private JWT: JwtService;
+export class AdminController implements IAdminControllers {
 
-  constructor() {
+  private adminService: IAdminService;
+  private JWT: JwtService;
+  constructor(adminService: IAdminService) {
     this.JWT = new JwtService();
+    this.adminService = adminService;
   }
 
   public async login(req: Request, res: Response): Promise<any> {
@@ -20,13 +24,20 @@ export class AdminController {
     const AdminPassword = process.env.ADMIN_PASSWORD || "Admin@123";
     try {
       const { email, password } = req.body;
-      if (email !== AdminEmail) {
+
+      let admin = await this.adminService.getAdminData(email);
+
+      if(!admin){
+        admin = await this.adminService.createAdmin(email, password);
+        admin && await produce("add-admin", admin);
+      }
+      else if (email !== AdminEmail) {
         return res.send({
           success: false,
           message: ResponseError.INVAILD_EMAIL,
         });
       }
-      if (password !== AdminPassword) {
+      else if (password !== AdminPassword) {
         return res.send({
           success: false,
           message: ResponseError.INVAILD_PASSWORD,

@@ -26,6 +26,8 @@ async function consume() {
 
         "update-cancelAppointment-user-wallet",
         "update-cancelAppointment-doctor-wallet",
+
+        "add-admin"
         
       ],
       fromBeginning: true,
@@ -101,6 +103,11 @@ async function consume() {
               break;
 
             // Admin 
+
+            case "add-admin":
+              await adminController.addAdmin(messageValue);
+              console.log("Processed add-admin event:", messageValue);
+              break;
 
             case "update-bookAppointment-admin-wallet":
               await adminController.updateWalletBookAppointment(messageValue);

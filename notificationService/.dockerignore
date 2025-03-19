@@ -1,0 +1,39 @@
+# Node modules and dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build and cache
+dist
+build
+.cache
+.next
+out
+.vite
+coverage
+
+# Logs and environment files
+logs
+*.log
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Git and editor-related files
+.git
+.gitignore
+.DS_Store
+.vscode
+.idea
+*.swp
+
+# Docker-related files
+.dockerignore
+Dockerfile
+docker-compose.yml

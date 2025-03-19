@@ -4,14 +4,18 @@ import { DoctorInterface } from "../../models/doctorModel";
 import { BannerData } from "../../types/bannerType";
 import { BannerInterface } from "../../models/bannerModel";
 import { ReportResponse } from "../../types/reportType";
+import { AdminInterface } from "../../models/adminModel";
 
 export interface IAdminService{
+    getAdminData(): unknown;
     
+    createAdmin( payload : AdminInterface) : Promise <void> ;
     getAllUsers() : Promise <UserInterface[] | null | undefined>
     updateProfile(email : string, data: any): Promise <UserInterface | null | undefined> ;
     getUserData(email:string) : Promise <UserInterface | null | undefined> ;
     
     getAllDoctors(): Promise <DoctorInterface[] | null | undefined>
+    getAdminData(): Promise <AdminInterface | null | undefined>
     getDoctorByEmail(email: string): Promise <DoctorInterface | null | undefined>
     updateDoctorProfile(email : string, data: any): Promise <DoctorInterface | null | undefined>;
     getDoctorData(email:string)  : Promise <DoctorInterface | null | undefined>

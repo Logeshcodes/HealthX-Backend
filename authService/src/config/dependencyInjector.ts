@@ -20,6 +20,10 @@ import IDoctorRepository from "../repositories/interfaces/IDoctorRepository"
 
 import { AdminController } from "../controllers/AdminController"
 import { IAdminControllers } from "../controllers/interface/IAdminControllers"
+import IAdminService from "../services/interfaces/IAdminService"
+import { AdminService } from "../services/AdminService"
+import IAdminRepository from "../repositories/interfaces/IAdminRespository"
+import { AdminRepository } from "../repositories/adminRespository"
 
 
 
@@ -37,7 +41,8 @@ const doctorRepository:IDoctorRepository=new DoctorRepository()
 const doctorService:IDoctorServices=new DoctorService(doctorRepository)
 const doctorController: IDoctorControllers=new DoctorController(doctorService ,otpService )
 
-
-const adminController:IAdminControllers=new AdminController()
+const adminRepository : IAdminRepository = new AdminRepository()
+const adminService : IAdminService = new AdminService(adminRepository);
+const adminController:IAdminControllers=new AdminController(adminService);
 
 export {userController ,  doctorController , adminController};

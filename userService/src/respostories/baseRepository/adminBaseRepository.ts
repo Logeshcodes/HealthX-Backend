@@ -7,10 +7,19 @@ import { IAdminBaseRepository } from "./interface/IAdminBaseRepository";
 import BannerModel, { BannerInterface } from "../../models/bannerModel";
 import ReportModel, { ReportInterface } from "../../models/reportModel";
 import { ReportResponse } from "../../types/reportType";
-import AdminModel from "../../models/adminModel";
+import AdminModel, { AdminInterface } from "../../models/adminModel";
 
 export class AdminBaseRepository implements IAdminBaseRepository {
 
+
+  async createAdmin(payload: AdminInterface): Promise<void> {
+    try {
+      await AdminModel.create(payload);
+    } catch (error) {
+      throw error;
+    }
+  }
+  
 
     async createDepartment (departmentName : string) :Promise< DepartmentInterface|null>{
 
@@ -87,6 +96,16 @@ export class AdminBaseRepository implements IAdminBaseRepository {
           const doctors = await DoctorModel.find();
           console.log("All doctors: ", doctors);
           return doctors;
+        } catch (error) {
+          throw error;
+        }
+      }
+
+      async getAdminData(): Promise<AdminInterface | null> {
+        try {
+          const admin = await AdminModel.findOne();
+          console.log("Admin data: ", admin);
+          return admin;
         } catch (error) {
           throw error;
         }

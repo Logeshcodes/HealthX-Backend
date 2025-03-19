@@ -6,7 +6,7 @@ import { IAdminService } from "../services/interface/IAdminservice";
 import { StatusCode } from '../utils/enum';
 import { ResponseError } from '../utils/constants';
 import { WalletData } from "../types/walletType";
-import AdminModel from "../models/adminModel";
+import AdminModel, { AdminInterface } from "../models/adminModel";
 
 
 export default class AdminController implements IAdminController {
@@ -16,6 +16,10 @@ export default class AdminController implements IAdminController {
   constructor(adminService :  IAdminService) {
     this.adminService = adminService ;
   }
+
+  public async addAdmin(payload: AdminInterface): Promise<void> {
+      await this.adminService.createAdmin(payload);
+    }
 
   async createDepartment(req: Request, res: Response): Promise<void> {
     try {
@@ -128,6 +132,31 @@ export default class AdminController implements IAdminController {
         return res.status(StatusCode.NOT_FOUND).json({
           success: false,
           message: ResponseError.FETCH_NOT_DOCTOR,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: ResponseError.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  async getAdminData(req: Request, res: Response): Promise<any> {
+    try {
+      const admin = await this.adminService.getAdminData();
+
+      if (admin) {
+        return res.status(StatusCode.OK).json({
+          success: true,
+          message: ResponseError.FETCH_ADMIN,
+          admin,
+        });
+      } else {
+        return res.status(StatusCode.NOT_FOUND).json({
+          success: false,
+          message: ResponseError.NOT_FOUND,
         });
       }
     } catch (error) {

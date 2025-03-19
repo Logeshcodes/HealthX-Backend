@@ -1,8 +1,8 @@
-import { AdminController } from "../controllers/AdminController";
+import { adminController } from "../config/dependencyInjector";
 import { Router } from "express";
 
 let router=Router()
-let adminController=new AdminController()
+
 
 router.post('/login',adminController.login.bind(adminController))
 router.post('/logout',adminController.logout.bind(adminController))
