@@ -1,6 +1,5 @@
 import express, { Application } from "express";
 import cookieParser from "cookie-parser";
-import { config } from "dotenv";
 import connectDB from "./config/db";
 import cors from "cors";
 import consume from "./config/kafka/consumer";
@@ -9,8 +8,13 @@ import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
 import morgan from "morgan";
+import dotenv from "dotenv";
 
-config();
+if (process.env.ENV_MODE === "production") {
+  dotenv.config({ path: ".env.production" });
+} else {
+  dotenv.config({ path: ".env.development" });
+}
 
 let app: Application = express();
 const PORT: number = Number(process.env.PORT) || 5002;

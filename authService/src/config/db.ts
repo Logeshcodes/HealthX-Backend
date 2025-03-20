@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
-import { config } from "dotenv";
+import dotenv from "dotenv";
 
-config()
+if (process.env.ENV_MODE === "production") {
+  dotenv.config({ path: ".env.production" });
+} else {
+  dotenv.config({ path: ".env.development" });
+}
 
 const connectDB = async()=>{
 

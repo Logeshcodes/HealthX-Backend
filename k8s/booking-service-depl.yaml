@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      containers:
+        - name: booking-service-container
+          image: logeshc12/healthx-booking-service:latest
+          envFrom:
+            - configMapRef:
+                name: booking-service-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-service-srv
+spec:
+  selector:
+    app: booking-service
+  ports:
+    - name: booking-service-ports
+      protocol: TCP
+      port: 5005
+      targetPort: 5005

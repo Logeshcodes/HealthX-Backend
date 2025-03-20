@@ -1,13 +1,19 @@
 import express,{Application} from "express"
 import cookieParser from 'cookie-parser';
-import { config } from 'dotenv';
 import connectDB from "./config/db";
 import cors from 'cors'
 import morgan from 'morgan'
 
 import verificationRoutes from "./routes/verificationRoutes";
 
-config();
+import dotenv from "dotenv";
+
+if (process.env.ENV_MODE === "production") {
+  dotenv.config({ path: ".env.production" });
+} else {
+  dotenv.config({ path: ".env.development" });
+}
+
 
 let app:Application=express()
 const PORT:number=Number(process.env.port)||5004

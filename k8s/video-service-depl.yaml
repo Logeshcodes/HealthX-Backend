@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-call-service-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: video-call-service
+  template:
+    metadata:
+      labels:
+        app: video-call-service
+    spec:
+      containers:
+        - name: video-call-service-container
+          image: logeshc12/healthx-video-call-service:latest
+          envFrom:
+            - configMapRef:
+                name: video-call-service-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: video-call-service-srv
+spec:
+  selector:
+    app: video-call-service
+  ports:
+    - name: video-call-service-ports
+      protocol: TCP
+      port: 5006
+      targetPort: 5006

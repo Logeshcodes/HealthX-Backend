@@ -1,13 +1,18 @@
 import express, { Application , Request ,Response , NextFunction } from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import { config } from 'dotenv'
 import morgan from "morgan" ;
 import cors from 'cors'   
 
 import { ResponseError } from './utils/constants';
 import { StatusCode } from './utils/enum';
 
-config();
+import dotenv from "dotenv";
+
+if (process.env.ENV_MODE === "production") {
+  dotenv.config({ path: ".env.production" });
+} else {
+  dotenv.config({ path: ".env.development" });
+}
 
 const {PORT, FRONTEND_URL, AUTH_URL, USER_URL ,NOTIFICATION_URL, VERIFICATION_URL , BOOKING_URL, VIDEO_CALL_URL } = process.env ;
 

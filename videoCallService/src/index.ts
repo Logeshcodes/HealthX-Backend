@@ -1,6 +1,5 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
-import { config } from "dotenv";
 import connectDB from "./config/db";
 import cors from "cors";
 import { createServer } from "http";
@@ -9,8 +8,14 @@ import { initializeSocketIO } from "./socket/app";
 import morgan from "morgan";
 import videoCallRoutes from "./routers/videoCallRoutes";
 import consume from "./config/kafka/consumer";
+import dotenv from "dotenv";
 
-config();
+if (process.env.ENV_MODE === "production") {
+  dotenv.config({ path: ".env.production" });
+} else {
+  dotenv.config({ path: ".env.development" });
+}
+
 consume();
 
 const app: Application = express();

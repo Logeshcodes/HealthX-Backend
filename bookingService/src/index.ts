@@ -1,6 +1,5 @@
 import express,{Application , Request ,Response} from "express"
 import cookieParser from 'cookie-parser';
-import { config } from 'dotenv';
 import connectDB from "./config/db"
 import cors from 'cors'
 import morgan from 'morgan'
@@ -8,7 +7,13 @@ import consume from "./config/kafka/consumer";
 import doctorRoutes from "./routes/doctorRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminRoutes from "./routes/adminRoutes";
-config()
+import dotenv from "dotenv";
+
+if (process.env.ENV_MODE === "production") {
+  dotenv.config({ path: ".env.production" });
+} else {
+  dotenv.config({ path: ".env.development" });
+}
 consume()
 
 let app:Application=express()

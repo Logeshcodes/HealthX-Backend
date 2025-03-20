@@ -5,7 +5,7 @@ on:
     branches:
       - "main"  # Use "main" if that's your default branch
     paths:
-      - "videoCall/**"  # Trigger on any change in the repository
+      - "videoCallService/**"  # Trigger on any change in the repository
 
 jobs:
   build:

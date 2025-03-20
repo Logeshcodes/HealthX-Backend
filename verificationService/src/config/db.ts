@@ -1,15 +1,22 @@
 import mongoose from "mongoose";
-import { config } from "dotenv";
-config()
+import dotenv from "dotenv";
 
-const connectDB=async()=>{
+if (process.env.ENV_MODE === "production") {
+  dotenv.config({ path: ".env.production" });
+} else {
+  dotenv.config({ path: ".env.development" });
+}
+
+const connectDB = async()=>{
+
     try {
-        console.log(process.env.MONGO_URL,"process.env.MONGO_URL")
+
+        console.log("\nprocess.env.MONGO_URL : ",process.env.MONGO_URL)
         let connect=await mongoose.connect(`${process.env.MONGO_URL}`)
-        console.log(`DB connected:${connect.connection.host}`)
+        console.log(`DB connected : ${connect.connection.host}`)
     } catch (error:any) {
-        console.log(error.message);
+        console.log("MongoDB Error : " ,error.message);
     }
 }
 
-export default connectDB ;
+export default connectDB

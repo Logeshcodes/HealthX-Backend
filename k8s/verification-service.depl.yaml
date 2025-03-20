@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: verification-service-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: verification-service
+  template:
+    metadata:
+      labels:
+        app: verification-service
+    spec:
+      containers:
+        - name: verification-service-container
+          image: logeshc12/healthx-verification-service
+          envFrom:
+            - configMapRef:
+                name: verification-service-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verification-service-srv
+spec:
+  selector:
+    app: verification-service
+  ports:
+    - name: verification-service-ports
+      protocol: TCP
+      port: 5004
+      targetPort: 5004
