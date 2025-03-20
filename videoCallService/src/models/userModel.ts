@@ -24,12 +24,9 @@ const UserSchema : Schema<UserInterface> = new Schema({
     profilePicture : { type : String , required : false  },
     authenticationMethod : { type : String , required : false , default : 'Password' },
     isBlocked : { type : Boolean , required : true , default : false },
-
-
 },{
     timestamps : true 
 })
-
 
 const UserModel = mongoose.model<UserInterface>('User' , UserSchema)
 
