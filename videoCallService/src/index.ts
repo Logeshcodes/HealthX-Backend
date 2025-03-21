@@ -22,7 +22,7 @@ const app: Application = express();
 const httpServer = createServer(app);
 
 const PORT: number = Number(process.env.PORT) || 5006;
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL = process.env.FRONTEND_URL ;
 const SERVICE = process.env.SERVICE || "Video Call Service";
 
 

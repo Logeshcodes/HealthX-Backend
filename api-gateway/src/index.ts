@@ -34,27 +34,27 @@ app.use(morgan('dev'));
 const services = [
     {
         path: AUTH_URL,
-        context: "/auth",
+        context: "/api/auth",
     },
     {
         path: USER_URL, 
-        context: "/user", 
+        context: "/api/user", 
     },
     {
         path: NOTIFICATION_URL, 
-        context: "/notification", 
+        context: "/api/notification", 
     },
     {
         path: VERIFICATION_URL, 
-        context: "/verification", 
+        context: "/api/verification", 
     },
     {
         path: BOOKING_URL, 
-        context: "/booking", 
+        context: "/api/booking", 
     },
     {
         path: VIDEO_CALL_URL , 
-        context: "/videoCall", 
+        context: "/api/videoCall", 
     },
 ];
 

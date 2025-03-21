@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-kafka-topics
+spec:
+  template:
+    spec:
+      containers:
+        - name: kafka-topic-creator
+          image: bitnami/kafka:latest
+          command:
+            - /bin/bash
+            - -c
+            - |
+              # User related topics
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic add-user
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic password-reset-user
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-password-user
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-profile-user
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic block-user
+
+              # Doctor related topics
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic add-doctor
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic password-reset-doctor
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-password-doctor
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-profile-doctor
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic block-doctor
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic verification-request
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic add-slot
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic remove-slot
+
+              # Admin related topics
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic add-admin
+
+              # Wallet related topics
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-bookAppointment-user-wallet
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-bookAppointment-doctor-wallet
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-bookAppointment-admin-wallet
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-cancelAppointment-user-wallet
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic update-cancelAppointment-doctor-wallet
+
+              # Notification related topics
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic send-otp-email
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic send-forgotPassword-email
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic verified-Doctor-email
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic document-rejection-mail
+              kafka-topics.sh --create --bootstrap-server kafka-service:9092 --replication-factor 1 --partitions 1 --topic document-approval-mail
+      restartPolicy: Never
+  backoffLimit: 4

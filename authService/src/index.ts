@@ -19,7 +19,8 @@ if (process.env.ENV_MODE === "production") {
 
 const app: Application = express();
 const PORT: number = Number(process.env.PORT);
-const FRONTEND_URL: string = process.env.FRONTEND_URL || "http://localhost:3000";
+// const FRONTEND_URL: string = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL: string = process.env.FRONTEND_URL || '*';
 const SERVICE: string = process.env.SERVICE || "Auth Service";
 
 console.log("\nEnvironment Variables:", { PORT, FRONTEND_URL, SERVICE });
