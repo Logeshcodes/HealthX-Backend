@@ -127,14 +127,12 @@
 
    kubectl apply -f kafka-zookeeper-depl.yaml
    kubectl apply -f topics-depl.yaml
-
    kubectl apply -f auth-service-depl.yaml
    kubectl apply -f user-service-depl.yaml
    kubectl apply -f booking-service-depl.yaml
    kubectl apply -f notification-service-depl.yaml
    kubectl apply -f verification-service-depl.yaml
    kubectl apply -f video-call-service-depl.yaml
-
    kubectl apply -f api-gateway-depl.yaml
    kubectl apply -f frontend-service-depl.yaml
    
