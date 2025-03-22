@@ -16,6 +16,8 @@ spec:
         - name: frontend
           image: logeshc12/frontend:latest
           imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
           envFrom:
             - configMapRef:
                 name: frontend-service-env

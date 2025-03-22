@@ -16,7 +16,7 @@
    gcloud projects list
 
 
-   gcloud container clusters get-credentials healthx-cluster-1 --region=asia-east1-c --project=healthx-second-project
+   gcloud container clusters get-credentials healthx-cluster-1 --region=asia-south1-a --project=healthx-second-project
    
  
    ```
@@ -72,7 +72,7 @@
    kubectl create configmap verification-service-env --from-env-file=.env.production
    cd ..
    cd videoCallService
-   kubectl create configmap video-call-service-srv --from-env-file=.env.production
+   kubectl create configmap video-call-service-env --from-env-file=.env.production
    cd ..
    cd api-gateway
    kubectl create configmap api-gateway-env --from-env-file=.env.production
@@ -93,7 +93,8 @@
    - Deploy Zookeeper and Kafka services
 
    ```
-   kubectl apply -f kafka-zookeeper-depl.yaml
+   kubectl apply -f zookeeper-depl.yaml
+   kubectl apply -f kafka-depl.yaml
    kubectl apply -f topics-depl.yaml
 
    ```
@@ -125,7 +126,8 @@
    ............
 
 
-   kubectl apply -f kafka-zookeeper-depl.yaml
+   kubectl apply -f zookeeper-depl.yaml
+   kubectl apply -f kafka-depl.yaml
    kubectl apply -f topics-depl.yaml
    kubectl apply -f auth-service-depl.yaml
    kubectl apply -f user-service-depl.yaml

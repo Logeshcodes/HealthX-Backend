@@ -49,6 +49,10 @@ app.use("/admin", adminRoutes);
 
 consume();
 
+app.get('/', (req, res)=>{
+  res.send("Auth Service is running 🚀")
+})
+
 process.on("uncaughtException", (err) => {
   console.error(" Uncaught Exception:", err.message);
   process.exit(1);

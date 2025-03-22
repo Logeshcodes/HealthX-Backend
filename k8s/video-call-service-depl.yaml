@@ -15,6 +15,8 @@ spec:
       containers:
         - name: video-call-service-container
           image: logeshc12/healthx-video-call-service:latest
+          ports:
+            - containerPort: 5006
           envFrom:
             - configMapRef:
                 name: video-call-service-env
