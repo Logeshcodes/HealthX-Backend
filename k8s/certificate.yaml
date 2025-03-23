@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: healthx.live-tls
+  namespace: default
+spec:
+  secretName: healthx.live-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: healthx.live
+  dnsNames:
+    - healthx.live

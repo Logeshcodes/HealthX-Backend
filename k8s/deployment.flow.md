@@ -156,6 +156,11 @@
 
    - Deploy LetsEncrypt ClusterIssuer
 
+
+
+   kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+
+
    ```
    kubectl apply -f letsencrypt-prod.yaml
    ```

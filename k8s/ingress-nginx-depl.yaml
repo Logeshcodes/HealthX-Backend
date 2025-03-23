@@ -3,15 +3,24 @@ kind: Ingress
 metadata:
   name: ingress-controller
   annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://healthx.live"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"  # Allowed HTTP methods
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type"  # Allowed headers
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/upgrade: "websocket"
+    nginx.ingress.kubernetes.io/connection: "Upgrade"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: "nginx"
   rules:
     - host: healthx.live
       http:
         paths:
+          # Frontend service handles the root path (/)
           - path: /
             pathType: Prefix
             backend:
@@ -19,10 +28,15 @@ spec:
                 name: frontend-srv
                 port:
                   number: 3000
-          - path: /api/
+          # API Gateway handles requests under /api
+          - path: /api
             pathType: Prefix
             backend:
               service:
                 name: api-gateway-srv
                 port:
                   number: 5000
+  tls:
+    - hosts:
+        - healthx.live
+      secretName: healthx.live-tls
