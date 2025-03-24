@@ -2,10 +2,9 @@
 
 ## Deployment Order
 
-
 # path
 
-   cd "E:\Second-Project\HealthX-Backend\"
+cd "E:\Second-Project\HealthX-Backend\"
 
 1. **Create and connect to the GKE cluster**
 
@@ -17,8 +16,8 @@
 
 
    gcloud container clusters get-credentials healthx-cluster-1 --region=asia-south1-a --project=healthx-second-project
-   
- 
+
+
    ```
 
 2. **Install core infrastructure components**
@@ -42,15 +41,11 @@
 
 3. **Create ConfigMaps for all services**
 
+   # basic :
 
+   kubectl get configmap
 
-    # basic :
-
-    kubectl get configmap
-
-    kubectl delete configmap user-service-env
-
-
+   kubectl delete configmap user-service-env
 
    ```
    cd authService
@@ -80,7 +75,7 @@
    cd ..
    cd ..
    cd HealthX-Frontend
-   kubectl create configmap frontend-service-env --from-env-file=.env
+   kubectl create configmap frontend-service-env --from-env-file=.env.production
 
    cd ..
    cd HealthX-Backend
@@ -137,7 +132,7 @@
    kubectl apply -f video-call-service-depl.yaml
    kubectl apply -f api-gateway-depl.yaml
    kubectl apply -f frontend-service-depl.yaml
-   
+
 
 
 
@@ -156,10 +151,7 @@
 
    - Deploy LetsEncrypt ClusterIssuer
 
-
-
    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
-
 
    ```
    kubectl apply -f letsencrypt-prod.yaml
@@ -178,10 +170,13 @@
    ```
 
 8. **Verify deployment**
+
    ```
    kubectl get pods
    kubectl get services
    kubectl get ingress
+
+   kubectl get configmaps
    ```
 
 ## Important Notes
@@ -208,7 +203,7 @@ If your services are already running but you've encountered issues and want to r
 
    ```
    kubectl delete deployment --all
-   kubectl delete service --all 
+   kubectl delete service --all
    kubectl delete ingress --all
    kubectl delete job.batch/create-kafka-topics
    kubectl delete configmaps --all
@@ -216,7 +211,7 @@ If your services are already running but you've encountered issues and want to r
    kubectl delete job create-kafka-topics
    kubectl delete -f topics-depl.yaml
 
-   
+
    ```
 
    Note: This does NOT delete your ConfigMaps, so you won't need to recreate them if they're properly set up.
@@ -230,8 +225,7 @@ If your services are running and working correctly, but you just want to ensure 
 1. **Verify your current setup**
 
    ```
-   kubectl get all
-   kubectl get configmap
+   c   kubectl get configmap
    kubectl get ingress
    kubectl describe ingress ingress-controller
    kubectl get jobs
@@ -294,23 +288,26 @@ If only specific services are having issues:
 
 If you're generally satisfied with how things are working but want to ensure you've followed best practices, you can simply verify the configurations rather than recreating everything from scratch.
 
+kubectl delete deployment --all
+kubectl delete service --all
+kubectl delete ingress --all
+kubectl delete job.batch/create-kafka-topics
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.1/cert-manager.yaml
+cd k8s
 kubectl apply -f zookeeper-depl.yaml
-kubectl apply -f kafka-zookeeper.yaml
+kubectl apply -f kafka-depl.yaml
 kubectl apply -f topics-depl.yaml
 kubectl apply -f auth-service-depl.yaml
 kubectl apply -f user-service-depl.yaml
-kubectl apply -f course-service-depl.yaml
-kubectl apply -f notification-service-depl.yaml
-kubectl apply -f chat-service-depl.yaml
 kubectl apply -f booking-service-depl.yaml
-kubectl apply -f admin-service-depl.yaml
+kubectl apply -f notification-service-depl.yaml
+kubectl apply -f verification-service-depl.yaml
+kubectl apply -f video-call-service-depl.yaml
 kubectl apply -f api-gateway-depl.yaml
 kubectl apply -f frontend-service-depl.yaml
-kubectl apply -f ingress-ngix-depl.yaml
+kubectl apply -f ingress-nginx-depl.yaml
 
-
-# to delete everything 
+# to delete everything
 
 kubectl delete all --all

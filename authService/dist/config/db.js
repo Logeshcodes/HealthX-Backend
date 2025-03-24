@@ -13,8 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const dotenv_1 = require("dotenv");
-(0, dotenv_1.config)();
+const dotenv_1 = __importDefault(require("dotenv"));
+if (process.env.ENV_MODE === "production") {
+    dotenv_1.default.config({ path: ".env.production" });
+}
+else {
+    dotenv_1.default.config({ path: ".env.development" });
+}
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("\nprocess.env.MONGO_URL : ", process.env.MONGO_URL);

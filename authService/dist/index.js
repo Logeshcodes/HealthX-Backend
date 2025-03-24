@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const dotenv_1 = require("dotenv");
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const db_1 = __importDefault(require("./config/db"));
@@ -23,10 +22,16 @@ const doctorRouters_1 = __importDefault(require("./routers/doctorRouters"));
 const adminRouters_1 = __importDefault(require("./routers/adminRouters"));
 const ErrorMiddleware_1 = require("./middlewares/ErrorMiddleware");
 const consumer_1 = __importDefault(require("./config/kafka/consumer"));
-(0, dotenv_1.config)();
+const dotenv_1 = __importDefault(require("dotenv"));
+if (process.env.NODE_ENV === "production") {
+    dotenv_1.default.config({ path: ".env.production" });
+}
+else {
+    dotenv_1.default.config({ path: ".env.development" });
+}
 const app = (0, express_1.default)();
 const PORT = Number(process.env.PORT);
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL = process.env.FRONTEND_URL;
 const SERVICE = process.env.SERVICE || "Auth Service";
 console.log("\nEnvironment Variables:", { PORT, FRONTEND_URL, SERVICE });
 const corsOptions = {
@@ -49,6 +54,9 @@ app.use("/user", userRouters_1.default);
 app.use("/doctor", doctorRouters_1.default);
 app.use("/admin", adminRouters_1.default);
 (0, consumer_1.default)();
+app.get('/', (req, res) => {
+    res.send("Auth Service is running 🚀");
+});
 process.on("uncaughtException", (err) => {
     console.error(" Uncaught Exception:", err.message);
     process.exit(1);
