@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 
-import { SlotInterface } from "../../models/slotModel";
 import { UserInterface } from "../../models/userModel";
 
 

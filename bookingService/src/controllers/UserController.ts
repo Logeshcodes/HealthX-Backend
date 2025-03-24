@@ -286,17 +286,38 @@ export class UserController implements IUserController {
         });
       }
 
+      // development mode
+
+      // res.redirect(
+      //   `http://localhost:3000/user/patient/payment-success/${txnid}`
+      // );
+
+      // production mode
+
       res.redirect(
-        `http://localhost:3000/user/patient/payment-success/${txnid}`
+        `http://healthx.live/user/patient/payment-success/${txnid}`
       );
+
+
     } catch (error) {
       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: ResponseError.PAYMENT_ERROR });
     }
   }
 
+
+   // development mode
+
+  // async paymentFailure(req: Request, res: Response): Promise<any> {
+  //   return res.redirect(`http://localhost:3000/user/patient/payment-failure`);
+  // }
+
+  // production mode
+
   async paymentFailure(req: Request, res: Response): Promise<any> {
-    return res.redirect(`http://localhost:3000/user/patient/payment-failure`);
+    return res.redirect(`http://healthx.live/user/patient/payment-failure`);
   }
+
+ 
 
   async getAppointmentDetails(req: Request, res: Response): Promise<any> {
     try {
