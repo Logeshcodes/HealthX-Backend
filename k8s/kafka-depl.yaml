@@ -1,9 +1,8 @@
+# kafka-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-depl
-  labels:
-    app: kafka
+  name: kafka
 spec:
   replicas: 1
   selector:
@@ -16,38 +15,38 @@ spec:
     spec:
       containers:
         - name: kafka
-          image: bitnami/kafka:latest
+          image: bitnami/kafka:3.6.1
           ports:
             - containerPort: 9092
           env:
-            - name: KAFKA_BROKER_ID
-              value: "1"
+            # --- Critical Settings ---
+            - name: KAFKA_ENABLE_KRAFT
+              value: "no"  # Disable KRaft
             - name: KAFKA_ZOOKEEPER_CONNECT
-              value: "zookeeper-service:2181"
-            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-              value: "PLAINTEXT:PLAINTEXT"
+              value: "zookeeper:2181"  # Matches the Service name above
+            
+            # --- Listeners ---
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka-service:9092"
+              value: "PLAINTEXT://kafka-service:9092"  # Matches Kafka Service name
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
-          volumeMounts:
-            - name: kafka-data
-              mountPath: /bitnami/kafka
-      volumes:
-        - name: kafka-data
-          emptyDir: {}
+
+            # --- Optional but Recommended ---
+            - name: KAFKA_BROKER_ID
+              value: "1"
+            - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+              value: "true"
 
 ---
-# Kafka Service
+# kafka-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-service
+  name: kafka-service  # <- Backend apps will use this
 spec:
   selector:
     app: kafka
   ports:
-    - protocol: TCP
-      port: 9092
+    - port: 9092
       targetPort: 9092
   type: ClusterIP

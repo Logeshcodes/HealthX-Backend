@@ -26,6 +26,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL ;
 const SERVICE = process.env.SERVICE || "Video Call Service";
 
 
+
 const corsOptions = {
   origin: FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -43,8 +44,9 @@ app.use(morgan("dev"));
 // Initialize Socket.IO
 
 const io = new Server(httpServer, {
+  path: '/socket.io',
   cors: {
-    origin: FRONTEND_URL,
+    origin: String(process.env.FRONTEND_URL) || "https://healthx.live",
     methods: ["GET", "POST"],
     allowedHeaders: ["Authorization", "Content-Type"],
     credentials: true,

@@ -1,5 +1,5 @@
 import express, { Application , Request ,Response , NextFunction } from 'express'
-import { createProxyMiddleware } from 'http-proxy-middleware'
+import { createProxyMiddleware , Options  } from 'http-proxy-middleware'
 import morgan from "morgan" ;
 import cors from 'cors'   
 
@@ -30,6 +30,29 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(morgan('dev'));
+
+
+// Create server instance to handle both HTTP and WebSocket
+const server = require('http').createServer(app);
+
+// WebSocket handling for socket.io
+interface ExtendedProxyOptions extends Options {
+    ws?: boolean;
+    // Add any other properties that TypeScript complains about
+    onProxyReq?: (proxyReq: any, req: any, res: any) => void;
+}
+console.log("video call url---", VIDEO_CALL_URL)
+
+app.use('/socket.io', createProxyMiddleware({
+    target: VIDEO_CALL_URL,
+    changeOrigin: true,
+    ws: true,  // WebSocket support
+    onProxyReq: (proxyReq, req, res) => {
+        // Ensuring that the connection remains WebSocket
+        proxyReq.setHeader('Connection', 'Upgrade');
+        proxyReq.setHeader('Upgrade', 'websocket');
+    },
+}as ExtendedProxyOptions));
 
 const services = [
     {

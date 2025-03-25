@@ -293,6 +293,8 @@ kubectl delete service --all
 kubectl delete ingress --all
 kubectl delete job.batch/create-kafka-topics
 
+kubectl delete pods --all
+
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.1/cert-manager.yaml
