@@ -16,6 +16,7 @@ export interface IUserController{
     getUsers( req : Request , res : Response) : Promise <void> ;
     findAllBanners( req : Request , res : Response) : Promise <void> ;
     findAllDoctors( req : Request , res : Response) : Promise <void> ;
+    findAllHomeDoctors( req : Request , res : Response) : Promise <void> ;
     findAllDepartment( req : Request , res : Response) : Promise <void> ;
     blockUser( req : Request , res : Response) : Promise <void> ;
     getDoctorDetails( req : Request , res : Response) : Promise <void> ;

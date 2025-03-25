@@ -16,6 +16,7 @@ export interface IUserRepository{
     getUsers(): Promise <UserInterface[] | null | undefined> ;
     findAllBanners(): Promise <BannerInterface[] | null | undefined> ;
     findAllDoctors(): Promise <DoctorInterface[] | null | undefined> ;
+    findAllHomeDoctors(): Promise <DoctorInterface[] | null | undefined> ;
     findAllDepartment(): Promise <DepartmentInterface[] | null | undefined> ;
     createReport(doctorId:string , userId :string,  reportType:string , description:string): Promise<ReportInterface| null | undefined>;
 

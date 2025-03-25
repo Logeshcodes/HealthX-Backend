@@ -91,7 +91,18 @@ export class UserRepository extends GenericRespository<UserInterface> implements
             console.log(error); 
         }
     }
-    
+
+    async findAllHomeDoctors(): Promise<DoctorInterface[] | null | undefined> {
+        try {
+            return await DoctorModel.find(
+                { isBlocked: false, status: "approved" },
+                { name: 1, department: 1, experience: 1 , profilePicture : 1, _id: 0 } 
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async findAllDepartment(): Promise <DepartmentInterface[] | null | undefined>{
         try {
             return await DepartmentModel.find()

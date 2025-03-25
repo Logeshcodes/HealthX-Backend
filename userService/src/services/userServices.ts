@@ -86,6 +86,14 @@ export default class UserServices implements IUserService{
             console.log(error)
         }
     }
+
+    public async findAllHomeDoctors() : Promise <DoctorInterface[] | null | undefined>{
+        try {
+            return await this.userRepository.findAllHomeDoctors();
+        } catch (error) {
+            console.log(error)
+        }
+    }
     
     public async findAllDepartment(){
         try {

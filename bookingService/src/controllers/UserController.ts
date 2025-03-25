@@ -288,15 +288,15 @@ export class UserController implements IUserController {
 
       // development mode
 
-      // res.redirect(
-      //   `http://localhost:3000/user/patient/payment-success/${txnid}`
-      // );
+      res.redirect(
+        `http://localhost:3000/user/patient/payment-success/${txnid}`
+      );
 
       // production mode
 
-      res.redirect(
-        `http://healthx.live/user/patient/payment-success/${txnid}`
-      );
+      // res.redirect(
+      //   `http://healthx.live/user/patient/payment-success/${txnid}`
+      // );
 
 
     } catch (error) {
@@ -307,15 +307,15 @@ export class UserController implements IUserController {
 
    // development mode
 
-  // async paymentFailure(req: Request, res: Response): Promise<any> {
-  //   return res.redirect(`http://localhost:3000/user/patient/payment-failure`);
-  // }
+  async paymentFailure(req: Request, res: Response): Promise<any> {
+    return res.redirect(`http://localhost:3000/user/patient/payment-failure`);
+  }
 
   // production mode
 
-  async paymentFailure(req: Request, res: Response): Promise<any> {
-    return res.redirect(`http://healthx.live/user/patient/payment-failure`);
-  }
+  // async paymentFailure(req: Request, res: Response): Promise<any> {
+  //   return res.redirect(`http://healthx.live/user/patient/payment-failure`);
+  // }
 
  
 

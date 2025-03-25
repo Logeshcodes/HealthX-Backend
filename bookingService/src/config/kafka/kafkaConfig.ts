@@ -5,7 +5,9 @@ const getBrokers = () => {
   
   const devBroker = process.env.KAFKA_DEV_BROKER || 'localhost:9092';
   const prodBroker = process.env.KAFKA_PROD_BROKER || 'kafka-service:9092';
-  console.log(isProduction)
+
+  console.log("Environment:", process.env.NODE_ENV);
+  console.log("Using Broker:", isProduction ? prodBroker : devBroker);
   
   return isProduction ? [prodBroker] : [devBroker];
 };

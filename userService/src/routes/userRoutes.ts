@@ -11,6 +11,7 @@ const router = Router();
 // Home Page doctor and dept list
 router.get("/banner_list", userController.findAllBanners.bind(userController));
 router.get("/doctor_list", userController.findAllDoctors.bind(userController));
+router.get("/home_doctor_list", userController.findAllHomeDoctors.bind(userController));
 router.get("/department_list",userController.findAllDepartment.bind(userController));
 
 router.post(
