@@ -20,6 +20,7 @@ router.get("/appointments/:id",IsDoctor,authenticateToken,IsDoctorBlocked,doctor
 router.get("/appointmentData/:appointmentId",doctorController.getAppointmentById.bind(doctorController)
 );
 
+router.get("/viewPrescription/:appointmentId",doctorController.getPrescriptionById.bind(doctorController));
 const doctorRoutes = router;
 
 export default doctorRoutes;

@@ -17,7 +17,7 @@ export default class DoctorRepository extends GenericRespository<DoctorInterface
     }
     
     async resetPassword(email:string,password:string) {
-        return await this.update( email , {password : password} )
+        return await this.update( email , {hashedPassword : password} );
     }
 
     public async updateProfile(email: string, profilePicture: string): Promise<void> {

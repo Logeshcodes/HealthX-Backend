@@ -32,9 +32,9 @@ export class DoctorRepository extends GenericRespository<DoctorInterface> implem
         }
     }
     
-    async updatePassword(email:string,password:string): Promise<DoctorInterface | null | undefined>{
+    async updatePassword(email:string,hashedPassword:string): Promise<DoctorInterface | null | undefined>{
         try {
-            return await this.update(email,{hashedPassword : password});
+            return await this.update(email,{hashedPassword : hashedPassword});
         } catch (error) {
             console.log(error); 
         }

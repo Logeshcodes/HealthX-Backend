@@ -11,11 +11,11 @@ export class OtpRespository extends GenericRespository<OtpInterface> implements 
     public async createOtp(email:string,otp:string){
         const response = await this.update(email,{otp : otp})
         console.log("responseOTP : " , response)
-        setTimeout(async () => {
-            if (response?._id) {
-            await OtpModel.findByIdAndDelete(response._id);
-            }
-        }, 1200000);
+        // setTimeout(async () => {
+        //     if (response?._id) {
+        //     await OtpModel.findByIdAndDelete(response._id);
+        //     }
+        // }, 120000000);
         return response
     }
 

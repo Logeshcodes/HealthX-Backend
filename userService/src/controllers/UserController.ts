@@ -93,14 +93,14 @@ export default class UserController implements IUserController  {
 
   async updateWalletBookAppointment( data: WalletData): Promise <void>{
     try {
-      const { userId , appointmentId , transactionId, amount , type } = data ;
+      const { userId , appointmentId , transactionId,paymentMethod , amount , type } = data ;
 
-      console.log("user side update agala : " ,  userId , appointmentId , transactionId, amount , type)
+      console.log("user side update agala : " ,  userId , appointmentId , transactionId, paymentMethod , amount , type)
       if (!userId) {
         throw new Error("User ID is required");
       }
       const userDetails = await UserModel.findById({ _id : userId}) ;
-      console.log("user irukaru : " ,  userDetails)
+     
       if (!userDetails){
         throw new Error(ResponseError.USER_NOT_FOUND);
       }
@@ -110,12 +110,19 @@ export default class UserController implements IUserController  {
       const refundAmount =  amount; 
 
       const newTransaction = {amount: refundAmount,description,transactionId,type,date: new Date()};
-      const newBalance = userDetails.wallet.balance - amount
+
+      let newBalance = 0 ;  
+
+      if( paymentMethod === "Wallet"){
+        newBalance = userDetails.wallet.balance - amount
+      }else{
+        newBalance = userDetails.wallet.balance
+      }
+      
       const walletDetails = {balance: newBalance,transactions: [...transactions, newTransaction],
     };
     let response = await this.userService.updateWallet( userId, walletDetails);
 
-    console.log("update agitucha solu : " , response)
 
     } catch (error) {
       console.log(error);

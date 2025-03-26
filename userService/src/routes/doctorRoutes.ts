@@ -21,6 +21,7 @@ router.put(
   "/profile/change-password",
   IsDoctor,
   authenticateToken,
+  IsDoctorBlocked,
   doctorController.updatePassword.bind(doctorController)
 );
 
@@ -40,6 +41,7 @@ router.get(
   "/:email",
   IsDoctor,
   authenticateToken,
+  IsDoctorBlocked,
   doctorController.getDoctor.bind(doctorController)
 );
 

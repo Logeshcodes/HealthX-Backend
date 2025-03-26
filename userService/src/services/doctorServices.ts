@@ -36,9 +36,9 @@ export class DoctorServices implements IDoctorService{
             
         }
     }
-    public async updatePassword(email:string,password:string): Promise<DoctorInterface | null | undefined>{
+    public async updatePassword(email:string,hashedPassword:string): Promise<DoctorInterface | null | undefined>{
         try {
-            const response=await this.doctorRepository.updatePassword(email,password)
+            const response=await this.doctorRepository.updatePassword(email,hashedPassword)
             return response
         } catch (error) {
             console.log(error)

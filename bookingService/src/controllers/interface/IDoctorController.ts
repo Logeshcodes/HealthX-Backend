@@ -10,7 +10,9 @@ export interface IDoctorController {
     updateProfile(data:{ email: string; profilePicture: string , location : string } ): Promise<void>;
 
     slotBooking(req: Request, res: Response ) : Promise <any> ;
+
     addPrescription(req: Request, res: Response ) : Promise <any> ;
+    getPrescriptionById(req: Request, res: Response ) : Promise <any> ;
     deleteSlot(req: Request, res: Response ) : Promise <any> ;
     getSlotBooking(req: Request, res: Response): Promise<void>;
     getAllAppointmentDetails(req: Request, res: Response): Promise<void>  

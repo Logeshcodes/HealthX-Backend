@@ -3,6 +3,7 @@ export interface WalletData {
     userId?: string ,
     appointmentId : string ,
     transactionId : string ,  
+    paymentMethod : string ,
     amount : number , 
     type : string
 }

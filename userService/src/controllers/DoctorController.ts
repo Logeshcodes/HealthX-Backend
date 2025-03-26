@@ -24,8 +24,8 @@ export class DoctorController implements IDoctorController {
   }
 
   async passwordReset(data: any): Promise<void> {
-    const { password, email } = data;
-    await this.doctorService.updatePassword(email, password);
+    const {  email, hashedPassword } = data;
+    await this.doctorService.updatePassword(email, hashedPassword);
   }
 
   async updateWalletCancelAppointmnet(data: WalletData): Promise<void> {

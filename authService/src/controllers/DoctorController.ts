@@ -165,6 +165,14 @@ export default class DoctorController implements IDoctorControllers {
         });
       }
 
+      if (doctor.isBlocked) {
+        console.log(" blocked...");
+        return res.json({
+          success: false,
+          message: ResponseError.ACCOUNT_BLOCKED,
+        });
+      }
+
       const isPasswordValid = await bcrypt.compare(
         password,
         doctor.hashedPassword
@@ -178,13 +186,7 @@ export default class DoctorController implements IDoctorControllers {
         });
       }
 
-      if (doctor.status === "blocked") {
-        console.log(" blocked...");
-        return res.json({
-          success: false,
-          message: ResponseError.ACCOUNT_BLOCKED,
-        });
-      }
+      
 
       let role = doctor.role;
       const accesstoken = await this.JWT.accessToken({ email, role });
@@ -359,9 +361,13 @@ export default class DoctorController implements IDoctorControllers {
         data.email,
         hashedPassword
       );
+      console.log("clearrrrrrr passwordReset.....", passwordReset);
       if (passwordReset) {
-        await produce("password-reset-doctor", passwordReset);
-
+        await produce("password-reset-doctor", {
+          email: data.email,
+          hashedPassword: hashedPassword,
+        });
+        
         res.clearCookie("forgotToken");
         res.status(StatusCode.OK).json({
           success: true,

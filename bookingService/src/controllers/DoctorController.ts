@@ -372,6 +372,36 @@ export class DoctorController implements IDoctorController {
     }
       
       
+
+
+      public async getPrescriptionById(req: Request, res: Response): Promise<void>{
+      
+                try {
+                const { appointmentId } = req.params;
+                const response = await PrescriptionModel.findOne({ appointmentId: appointmentId});
+      
+                if (response) {
+                  res.json({
+                    success: true,
+                    message: ResponseError.RESOURCE_FOUND,
+                    data: response,
+                  });
+                } else {
+                  res.status(StatusCode.NOT_FOUND).json({
+                    success: false,
+                    message: ResponseError.NOT_FOUND,
+                  });
+                }
+                  
+                } catch (error) {
+      
+                  res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+                    success: false,
+                    message: ResponseError.INTERNAL_SERVER_ERROR ,
+                  });
+                }
+      
+      }
       
  
       
