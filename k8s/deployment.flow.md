@@ -3,8 +3,8 @@
 ## Deployment Order
 
 # path
-
 cd "E:\Second-Project\HealthX-Backend\"
+
 
 1. **Create and connect to the GKE cluster**
 
@@ -300,7 +300,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.1/cert-manager.yaml
 cd k8s
 kubectl apply -f zookeeper-depl.yaml
-kubectl apply -f kafka-depl.yaml
+kubectl apply -f kafka-depl.yaml --validate=false
 kubectl apply -f topics-depl.yaml
 kubectl apply -f auth-service-depl.yaml
 kubectl apply -f user-service-depl.yaml
