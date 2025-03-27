@@ -96,7 +96,7 @@ export class UserRepository extends GenericRespository<UserInterface> implements
         try {
             return await DoctorModel.find(
                 { isBlocked: false, status: "approved" },
-                { name: 1, department: 1, experience: 1 , profilePicture : 1, _id: 0 } 
+                { name: 1, department: 1,email :1 , experience: 1 , profilePicture : 1, _id: 0 } 
             );
         } catch (error) {
             console.log(error);

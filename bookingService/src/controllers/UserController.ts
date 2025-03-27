@@ -296,8 +296,10 @@ export class UserController implements IUserController {
 
       // production mode
 
+
+
       res.redirect(
-        `http://healthx.live/user/patient/payment-success/${txnid}`
+        `https://healthx.live/user/patient/payment-success/${txnid}`
       );
 
 
@@ -316,7 +318,7 @@ export class UserController implements IUserController {
   // production mode
 
   async paymentFailure(req: Request, res: Response): Promise<any> {
-    return res.redirect(`http://healthx.live/user/patient/payment-failure`);
+    return res.redirect(`https://healthx.live/user/patient/payment-failure`);
   }
 
  
